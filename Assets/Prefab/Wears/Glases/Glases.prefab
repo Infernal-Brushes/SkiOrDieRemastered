@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2464558058508084850
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1164708518534487282}
+  - component: {fileID: 1699627920857677054}
+  m_Layer: 0
+  m_Name: Glases
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1164708518534487282
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2464558058508084850}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4.786, y: 1.573, z: -72}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1699627920857677054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2464558058508084850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08ddfee36e47d524d9b0445c1c33d3b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 919132149155446097, guid: d2633738582eaf04c9cb502a1bbf4252, type: 3}
+  titleKey: wear.glasses.glasses1
+  targetSlot: 5
+  slotRestricts: 
+  materialPresets:
+  - coloringPartTitleKey: wear.color_parts.secondary
+    materirials:
+    - {fileID: 2100000, guid: 0084d76fc789b28439926c10f59e0c53, type: 2}
+    canChooseThisSlot: 0
+  - coloringPartTitleKey: wear.color_parts.main
+    materirials:
+    - {fileID: 2100000, guid: b62088053f151d7488a06cc306a6b0fa, type: 2}
+    - {fileID: 2100000, guid: 142cd7d8c69e6a44b87ccf6a4768f66f, type: 2}
+    - {fileID: 2100000, guid: 39ba062471cf4c94fb475544ab2e4a1f, type: 2}
+    canChooseThisSlot: 1
+  currentMaterials: []
