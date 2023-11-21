@@ -411,6 +411,8 @@ public class MeshGenerator : MonoBehaviour
         //{
         //    StartCoroutine(SpawnHills());
         //}
+
+        // TODO: верни потом
         SpawnBarriers(firstLine == null);
 
 
