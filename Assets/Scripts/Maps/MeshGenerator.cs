@@ -368,7 +368,7 @@ public class MeshGenerator : MonoBehaviour
     }
 
 
-    public void CreateShape(float[] _lineX = null, Vector3[] firstLine = null)
+    public void CreateShape(float[] _lineX = null, Vector3[] firstLine = null, bool spawnBarriers = true)
     {
         mesh = new Mesh();
         mesh.name = "Snow";
@@ -412,8 +412,10 @@ public class MeshGenerator : MonoBehaviour
         //    StartCoroutine(SpawnHills());
         //}
 
-        // TODO: верни потом
-        SpawnBarriers(firstLine == null);
+        if (spawnBarriers)
+        {
+            SpawnBarriers(firstLine == null);
+        }
 
 
 
@@ -450,7 +452,7 @@ public class MeshGenerator : MonoBehaviour
         GetComponent<MeshFilter>().mesh = mesh;
     }
 
-    public void GenerateNext()
+    public void GenerateNext(bool spawnBarriers)
     {
         var _barriersParent = new GameObject();
     
@@ -476,7 +478,7 @@ public class MeshGenerator : MonoBehaviour
         Vector3[] lastLine = new Vector3[xSize*2+2];
         Array.Copy(vertices, vertices.Length - xSize*2 - 2, lastLine, 0, xSize*2 + 2);
 
-        nextMeshGenerator.CreateShape(lineX, lastLine);
+        nextMeshGenerator.CreateShape(lineX, lastLine, spawnBarriers);
 
         nextMeshGenerator.triggerForGenerator.GetComponent<TriggerForGeneratorController>().previousMeshGenerator = this.gameObject;
     }

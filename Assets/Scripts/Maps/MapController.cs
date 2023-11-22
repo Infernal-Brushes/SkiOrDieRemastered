@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 
 namespace Assets.Scripts
 {
- 
+
     public class MapController : MonoBehaviour
     {
         public MeshGenerator meshGeneratorPrefab;
@@ -20,6 +15,13 @@ namespace Assets.Scripts
         public GameObject loseMenu;
         public TMP_Text metersText;
 
+        /// <summary>
+        /// Флаг необходимости спавнить преграды
+        /// <see cref="true"/> Спавнить преграды
+        /// <see cref="false"/> Не спавнить преграды
+        /// </summary>
+        public bool SpawnBarriers { get; protected set; } = true;
+
         private void Start()
         {
             loseMenu.SetActive(false);
@@ -30,6 +32,11 @@ namespace Assets.Scripts
 
         private void Update()
         {
+            if (Input.GetKeyDown(KeyCode.E))
+            {
+                SpawnBarriers = !SpawnBarriers;
+            }
+
             if (Input.GetKeyDown(KeyCode.R))
             {
                 Restart();
@@ -39,7 +46,7 @@ namespace Assets.Scripts
         private void CreateFirstShape()
         {
             var meshGenerator = Instantiate(meshGeneratorPrefab, startPositionMeshGeneratror.position, startPositionMeshGeneratror.rotation);
-            meshGenerator.CreateShape();
+            meshGenerator.CreateShape(spawnBarriers: SpawnBarriers);
         }
 
         public void Restart()
