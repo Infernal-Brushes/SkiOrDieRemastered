@@ -3,7 +3,6 @@ using UnityEngine;
 
 namespace Assets.Scripts
 {
-
     public class MapController : MonoBehaviour
     {
         public MeshGenerator meshGeneratorPrefab;
