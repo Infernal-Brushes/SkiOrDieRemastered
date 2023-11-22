@@ -1417,11 +1417,11 @@ MonoBehaviour:
   speedOfTiltX: 0.3
   strafeSpeedLimit: 1
   deathSpeedX: 72
-  deathSpeedZ: 28
+  deathSpeedZ: 32
   velocityToLoseSki: 27
   _velocityFreeRide: 0.24
   _velocitySidewise: 0.45
-  _velocityStrafeCoefficient: 0.008
+  _velocityStrafeCoefficient: 0
   _strafeStopperCoefficient: 0.03
   speedOfNormalRotationY: 0.74
   speedOfStrafeRotationY: 4.5
@@ -1509,7 +1509,7 @@ Rigidbody:
   m_Mass: 2
   m_Drag: 0.06
   m_AngularDrag: 18
-  m_UseGravity: 0
+  m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0

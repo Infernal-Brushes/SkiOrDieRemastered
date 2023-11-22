@@ -52,20 +52,12 @@ namespace Assets.Scripts
         /// </summary>
         [Tooltip("Длина луча для проверки контакта с землёй")]
         public float groundCheckLength = 0.5f;
+
         /// <summary>
         /// Скорость наклона вперёд назад
         /// </summary>
         [Tooltip("Скорость наклона вперёд назад")]
         public float speedOfTiltX = 0.3f;
-        /// <summary>
-        /// Скорость, ниже которой не может затормозить стрейф
-        /// </summary>
-        [Tooltip("Скорость, ниже которой не может затормозить стрейф")]
-        public float strafeSpeedLimit = 15f;
-        public float deathSpeedX = 35;
-        public float deathSpeedZ = 28;
-
-        public float velocityToLoseSki = 28;
 
         [Header("Скорости")]
 
@@ -97,19 +89,49 @@ namespace Assets.Scripts
         [SerializeField]
         private float _strafeStopperCoefficient = 0.3f;
 
+        /// <summary>
+        /// Скорость, ниже которой не может затормозить стрейф
+        /// </summary>
+        [Tooltip("Скорость, ниже которой не может затормозить стрейф")]
+        [SerializeField]
+        private float _strafeSpeedLimit = 1f;
+
+        /// <summary>
+        /// Скорость прямо для проигрыша
+        /// </summary>
+        [Tooltip("Скорость прямо для проигрыша")]
+        [SerializeField]
+        private float _deathSpeedX = 72;
+
+        /// <summary>
+        /// Боковая скорость для проигрыша
+        /// </summary>
+        [Tooltip("Боковая скорость для проигрыша")]
+        [SerializeField]
+        private float _deathSpeedZ = 32;
+
+        /// <summary>
+        /// Скорость, на которой есть шанс потерять лыжи
+        /// </summary>
+        [Tooltip("Скорость, на которой есть шанс потерять лыжи")]
+        [SerializeField]
+        private float _velocityToLoseSki = 27;
+
         [Header("Повороты")]
 
         /// <summary>
         /// Скорость поворота
         /// </summary>
         [Tooltip("Скорость поворота")]
-        public float speedOfNormalRotationY = 0.3f;
+        [SerializeField]
+        private float speedOfNormalRotationY = 0.74f;
 
         /// <summary>
         /// Скорость поворота в стрейфе
         /// </summary>
         [Tooltip("Скорость поворота в стрейфе")]
-        public float speedOfStrafeRotationY = 1.3f;
+        [SerializeField]
+        private float speedOfStrafeRotationY = 4.5f;
 
         [Header("Углы поворотов")]
 
@@ -117,23 +139,25 @@ namespace Assets.Scripts
         /// Крайний угол поворота
         /// </summary>
         [Tooltip("Крайний угол поворота")]
-        public float angleOfTurn = 50f;
+        [SerializeField]
+        private float angleOfTurn = 50f;
 
         /// <summary>
         /// Крайний угол стрейфа
         /// </summary>
         [Tooltip("Крайний угол стрейфа")]
-        public float angleOfStrafe = 65f;
+        [SerializeField]
+        private float angleOfStrafe = 68f;
 
         /// <summary>
         /// true если персонаж касается земли
         /// </summary>
-        bool isGrounded = true;
+        private bool isGrounded = true;
 
         /// <summary>
         /// true если в стрэйфе
         /// </summary>
-        bool isInStrafe = false;
+        private bool isInStrafe = false;
 
         /// <summary>
         /// Состояние проигрыша.
@@ -187,6 +211,10 @@ namespace Assets.Scripts
         /// </summary>
         private float _velocityStrafeStopper => playerRigidBody.velocity.x * _strafeStopperCoefficient;
 
+        /// <summary>
+        /// Направление лыж
+        /// </summary>
+        Vector3 _skiesDirection => Vector3.ProjectOnPlane(transform.forward, Vector2.zero).normalized;
 
         [HideInInspector]
         public Rigidbody playerRigidBody;
@@ -215,9 +243,11 @@ namespace Assets.Scripts
         }
 
         /// <summary>
-        /// Направление лыж
+        /// Флаг активности debug панели
+        /// <see cref="true"/> панель активна
+        /// <see cref="false"/> панель скрыта
         /// </summary>
-        Vector3 _skiesDirection => Vector3.ProjectOnPlane(transform.forward, Vector2.zero).normalized;
+        private bool _isDebugEnabled = false;
 
         private void Awake()
         {
@@ -256,6 +286,7 @@ namespace Assets.Scripts
 
             if (!isLose && Input.GetKeyDown(KeyCode.Q))
             {
+                _isDebugEnabled = !_isDebugEnabled;
                 _debugPanel.SetActive(!_debugPanel.activeSelf);
             }
 
@@ -283,9 +314,14 @@ namespace Assets.Scripts
 
             Debug.DrawRay(groundPoint.transform.position, groundPoint.transform.up, Color.red, 12);
 
-            if (playerRigidBody.velocity.x >= deathSpeedX)
+            if (playerRigidBody.velocity.x >= _deathSpeedX)
             {
                 Lose(LoseCause.fallX);
+            }
+
+            if (Mathf.Abs(playerRigidBody.velocity.z) >= _deathSpeedZ)
+            {
+                Lose(LoseCause.fallZ);
             }
 
             FlatToGround();
@@ -430,7 +466,7 @@ namespace Assets.Scripts
                     playerRigidBody.AddTorque(transform.up * speedOfStrafeRotationY * _axisX, ForceMode.VelocityChange);
                 }
 
-                if (playerRigidBody.velocity.x > strafeSpeedLimit)
+                if (playerRigidBody.velocity.x > _strafeSpeedLimit)
                 {
                     //сила назад
                     Debug.Log(_velocityStrafeStopper);
@@ -464,7 +500,7 @@ namespace Assets.Scripts
                     playerRigidBody.AddTorque(transform.up * speedOfStrafeRotationY * _axisX, ForceMode.VelocityChange);
                 }
 
-                if (playerRigidBody.velocity.x > strafeSpeedLimit)
+                if (playerRigidBody.velocity.x > _strafeSpeedLimit)
                 {
                     //сила назад
                     Debug.Log(_velocityStrafeStopper);
@@ -515,7 +551,9 @@ namespace Assets.Scripts
         public void Lose(LoseCause cause)
         {
             if (isLose)
+            {
                 return;
+            }
 
             rightSki.layer = 7;
             leftSki.layer = 7;
@@ -569,13 +607,9 @@ namespace Assets.Scripts
         {
             bool isLeftSkiOff = false;
             bool isRightSkiOff = false;
-            if (playerRigidBody.velocity.x >= velocityToLoseSki)
+            if (playerRigidBody.velocity.x >= _velocityToLoseSki)
             {
-                //todo поменяй шанс, чтобы не всегда отваливались
                 int result = UnityEngine.Random.Range(0, 9);
-
-                //todo удали
-                //result = 4;
 
                 if (result == 0 || result == 1)
                 {
@@ -590,34 +624,36 @@ namespace Assets.Scripts
                     isLeftSkiOff = true;
                     isRightSkiOff = true;
                 }
+            }
 
-            }
-            //прицепляем лыжи к ногам
-            if (!isLeftSkiOff)
-            {
-                leftSki.GetComponent<CapsuleCollider>().material = ragdollRigidbody[0].GetComponent<BoxCollider>().material;
-                leftSki.transform.SetParent(leftFoot.transform);
-            }
-            else
+            if (isLeftSkiOff)
             {
                 leftSki.transform.SetParent(forLeftSki, true);
                 forLeftSki.gameObject.GetComponent<Rigidbody>().isKinematic = false;
             }
-            if (!isRightSkiOff)
-            {
-                rightSki.GetComponent<CapsuleCollider>().material = ragdollRigidbody[0].GetComponent<BoxCollider>().material;
-                rightSki.transform.SetParent(rightFoot.transform);
-            }
             else
+            {
+                leftSki.GetComponent<CapsuleCollider>().material = ragdollRigidbody[0].GetComponent<BoxCollider>().material;
+                leftSki.transform.SetParent(leftFoot.transform);
+            }
+            if (isRightSkiOff)
             {
                 rightSki.transform.SetParent(forRightSki, true);
                 forRightSki.gameObject.GetComponent<Rigidbody>().isKinematic = false;
+            }
+            else
+            {
+                rightSki.GetComponent<CapsuleCollider>().material = ragdollRigidbody[0].GetComponent<BoxCollider>().material;
+                rightSki.transform.SetParent(rightFoot.transform);
             }
         }
 
         public void RestartToDefaultPosition()
         {
-            _debugPanel.SetActive(true);
+            if (_isDebugEnabled)
+            {
+                _debugPanel.SetActive(true);
+            }
 
             joystick.gameObject.SetActive(true);
             playerRigidBody.velocity = Vector3.zero;
