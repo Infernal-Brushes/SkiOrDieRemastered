@@ -1421,8 +1421,8 @@ MonoBehaviour:
   velocityToLoseSki: 27
   _velocityFreeRide: 0.24
   velocitySidewise: 0.45
-  velocityStrafe: 0.7
-  _strafeStopperPercent: 3
+  _velocityStrafeCoefficient: 0.015
+  _strafeStopperCoefficient: 0.03
   speedOfNormalRotationY: 0.74
   speedOfStrafeRotationY: 4.5
   angleOfTurn: 50

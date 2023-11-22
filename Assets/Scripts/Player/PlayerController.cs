@@ -73,7 +73,8 @@ namespace Assets.Scripts
         ///Коэфициент набора скорости по направлению лыж. Зависит от угла поворота. Прямо - быстрее, в боки - медленнее
         /// </summary>
         [Tooltip("Коэфициент набора скорости по направлению лыж. Зависит от угла поворота. Прямо - быстрее, в боки - медленнее")]
-        public float _velocityFreeRide = 0.24f;
+        [SerializeField]
+        private float _velocityFreeRide = 0.24f;
 
         /// <summary>
         /// Боковая скорость при повороте. Зависит от угла поворота
@@ -85,14 +86,16 @@ namespace Assets.Scripts
         /// Боковая скорость при стрейфе в крайнем положении
         /// </summary>
         [Tooltip("Боковая скорость при стрейфе в крайнем положении")]
-        public float velocityStrafe = 0.6f;
+        //public float velocityStrafe = 0.7f;
+        [SerializeField]
+        private float _velocityStrafeCoefficient = 0.7f;
 
         /// <summary>
         /// Процент торможения при стрейфе от текущей скорости
         /// </summary>
         [Tooltip("Процент торможения при стрейфе от текущей скорости")]
         [SerializeField]
-        private float _strafeStopperPercent = 20;
+        private float _strafeStopperCoefficient = 0.3f;
 
         [Header("Повороты")]
 
@@ -165,7 +168,9 @@ namespace Assets.Scripts
         /// </summary>
         private float _axisX;
 
-        private float _strafeStopperSpeed => playerRigidBody.velocity.x * _strafeStopperPercent / 100;
+        private float _velocityStrafeStopper => playerRigidBody.velocity.x * _strafeStopperCoefficient;
+
+        private float _velocityStrafe => playerRigidBody.velocity.x * _velocityStrafeCoefficient;
 
         [HideInInspector]
         public Rigidbody playerRigidBody;
@@ -412,10 +417,10 @@ namespace Assets.Scripts
                 if (playerRigidBody.velocity.x > strafeSpeedLimit)
                 {
                     //сила назад
-                    Debug.Log(_strafeStopperSpeed);
-                    playerRigidBody.AddForce(Vector3.left * _strafeStopperSpeed, ForceMode.Impulse);
+                    Debug.Log(_velocityStrafeStopper);
+                    playerRigidBody.AddForce(Vector3.left * _velocityStrafeStopper, ForceMode.Impulse);
                     //сила в бок
-                    float impulse = -_axisX * velocityStrafe;
+                    float impulse = -_axisX * _velocityStrafe;
                     playerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
 
                     PrintText(_strafeSpeedText, impulse);
@@ -446,10 +451,10 @@ namespace Assets.Scripts
                 if (playerRigidBody.velocity.x > strafeSpeedLimit)
                 {
                     //сила назад
-                    Debug.Log(_strafeStopperSpeed);
-                    playerRigidBody.AddForce(Vector3.left * _strafeStopperSpeed, ForceMode.Impulse);
+                    Debug.Log(_velocityStrafeStopper);
+                    playerRigidBody.AddForce(Vector3.left * _velocityStrafeStopper, ForceMode.Impulse);
                     //сила в бок
-                    float impulse = -_axisX * velocityStrafe;
+                    float impulse = -_axisX * _velocityStrafe;
                     playerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
 
                     PrintText(_strafeSpeedText, impulse);
