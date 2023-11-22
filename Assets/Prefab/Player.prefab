@@ -1420,14 +1420,13 @@ MonoBehaviour:
   deathSpeedZ: 28
   velocityToLoseSki: 27
   _velocityFreeRide: 0.24
-  velocitySidewise: 0.45
-  _velocityStrafeCoefficient: 0.015
+  _velocitySidewise: 0.45
+  _velocityStrafeCoefficient: 0.008
   _strafeStopperCoefficient: 0.03
   speedOfNormalRotationY: 0.74
   speedOfStrafeRotationY: 4.5
   angleOfTurn: 50
   angleOfStrafe: 68
-  isLose: 0
   playerRigidBody: {fileID: 0}
   ragdollRigidbody:
   - {fileID: 244824461283733524}

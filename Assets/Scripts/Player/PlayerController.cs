@@ -80,13 +80,13 @@ namespace Assets.Scripts
         /// Боковая скорость при повороте. Зависит от угла поворота
         /// </summary>
         [Tooltip("Боковая скорость при повороте. Зависит от угла поворота")]
-        public float velocitySidewise = 0.3f;
+        [SerializeField]
+        private float _velocitySidewise = 0.45f;
 
         /// <summary>
         /// Боковая скорость при стрейфе в крайнем положении
         /// </summary>
         [Tooltip("Боковая скорость при стрейфе в крайнем положении")]
-        //public float velocityStrafe = 0.7f;
         [SerializeField]
         private float _velocityStrafeCoefficient = 0.7f;
 
@@ -125,7 +125,6 @@ namespace Assets.Scripts
         [Tooltip("Крайний угол стрейфа")]
         public float angleOfStrafe = 65f;
 
-
         /// <summary>
         /// true если персонаж касается земли
         /// </summary>
@@ -136,12 +135,22 @@ namespace Assets.Scripts
         /// </summary>
         bool isInStrafe = false;
 
-        //true если проиграл
-        //[HideInInspector]
-        public bool isLose = false;
+        /// <summary>
+        /// Состояние проигрыша.
+        /// <see cref="true"/> игрок проиграл
+        /// <see cref="false"/> игрок ещё играет
+        /// </summary>
+        private bool isLose = false;
 
-        private float _startMeters;
-        private int _currentScore => Convert.ToInt32(transform.position.x - _startMeters);
+        /// <summary>
+        /// Значение точки по X, с которой игрок стартует
+        /// </summary>
+        private float _startPositionX;
+
+        /// <summary>
+        /// Текущее растояние, которое проехал игрок
+        /// </summary>
+        private int _currentMeters => Convert.ToInt32(transform.position.x - _startPositionX);
 
         /// <summary>
         /// Угол поворота игрока
@@ -168,9 +177,16 @@ namespace Assets.Scripts
         /// </summary>
         private float _axisX;
 
+        /// <summary>
+        /// Скорость стрейфа вбок
+        /// </summary>
+        private float _velocityStrafe => playerRigidBody.velocity.x * _velocityStrafeCoefficient;
+
+        /// <summary>
+        /// Скорость стрейфа торможения (назад)
+        /// </summary>
         private float _velocityStrafeStopper => playerRigidBody.velocity.x * _strafeStopperCoefficient;
 
-        private float _velocityStrafe => playerRigidBody.velocity.x * _velocityStrafeCoefficient;
 
         [HideInInspector]
         public Rigidbody playerRigidBody;
@@ -228,7 +244,7 @@ namespace Assets.Scripts
                 defaultBonesRotations[i] = new Quaternion(bonesTransforms[i].rotation.x, bonesTransforms[i].rotation.y, bonesTransforms[i].rotation.z, bonesTransforms[i].rotation.w);
             }
 
-            _startMeters = transform.position.x;
+            _startPositionX = transform.position.x;
         }
 
         private void Update()
@@ -253,7 +269,7 @@ namespace Assets.Scripts
 
             PrintText(_velocityForwardText, playerRigidBody.velocity.x);
             PrintText(_velocitySidewiseText, (-playerRigidBody.velocity.z));
-            PrintText(_scoreText, $"{_currentScore} m");
+            PrintText(_scoreText, $"{_currentMeters} m");
             if (!isInStrafe)
             {
                 PrintText(_strafeSpeedText, "0");
@@ -338,7 +354,7 @@ namespace Assets.Scripts
                 return;
             }
 
-            float impulse = _angleCoeficient * velocitySidewise;
+            float impulse = _angleCoeficient * _velocitySidewise;
             playerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
 
             PrintText(_sidewiseSpeedText, impulse);
@@ -646,7 +662,7 @@ namespace Assets.Scripts
         {
             yield return new WaitForSeconds(3);
             _debugPanel.SetActive(false);
-            FindObjectOfType<MapController>().ShowLoseMenu(Convert.ToInt32(_currentScore));
+            FindObjectOfType<MapController>().ShowLoseMenu(Convert.ToInt32(_currentMeters));
         }
 
         /// <summary>

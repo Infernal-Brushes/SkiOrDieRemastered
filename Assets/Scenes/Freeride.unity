@@ -6130,6 +6130,10 @@ PrefabInstance:
       value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 703849035744145023, guid: 2e1ca19ccb9119c4fa62309397b57bed, type: 3}
+      propertyPath: _velocityStrafeCoefficient
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 703849035744145023, guid: 2e1ca19ccb9119c4fa62309397b57bed, type: 3}
       propertyPath: _coefficientOfFreeRideVelocity
       value: 0.4
       objectReference: {fileID: 0}
