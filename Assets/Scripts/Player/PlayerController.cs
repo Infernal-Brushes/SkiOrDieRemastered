@@ -73,13 +73,7 @@ namespace Assets.Scripts
         ///Коэфициент набора скорости по направлению лыж. Зависит от угла поворота. Прямо - быстрее, в боки - медленнее
         /// </summary>
         [Tooltip("Коэфициент набора скорости по направлению лыж. Зависит от угла поворота. Прямо - быстрее, в боки - медленнее")]
-        public float freeRideVelocity = 0.018f;
-
-        /// <summary>
-        /// Боковая скорость при стрейфе в крайнем положении
-        /// </summary>
-        [Tooltip("Боковая скорость при стрейфе в крайнем положении")]
-        public float velocityStrafe = 0.6f;
+        public float _velocityFreeRide = 0.24f;
 
         /// <summary>
         /// Боковая скорость при повороте. Зависит от угла поворота
@@ -88,10 +82,17 @@ namespace Assets.Scripts
         public float velocitySidewise = 0.3f;
 
         /// <summary>
-        /// Скорость торможения при стрейфе
+        /// Боковая скорость при стрейфе в крайнем положении
         /// </summary>
-        [Tooltip("Скорость торможения при стрейфе")]
-        public float strafeStopperSpeed = 0.8f;
+        [Tooltip("Боковая скорость при стрейфе в крайнем положении")]
+        public float velocityStrafe = 0.6f;
+
+        /// <summary>
+        /// Процент торможения при стрейфе от текущей скорости
+        /// </summary>
+        [Tooltip("Процент торможения при стрейфе от текущей скорости")]
+        [SerializeField]
+        private float _strafeStopperPercent = 20;
 
         [Header("Повороты")]
 
@@ -142,17 +143,17 @@ namespace Assets.Scripts
         /// <summary>
         /// Угол поворота игрока
         /// </summary>
-        float _angle;
+        private float _angle;
 
         /// <summary>
         /// Коэффициент угла поворота. 0 - нет поворота. 1 - вправо на 90. -1 - влево на 90
         /// </summary>
-        float _angleCoeficient => Mathf.Clamp(_angle / -90f, -1, 1);
+        private float _angleCoeficient => Mathf.Clamp(_angle / -90f, -1, 1);
 
         /// <summary>
         /// Обратный коэфициент угла поворота. 1 если прямо. Чем дальше от центра, тем ближе к 0
         /// </summary>
-        float _angleCoeficientReversed => Mathf.Clamp(
+        private float _angleCoeficientReversed => Mathf.Clamp(
             _angleCoeficient >= 0
                 ? 1.1f - _angleCoeficient
                 : 1.1f + _angleCoeficient,
@@ -162,7 +163,9 @@ namespace Assets.Scripts
         /// <summary>
         /// Отклонение в сторону по оси X (инпут клавы/джойстика)
         /// </summary>
-        float _axisX;
+        private float _axisX;
+
+        private float _strafeStopperSpeed => playerRigidBody.velocity.x * _strafeStopperPercent / 100;
 
         [HideInInspector]
         public Rigidbody playerRigidBody;
@@ -225,9 +228,14 @@ namespace Assets.Scripts
 
         private void Update()
         {
-            if (Input.GetKey(KeyCode.V))
+            if (Input.GetKeyDown(KeyCode.V))
             {
                 RagdollOn();
+            }
+
+            if (!isLose && Input.GetKeyDown(KeyCode.Q))
+            {
+                _debugPanel.SetActive(!_debugPanel.activeSelf);
             }
 
             _axisX = joystick.Horizontal;
@@ -238,9 +246,13 @@ namespace Assets.Scripts
 
             _angle = 90f - Vector3.Angle(_skiesDirection, Vector3.forward);
 
-            PrintText(_velocityForwardText, playerRigidBody.velocity.x.ToString());
-            PrintText(_velocitySidewiseText, (-playerRigidBody.velocity.z).ToString());
-            PrintText(_scoreText, _currentScore.ToString());
+            PrintText(_velocityForwardText, playerRigidBody.velocity.x);
+            PrintText(_velocitySidewiseText, (-playerRigidBody.velocity.z));
+            PrintText(_scoreText, $"{_currentScore} m");
+            if (!isInStrafe)
+            {
+                PrintText(_strafeSpeedText, "0");
+            }
         }
 
         private void FixedUpdate()
@@ -259,11 +271,6 @@ namespace Assets.Scripts
             RideForward();
             MoveSidewise();
             RotateBody();
-
-            if (!isInStrafe)
-            {
-                PrintText(_strafeSpeedText, "0");
-            }
         }
 
         /// <summary>
@@ -310,10 +317,10 @@ namespace Assets.Scripts
             }
 
             // Катить по направлению лыж
-            float impulse = _angleCoeficientReversed * freeRideVelocity;
+            float impulse = _angleCoeficientReversed * _velocityFreeRide;
             playerRigidBody.AddForce(impulse * _skiesDirection, ForceMode.Impulse);
 
-            PrintText(_forwardSpeedText, impulse.ToString());
+            PrintText(_forwardSpeedText, impulse);
         }
 
         /// <summary>
@@ -329,7 +336,7 @@ namespace Assets.Scripts
             float impulse = _angleCoeficient * velocitySidewise;
             playerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
 
-            PrintText(_sidewiseSpeedText, impulse.ToString());
+            PrintText(_sidewiseSpeedText, impulse);
         }
 
         /// <summary>
@@ -405,12 +412,13 @@ namespace Assets.Scripts
                 if (playerRigidBody.velocity.x > strafeSpeedLimit)
                 {
                     //сила назад
-                    playerRigidBody.AddForce(Vector3.left * strafeStopperSpeed, ForceMode.Impulse);
+                    Debug.Log(_strafeStopperSpeed);
+                    playerRigidBody.AddForce(Vector3.left * _strafeStopperSpeed, ForceMode.Impulse);
                     //сила в бок
                     float impulse = -_axisX * velocityStrafe;
                     playerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
 
-                    PrintText(_strafeSpeedText, impulse.ToString());
+                    PrintText(_strafeSpeedText, impulse);
                 }
                 else
                 {
@@ -438,12 +446,13 @@ namespace Assets.Scripts
                 if (playerRigidBody.velocity.x > strafeSpeedLimit)
                 {
                     //сила назад
-                    playerRigidBody.AddForce(Vector3.left * strafeStopperSpeed, ForceMode.Impulse);
+                    Debug.Log(_strafeStopperSpeed);
+                    playerRigidBody.AddForce(Vector3.left * _strafeStopperSpeed, ForceMode.Impulse);
                     //сила в бок
                     float impulse = -_axisX * velocityStrafe;
                     playerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
 
-                    PrintText(_strafeSpeedText, impulse.ToString());
+                    PrintText(_strafeSpeedText, impulse);
                 }
                 else
                 {
@@ -640,14 +649,14 @@ namespace Assets.Scripts
         /// </summary>
         /// <param name="textMesh"></param>
         /// <param name="text"></param>
-        private void PrintText(TMP_Text textMesh, string text)
+        private void PrintText(TMP_Text textMesh, object obj)
         {
             if (textMesh == null)
             {
                 return;
             }
 
-            textMesh.text = text;
+            textMesh.text = obj.ToString();
         }
 
         //private IEnumerator SlowMotionOnLose()
