@@ -1,10 +1,10 @@
-using Assets.Scripts;
+п»їusing Assets.Scripts;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Генератор меша ландшафта
+/// Р“РµРЅРµСЂР°С‚РѕСЂ РјРµС€Р° Р»Р°РЅРґС€Р°С„С‚Р°
 /// </summary>
 [RequireComponent(typeof(MeshFilter))]
 public class MeshGenerator : MonoBehaviour
@@ -19,39 +19,39 @@ public class MeshGenerator : MonoBehaviour
     private MeshFilter _meshFilter;
     
     /// <summary>
-    /// Вершины меша
+    /// Р’РµСЂС€РёРЅС‹ РјРµС€Р°
     /// </summary>
     private Vector3[] _vertices;
 
     /// <summary>
-    /// Треугольники поверхности
+    /// РўСЂРµСѓРіРѕР»СЊРЅРёРєРё РїРѕРІРµСЂС…РЅРѕСЃС‚Рё
     /// </summary>
     private int[] _triangles;
 
     /// <summary>
-    /// Ширина поля
+    /// РЁРёСЂРёРЅР° РїРѕР»СЏ
     /// </summary>
     public int xSize;
 
     /// <summary>
-    /// Длина поля
+    /// Р”Р»РёРЅР° РїРѕР»СЏ
     /// </summary>
     public int zSize;
 
     /// <summary>
-    /// Коеффициент кривизны поверхности
+    /// РљРѕРµС„С„РёС†РёРµРЅС‚ РєСЂРёРІРёР·РЅС‹ РїРѕРІРµСЂС…РЅРѕСЃС‚Рё
     /// </summary>
     public float surfaceCurve = 0.3f;
 
     /// <summary>
-    /// Координата по Z с которой начнут расти преграды на стартовом меше
+    /// РљРѕРѕСЂРґРёРЅР°С‚Р° РїРѕ Z СЃ РєРѕС‚РѕСЂРѕР№ РЅР°С‡РЅСѓС‚ СЂР°СЃС‚Рё РїСЂРµРіСЂР°РґС‹ РЅР° СЃС‚Р°СЂС‚РѕРІРѕРј РјРµС€Рµ
     /// </summary>
-    [Tooltip("Координата по Z с которой начнут расти преграды на стартовом меше")]
+    [Tooltip("РљРѕРѕСЂРґРёРЅР°С‚Р° РїРѕ Z СЃ РєРѕС‚РѕСЂРѕР№ РЅР°С‡РЅСѓС‚ СЂР°СЃС‚Рё РїСЂРµРіСЂР°РґС‹ РЅР° СЃС‚Р°СЂС‚РѕРІРѕРј РјРµС€Рµ")]
     [SerializeField]
     private int startZLineToGenerateTrees = 42;
 
     /// <summary>
-    /// Линия искревлений по X
+    /// Р›РёРЅРёСЏ РёСЃРєСЂРµРІР»РµРЅРёР№ РїРѕ X
     /// </summary>
     float[] lineX = null;
 
@@ -73,7 +73,7 @@ public class MeshGenerator : MonoBehaviour
     }
 
     /// <summary>
-    /// Создать меш поверхности
+    /// РЎРѕР·РґР°С‚СЊ РјРµС€ РїРѕРІРµСЂС…РЅРѕСЃС‚Рё
     /// </summary>
     /// <param name="spawnBarriers"></param>
     /// <param name="vertices"></param>
@@ -139,7 +139,7 @@ public class MeshGenerator : MonoBehaviour
     }
 
     /// <summary>
-    /// Обновить меш поверхности
+    /// РћР±РЅРѕРІРёС‚СЊ РјРµС€ РїРѕРІРµСЂС…РЅРѕСЃС‚Рё
     /// </summary>
     private void UpdateShape()
     {
@@ -153,7 +153,7 @@ public class MeshGenerator : MonoBehaviour
     }
 
     /// <summary>
-    /// Искривить поверхность меша
+    /// РСЃРєСЂРёРІРёС‚СЊ РїРѕРІРµСЂС…РЅРѕСЃС‚СЊ РјРµС€Р°
     /// </summary>
     private void SetCurveOfSurface()
     {
@@ -238,31 +238,31 @@ public class MeshGenerator : MonoBehaviour
     }
 
     /// <summary>
-    /// Заспавнить ёлок и пеньков
+    /// Р—Р°СЃРїР°РІРЅРёС‚СЊ С‘Р»РѕРє Рё РїРµРЅСЊРєРѕРІ
     /// </summary>
     /// <param name="isFirstMesh"></param>
     private void SpawnBarriers(bool isFirstMesh = false)
     {
-        //кроме ближней линии стыка
+        //РєСЂРѕРјРµ Р±Р»РёР¶РЅРµР№ Р»РёРЅРёРё СЃС‚С‹РєР°
         int z = 1;
         if (isFirstMesh)
         {
             z = startZLineToGenerateTrees;
         }
 
-        //и кроме задней линии стыка
+        //Рё РєСЂРѕРјРµ Р·Р°РґРЅРµР№ Р»РёРЅРёРё СЃС‚С‹РєР°
         for (; z < zSize; z++)
         {
             List<int> xCoordinatesForTrees = new();
 
-            //такой шанс что на этой линии будут деревья
+            //С‚Р°РєРѕР№ С€Р°РЅСЃ С‡С‚Рѕ РЅР° СЌС‚РѕР№ Р»РёРЅРёРё Р±СѓРґСѓС‚ РґРµСЂРµРІСЊСЏ
             int chanceToTree = Random.Range(0, 16);
             if (chanceToTree != 0)
             {
                 continue;
             }
 
-            // шансы сколько будет деревьев на линии
+            // С€Р°РЅСЃС‹ СЃРєРѕР»СЊРєРѕ Р±СѓРґРµС‚ РґРµСЂРµРІСЊРµРІ РЅР° Р»РёРЅРёРё
             int countOfTreesForThisLine;
             int barrierChance = Random.Range(1, 12);
             if (barrierChance <= 7)
@@ -293,13 +293,13 @@ public class MeshGenerator : MonoBehaviour
 
                 float y = _vertices[z * (xSize + 1) + x].y;
 
-                //если дерево появится на возвышенности то заного его подобрать
+                //РµСЃР»Рё РґРµСЂРµРІРѕ РїРѕСЏРІРёС‚СЃСЏ РЅР° РІРѕР·РІС‹С€РµРЅРЅРѕСЃС‚Рё С‚Рѕ Р·Р°РЅРѕРіРѕ РµРіРѕ РїРѕРґРѕР±СЂР°С‚СЊ
                 if (y > 1)
                 {
                     continue;
                 }
 
-                //чтобы деревья слишком рядом не спавнились
+                //С‡С‚РѕР±С‹ РґРµСЂРµРІСЊСЏ СЃР»РёС€РєРѕРј СЂСЏРґРѕРј РЅРµ СЃРїР°РІРЅРёР»РёСЃСЊ
                 for (int positionX = x - 4; positionX < 9; positionX++)
                 {
                     xCoordinatesForTrees.Add(positionX);
@@ -330,14 +330,14 @@ public class MeshGenerator : MonoBehaviour
     }
 
     /// <summary>
-    /// Создать следующую поверхность
+    /// РЎРѕР·РґР°С‚СЊ СЃР»РµРґСѓСЋС‰СѓСЋ РїРѕРІРµСЂС…РЅРѕСЃС‚СЊ
     /// </summary>
     /// <param name="spawnBarriers"></param>
     public void GenerateNext(bool spawnBarriers)
     {
         Vector3 originalPosition = transform.position;
         Vector3 direction = transform.rotation * Vector3.forward;
-        // Немного меньше чтобы спрятать шов
+        // РќРµРјРЅРѕРіРѕ РјРµРЅСЊС€Рµ С‡С‚РѕР±С‹ СЃРїСЂСЏС‚Р°С‚СЊ С€РѕРІ
         Vector3 displacement = direction * (zSize - 0.08f);
         Vector3 newPosition = originalPosition + displacement;
 
@@ -359,7 +359,7 @@ public class MeshGenerator : MonoBehaviour
     }
 
     /// <summary>
-    /// Заспавнить трамплины
+    /// Р—Р°СЃРїР°РІРЅРёС‚СЊ С‚СЂР°РјРїР»РёРЅС‹
     /// </summary>
     /// <returns></returns>
     private IEnumerator SpawnHills()
@@ -394,7 +394,7 @@ public class MeshGenerator : MonoBehaviour
             int thirdPartOfLengthZ = lengthZ / 3;
             float heightLevel = 1;
 
-            //вот это добавил если что удали и в цикле чтоб ++ было
+            //РІРѕС‚ СЌС‚Рѕ РґРѕР±Р°РІРёР» РµСЃР»Рё С‡С‚Рѕ СѓРґР°Р»Рё Рё РІ С†РёРєР»Рµ С‡С‚РѕР± ++ Р±С‹Р»Рѕ
             index = index + lengthX;
             for (int line = 1; line <= lengthZ; line++)
             {
@@ -407,21 +407,21 @@ public class MeshGenerator : MonoBehaviour
 
 
                 int deltaX;
-                //возрастание в начале
+                //РІРѕР·СЂР°СЃС‚Р°РЅРёРµ РІ РЅР°С‡Р°Р»Рµ
                 if (line <= thirdPartOfLengthZ)
                 {
                     deltaX = UnityEngine.Random.Range(0, 4);
                     lengthX += deltaX;
                     heightLevel += height;
                 }
-                //убавание в конце
+                //СѓР±Р°РІР°РЅРёРµ РІ РєРѕРЅС†Рµ
                 else if (line >= lengthZ - thirdPartOfLengthZ)
                 {
                     deltaX = UnityEngine.Random.Range(0, 4);
                     lengthX += deltaX;
                     heightLevel -= height;
                 }
-                //середина
+                //СЃРµСЂРµРґРёРЅР°
                 else
                 {
                     deltaX = UnityEngine.Random.Range(-1, 3);
