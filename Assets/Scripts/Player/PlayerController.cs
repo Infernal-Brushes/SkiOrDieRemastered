@@ -204,12 +204,12 @@ namespace Assets.Scripts
         /// <summary>
         /// Скорость стрейфа вбок
         /// </summary>
-        private float _velocityStrafe => playerRigidBody.velocity.x * _velocityStrafeCoefficient;
+        private float _velocityStrafe => VelocityForward * _velocityStrafeCoefficient;
 
         /// <summary>
         /// Скорость стрейфа торможения (назад)
         /// </summary>
-        private float _velocityStrafeStopper => playerRigidBody.velocity.x * _strafeStopperCoefficient;
+        private float _velocityStrafeStopper => VelocityForward * _strafeStopperCoefficient;
 
         /// <summary>
         /// Направление лыж
@@ -218,6 +218,16 @@ namespace Assets.Scripts
 
         [HideInInspector]
         public Rigidbody playerRigidBody;
+
+        /// <summary>
+        /// Скорость прямо по склонку
+        /// </summary>
+        public float VelocityForward => playerRigidBody.velocity.x;
+
+        /// <summary>
+        /// Скорость боковая
+        /// </summary>
+        public float VelocitySidewise => -playerRigidBody.velocity.z;
 
         public Rigidbody[] ragdollRigidbody;
         public Transform[] bonesTransforms;
@@ -249,6 +259,34 @@ namespace Assets.Scripts
         /// </summary>
         private bool _isDebugEnabled = false;
 
+        public delegate void OnGroundOnDelegate();
+
+        /// <summary>
+        /// Событие приземления на поверхность
+        /// </summary>
+        public event OnGroundOnDelegate OnGroundOn;
+
+        public delegate void OnGroundOffDelegate();
+
+        /// <summary>
+        /// Событие отрыва от поверхности
+        /// </summary>
+        public event OnGroundOffDelegate OnGroundOff;
+
+        public delegate void OnLoseDelegate();
+
+        /// <summary>
+        /// Событие проигрыша игрока
+        /// </summary>
+        public event OnLoseDelegate OnLose;
+
+        public delegate void OnRestartedDelegate();
+
+        /// <summary>
+        /// Событие перезапуска заезда
+        /// </summary>
+        public event OnRestartedDelegate OnRestarted;
+
         private void Awake()
         {
             playerRigidBody = GetComponent<Rigidbody>();
@@ -275,6 +313,8 @@ namespace Assets.Scripts
             }
 
             _startPositionX = transform.position.x;
+
+            OnGroundOff += Update;
         }
 
         private void Update()
@@ -298,8 +338,8 @@ namespace Assets.Scripts
 
             _angle = 90f - Vector3.Angle(_skiesDirection, Vector3.forward);
 
-            PrintText(_velocityForwardText, playerRigidBody.velocity.x);
-            PrintText(_velocitySidewiseText, (-playerRigidBody.velocity.z));
+            PrintText(_velocityForwardText, VelocityForward);
+            PrintText(_velocitySidewiseText, (VelocitySidewise));
             PrintText(_scoreText, $"{_currentMeters} m");
             if (!isInStrafe)
             {
@@ -314,12 +354,12 @@ namespace Assets.Scripts
 
             Debug.DrawRay(groundPoint.transform.position, groundPoint.transform.up, Color.red, 12);
 
-            if (playerRigidBody.velocity.x >= _deathSpeedX)
+            if (VelocityForward >= _deathSpeedX)
             {
                 Lose(LoseCause.fallX);
             }
 
-            if (Mathf.Abs(playerRigidBody.velocity.z) >= _deathSpeedZ)
+            if (Mathf.Abs(VelocitySidewise) >= _deathSpeedZ)
             {
                 Lose(LoseCause.fallZ);
             }
@@ -343,6 +383,7 @@ namespace Assets.Scripts
                 if (!isGrounded)
                 {
                     isGrounded = true;
+                    OnGroundOn?.Invoke();
 
                     // направление наклона. 1 - накланять вперёд, -1 - наклонять назад
                     int turningCoefficient = 1;
@@ -357,7 +398,11 @@ namespace Assets.Scripts
                 return;
             }
 
-            isGrounded = false;
+            if (isGrounded)
+            {
+                isGrounded = false;
+                OnGroundOff?.Invoke();
+            }
 
             // для улучшения гравитациии
             playerRigidBody.AddForce(Vector3.down * 1f, ForceMode.Impulse);
@@ -466,7 +511,7 @@ namespace Assets.Scripts
                     playerRigidBody.AddTorque(transform.up * speedOfStrafeRotationY * _axisX, ForceMode.VelocityChange);
                 }
 
-                if (playerRigidBody.velocity.x > _strafeSpeedLimit)
+                if (VelocityForward > _strafeSpeedLimit)
                 {
                     //сила назад
                     Debug.Log(_velocityStrafeStopper);
@@ -500,10 +545,9 @@ namespace Assets.Scripts
                     playerRigidBody.AddTorque(transform.up * speedOfStrafeRotationY * _axisX, ForceMode.VelocityChange);
                 }
 
-                if (playerRigidBody.velocity.x > _strafeSpeedLimit)
+                if (VelocityForward > _strafeSpeedLimit)
                 {
                     //сила назад
-                    Debug.Log(_velocityStrafeStopper);
                     playerRigidBody.AddForce(Vector3.left * _velocityStrafeStopper, ForceMode.Impulse);
                     //сила в бок
                     float impulse = -_axisX * _velocityStrafe;
@@ -584,30 +628,29 @@ namespace Assets.Scripts
                 LoseSki();
 
 
-                if (playerRigidBody.velocity.z > 0)
-                    StartCoroutine(Fall(transform.forward));
-                else
+                if (VelocitySidewise > 0)
                     StartCoroutine(Fall(-transform.forward));
+                else
+                    StartCoroutine(Fall(transform.forward));
             }
             else if (cause == LoseCause.barrier)
             {
-                //StartCoroutine(SlowMotionOnLose());
                 LoseSki();
 
                 RagdollOn();
                 playerRigidBody.angularDrag = 0.06f;
-                //Debug.Log("Проигрыш! Врезался в препятствие");
             }
 
             StartCoroutine(ShowLoseMenu());
             isLose = true;
+            OnLose?.Invoke();
         }
 
         private void LoseSki()
         {
             bool isLeftSkiOff = false;
             bool isRightSkiOff = false;
-            if (playerRigidBody.velocity.x >= _velocityToLoseSki)
+            if (VelocityForward >= _velocityToLoseSki)
             {
                 int result = UnityEngine.Random.Range(0, 9);
 
@@ -650,6 +693,8 @@ namespace Assets.Scripts
 
         public void RestartToDefaultPosition()
         {
+            OnRestarted?.Invoke();
+
             if (_isDebugEnabled)
             {
                 _debugPanel.SetActive(true);
