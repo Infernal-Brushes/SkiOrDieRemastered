@@ -261,11 +261,31 @@ namespace Assets.Scripts
 
         public delegate void OnGroundOnDelegate();
 
+        /// <summary>
+        /// Событие приземления на поверхность
+        /// </summary>
         public event OnGroundOnDelegate OnGroundOn;
 
         public delegate void OnGroundOffDelegate();
 
+        /// <summary>
+        /// Событие отрыва от поверхности
+        /// </summary>
         public event OnGroundOffDelegate OnGroundOff;
+
+        public delegate void OnLoseDelegate();
+
+        /// <summary>
+        /// Событие проигрыша игрока
+        /// </summary>
+        public event OnLoseDelegate OnLose;
+
+        public delegate void OnRestartedDelegate();
+
+        /// <summary>
+        /// Событие перезапуска заезда
+        /// </summary>
+        public event OnRestartedDelegate OnRestarted;
 
         private void Awake()
         {
@@ -615,16 +635,15 @@ namespace Assets.Scripts
             }
             else if (cause == LoseCause.barrier)
             {
-                //StartCoroutine(SlowMotionOnLose());
                 LoseSki();
 
                 RagdollOn();
                 playerRigidBody.angularDrag = 0.06f;
-                //Debug.Log("Проигрыш! Врезался в препятствие");
             }
 
             StartCoroutine(ShowLoseMenu());
             isLose = true;
+            OnLose?.Invoke();
         }
 
         private void LoseSki()
@@ -674,6 +693,8 @@ namespace Assets.Scripts
 
         public void RestartToDefaultPosition()
         {
+            OnRestarted?.Invoke();
+
             if (_isDebugEnabled)
             {
                 _debugPanel.SetActive(true);
