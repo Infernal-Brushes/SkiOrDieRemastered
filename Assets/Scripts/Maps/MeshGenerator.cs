@@ -13,11 +13,12 @@ public class MeshGenerator : MonoBehaviour
     public GameObject treePrefab;
     public GameObject stumpPrefab;
 
-    Mesh mesh;
-    MeshCollider meshCollider;
+    Mesh _mesh;
+    MeshCollider _meshCollider;
+    MeshFilter _meshFilter;
 
-    Vector3[] vertices;
-    int[] triangles;
+    Vector3[] _vertices;
+    int[] _triangles;
 
     public int xSize;
     public int zSize;
@@ -39,6 +40,10 @@ public class MeshGenerator : MonoBehaviour
     private void Awake()
     {
         lineX = new float[xSize + 1];
+
+        _mesh = new Mesh { name = "Snow" };
+        _meshCollider = GetComponent<MeshCollider>();
+        _meshFilter = GetComponent<MeshFilter>();
     }
 
     private IEnumerator SpawnHills()
@@ -79,7 +84,7 @@ public class MeshGenerator : MonoBehaviour
             {
                 for (int indexX = 0; indexX < lengthX; indexX++)
                 {
-                    vertices[index].y += height * heightLevel;
+                    _vertices[index].y += height * heightLevel;
                     //index++;
                     index--;
                 }
@@ -264,7 +269,7 @@ public class MeshGenerator : MonoBehaviour
         {
             for (int x = 0; x <= xSize; x++)
             {
-                vertices[index].y += lineX[x];
+                _vertices[index].y += lineX[x];
                 index++;
             }
         }
@@ -325,7 +330,7 @@ public class MeshGenerator : MonoBehaviour
                 }
                 while (xCoordinatesForTrees.Contains(x));
 
-                float y = vertices[z * (xSize + 1) + x].y;
+                float y = _vertices[z * (xSize + 1) + x].y;
 
                 //если дерево появится на снежном надуве то заного его подобрать
                 if (y > 1)
@@ -368,88 +373,68 @@ public class MeshGenerator : MonoBehaviour
     }
 
 
-    public void CreateShape(float[] _lineX = null, Vector3[] firstLine = null, bool spawnBarriers = true)
+    public void CreateShape(float[] _lineX = null, Vector3[] lastLine = null, bool spawnBarriers = true)
     {
-        mesh = new Mesh();
-        mesh.name = "Snow";
-        GetComponent<MeshFilter>().mesh.Clear();
-        GetComponent<MeshFilter>().mesh = mesh;
-        meshCollider = GetComponent<MeshCollider>();
+        _vertices = new Vector3[(xSize + 1) * (zSize + 1)];
+        _triangles = new int[xSize * zSize * 6];
 
-        vertices = new Vector3[(xSize + 1) * (zSize + 1)];
         int index = 0;
-        int z = 0;
-
-
-        for (; z <= zSize; z++)
+        for (int z = 0; z <= zSize; z++)
         {
             //генерируем точки меша по x
-            for (int x = 0; x <= zSize; x++)
+            for (int x = 0; x <= xSize; x++)
             {
-               
                 float y;
                 //для первого ряда ставим Y как у последнего ряда предыдущего мэша
-                if ((z == 0 || z == 1/* ||  z == 2 || z == 3*/) && firstLine != null)
-                    y = firstLine[index].y;
+                if (z == 0 && lastLine != null)
+                {
+                    y = lastLine[index].y;
+                }
                 else
                 {
                     y = Mathf.PerlinNoise(x * .3f, z * .3f) * surfaceCurve;
                 }
 
-                vertices[index] = new Vector3(x, y, z);
+                _vertices[index] = new Vector3(x, y, z);
 
                 index++;
             }
-            //if (z == 0)
-            //    Debug.Log($"z0 last x index = {index}"); //131
         }
-
 
         //модификации спуска всякие
         SetCurveOfSurface();
-        //if (firstLine != null)
-        //{
-        //    StartCoroutine(SpawnHills());
-        //}
 
         if (spawnBarriers)
         {
-            SpawnBarriers(firstLine == null);
+            SpawnBarriers(lastLine == null);
         }
 
-
-
-        triangles = new int[xSize * zSize * 6];
-
-        int vert = 0;
-        int tris = 0;
-
-        for (z = 0; z < zSize; z++)
+        int vertexIndex = 0;
+        int triangleIndex = 0;
+        for (int z = 0; z < zSize; z++)
         {
             for (int x = 0; x < xSize; x++)
             {
-                triangles[tris + 0] = vert + 0;
-                triangles[tris + 1] = vert + xSize + 1;
-                triangles[tris + 2] = vert + 1;
-                triangles[tris + 3] = vert + 1;
-                triangles[tris + 4] = vert + xSize + 1;
-                triangles[tris + 5] = vert + xSize + 2;
+                _triangles[triangleIndex + 0] = vertexIndex + 0;
+                _triangles[triangleIndex + 1] = vertexIndex + xSize + 1;
+                _triangles[triangleIndex + 2] = vertexIndex + 1;
+                _triangles[triangleIndex + 3] = vertexIndex + 1;
+                _triangles[triangleIndex + 4] = vertexIndex + xSize + 1;
+                _triangles[triangleIndex + 5] = vertexIndex + xSize + 2;
 
-                vert++;
-                tris += 6;
-
-                //yield return new WaitForSeconds(0.00000001f);
+                vertexIndex++;
+                triangleIndex += 6;
             }
-            vert++;
+            vertexIndex++;
         }
 
-        mesh.Clear();
-        mesh.vertices = vertices;
-        mesh.triangles = triangles;
+        _mesh.Clear();
+        _mesh.vertices = _vertices;
+        _mesh.triangles = _triangles;
+        _mesh.RecalculateNormals();
 
-        mesh.RecalculateNormals();
-        meshCollider.sharedMesh = mesh;
-        GetComponent<MeshFilter>().mesh = mesh;
+        _meshCollider.sharedMesh = _mesh;
+        _meshFilter.mesh = _mesh;
     }
 
     public void GenerateNext(bool spawnBarriers)
@@ -474,10 +459,7 @@ public class MeshGenerator : MonoBehaviour
 
         nextMeshGenerator.triggerForGenerator = nextMeshGenerator.GetComponentInChildren<TriggerForGeneratorController>().gameObject;
 
-        //коприуем две линии предыдущего меша чтоб был ровный стык
-        Vector3[] lastLine = new Vector3[xSize*2+2];
-        Array.Copy(vertices, vertices.Length - xSize*2 - 2, lastLine, 0, xSize*2 + 2);
-
+        Vector3[] lastLine = _vertices.TakeLast(xSize + 1).ToArray();
         nextMeshGenerator.CreateShape(lineX, lastLine, spawnBarriers);
 
         nextMeshGenerator.triggerForGenerator.GetComponent<TriggerForGeneratorController>().previousMeshGenerator = this.gameObject;
