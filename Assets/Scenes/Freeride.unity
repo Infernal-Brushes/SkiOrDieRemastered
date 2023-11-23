@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44792497, g: 0.49792498, b: 0.5754801, a: 1}
+  m_IndirectSpecularColor: {r: 0.44792485, g: 0.4979241, b: 0.57547915, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2372,8 +2372,8 @@ GameObject:
   - component: {fileID: 861277533}
   - component: {fileID: 861277532}
   - component: {fileID: 861277531}
-  - component: {fileID: 861277530}
   - component: {fileID: 861277529}
+  - component: {fileID: 861277534}
   m_Layer: 0
   m_Name: Main Camera Back
   m_TagString: MainCamera
@@ -2397,14 +2397,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!81 &861277530
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 861277528}
-  m_Enabled: 1
 --- !u!20 &861277531
 Camera:
   m_ObjectHideFlags: 0
@@ -2479,6 +2471,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 57.289, y: 90, z: 0}
+--- !u!114 &861277534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 861277528}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attenuationObject: {fileID: 0}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -2490,8 +2495,8 @@ GameObject:
   - component: {fileID: 963194228}
   - component: {fileID: 963194231}
   - component: {fileID: 963194227}
-  - component: {fileID: 963194226}
   - component: {fileID: 963194230}
+  - component: {fileID: 963194232}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -2499,14 +2504,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &963194226
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 963194225}
-  m_Enabled: 1
 --- !u!20 &963194227
 Camera:
   m_ObjectHideFlags: 0
@@ -2597,6 +2594,19 @@ MonoBehaviour:
   player: {fileID: 1623679840130811266}
   fog: {fileID: 228547307}
   smoothTime: 0.2
+--- !u!114 &963194232
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 963194225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attenuationObject: {fileID: 0}
 --- !u!1 &1020427840
 GameObject:
   m_ObjectHideFlags: 0
@@ -3941,8 +3951,8 @@ GameObject:
   - component: {fileID: 1555074230}
   - component: {fileID: 1555074229}
   - component: {fileID: 1555074228}
-  - component: {fileID: 1555074227}
   - component: {fileID: 1555074226}
+  - component: {fileID: 1555074231}
   m_Layer: 0
   m_Name: Main Camera FP
   m_TagString: MainCamera
@@ -3966,14 +3976,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!81 &1555074227
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1555074225}
-  m_Enabled: 1
 --- !u!20 &1555074228
 Camera:
   m_ObjectHideFlags: 0
@@ -4048,6 +4050,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 54.315, y: 90, z: 0}
+--- !u!114 &1555074231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1555074225}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86c6556701af9e04380698b89f691b6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attenuationObject: {fileID: 0}
 --- !u!1 &1574702228
 GameObject:
   m_ObjectHideFlags: 0
