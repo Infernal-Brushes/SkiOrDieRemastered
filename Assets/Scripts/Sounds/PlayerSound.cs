@@ -15,6 +15,7 @@ public class PlayerSound : MonoBehaviour
     void Start()
     {
         glideInstance = RuntimeManager.CreateInstance(GlideEvent);
+        glideInstance.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(transform.position));
         glideInstance.start();
         
     }

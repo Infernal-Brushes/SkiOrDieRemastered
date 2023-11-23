@@ -13,6 +13,7 @@ public class TreesSound : MonoBehaviour
     void Start()
     {
         treesInstance = RuntimeManager.CreateInstance(TreesEvent);
+        treesInstance.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(transform.position));
         treesInstance.start();
     }
 
