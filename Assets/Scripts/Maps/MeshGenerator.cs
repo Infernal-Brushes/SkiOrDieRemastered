@@ -55,8 +55,6 @@ public class MeshGenerator : MonoBehaviour
     /// </summary>
     float[] lineX = null;
 
-    int curvesCounter = 0;
-
     private void Awake()
     {
         _mesh = new Mesh { name = "Snow" };
@@ -64,86 +62,7 @@ public class MeshGenerator : MonoBehaviour
         _meshFilter = GetComponent<MeshFilter>();
     }
 
-    private IEnumerator SpawnHills()
-    {
-        int result = UnityEngine.Random.Range(0, 17);
-        int hillsCount = 0;
-        if (result >= 3 && result <= 7)
-        {
-            hillsCount = 1;
-        }
-        else if (result >= 8 && result <= 11)
-        {
-            hillsCount = 2;
-        }
-        else if (result >= 12 || result <= 14)
-        {
-            hillsCount = 3;
-        }
-        else if (result >= 15 && result <= 16)
-        {
-            hillsCount = 4;
-        }
-
-        float height = 0.4f;
-        while (hillsCount > 0)
-        {
-            int z = UnityEngine.Random.Range(2, zSize - 34);
-            int x = UnityEngine.Random.Range(9, xSize - 9);
-            int index = z * (xSize + 1) + x;
-            int lengthZ = UnityEngine.Random.Range(12, 32);
-            int lengthX = UnityEngine.Random.Range(3, 6);
-            int thirdPartOfLengthZ = lengthZ / 3;
-            float heightLevel = 1;
-
-            //вот это добавил если что удали и в цикле чтоб ++ было
-            index = index + lengthX;
-            for (int line = 1; line <= lengthZ; line++)
-            {
-                for (int indexX = 0; indexX < lengthX; indexX++)
-                {
-                    _vertices[index].y += height * heightLevel;
-                    //index++;
-                    index--;
-                }
-                
-
-                int deltaX;
-                //возрастание в начале
-                if (line <= thirdPartOfLengthZ)
-                {
-                    deltaX = UnityEngine.Random.Range(0, 4);
-                    lengthX += deltaX;
-                    heightLevel += height;
-                }
-                //убавание в конце
-                else if (line >= lengthZ - thirdPartOfLengthZ)
-                {
-                    deltaX = UnityEngine.Random.Range(0, 4);
-                    lengthX += deltaX;
-                    heightLevel -= height;
-                }
-                //середина
-                else
-                {
-                    deltaX = UnityEngine.Random.Range(-1, 3);
-                    lengthX += deltaX;
-                    heightLevel -= height;
-                }
-                if (heightLevel < 0)
-                    heightLevel = 0;
-
-                z++;
-                if (deltaX < 0)
-                    deltaX = 0;
-                x -= UnityEngine.Random.Range(1, deltaX + 1);
-                index = z * (xSize + 1) + x;
-            }
-
-            hillsCount--;
-        }
-        yield return null;
-    }
+    
 
     private enum CurveTendention
     {
@@ -154,12 +73,91 @@ public class MeshGenerator : MonoBehaviour
     }
 
     /// <summary>
+    /// —оздать меш поверхности
+    /// </summary>
+    /// <param name="spawnBarriers"></param>
+    /// <param name="vertices"></param>
+    /// <param name="triangles"></param>
+    public void CreateShape(bool spawnBarriers = true, Vector3[] vertices = null, int[] triangles = null)
+    {
+        if (vertices is not null && triangles is not null)
+        {
+            _vertices = vertices;
+            _triangles = triangles;
+            UpdateShape();
+
+            if (spawnBarriers)
+            {
+                SpawnBarriers(false);
+            }
+
+            return;
+        }
+
+        _vertices = new Vector3[(xSize + 1) * (zSize + 1)];
+        _triangles = new int[xSize * zSize * 6];
+
+        int index = 0;
+        for (int z = 0; z <= zSize; z++)
+        {
+            for (int x = 0; x <= xSize; x++)
+            {
+                float y = Mathf.PerlinNoise(x * .3f, z * .3f) * surfaceCurve;
+                _vertices[index] = new Vector3(x, y, z);
+
+                index++;
+            }
+        }
+
+        SetCurveOfSurface();
+
+        if (spawnBarriers)
+        {
+            SpawnBarriers(true);
+        }
+
+        int vertexIndex = 0;
+        int triangleIndex = 0;
+        for (int z = 0; z < zSize; z++)
+        {
+            for (int x = 0; x < xSize; x++)
+            {
+                _triangles[triangleIndex + 0] = vertexIndex + 0;
+                _triangles[triangleIndex + 1] = vertexIndex + xSize + 1;
+                _triangles[triangleIndex + 2] = vertexIndex + 1;
+                _triangles[triangleIndex + 3] = vertexIndex + 1;
+                _triangles[triangleIndex + 4] = vertexIndex + xSize + 1;
+                _triangles[triangleIndex + 5] = vertexIndex + xSize + 2;
+
+                vertexIndex++;
+                triangleIndex += 6;
+            }
+            vertexIndex++;
+        }
+
+        UpdateShape();
+    }
+
+    /// <summary>
+    /// ќбновить меш поверхности
+    /// </summary>
+    private void UpdateShape()
+    {
+        _mesh.Clear();
+        _mesh.vertices = _vertices;
+        _mesh.triangles = _triangles;
+        _mesh.RecalculateNormals();
+
+        _meshCollider.sharedMesh = _mesh;
+        _meshFilter.mesh = _mesh;
+    }
+
+    /// <summary>
     /// »скривить поверхность меша
     /// </summary>
     private void SetCurveOfSurface()
     {
         lineX = new float[xSize + 1];
-        curvesCounter++;
 
         int lengthOfIncreaseTendention = 33;
         int lengthOfStraightTendention = 15;
@@ -229,7 +227,7 @@ public class MeshGenerator : MonoBehaviour
         }
 
         int vertexIndex = 0;
-        for(int z = 0; z <= zSize; z++)
+        for (int z = 0; z <= zSize; z++)
         {
             for (int x = 0; x <= xSize; x++)
             {
@@ -302,7 +300,7 @@ public class MeshGenerator : MonoBehaviour
                 }
 
                 //чтобы деревь€ слишком р€дом не спавнились
-                for (int positionX = x -4; positionX < 9; positionX++)
+                for (int positionX = x - 4; positionX < 9; positionX++)
                 {
                     xCoordinatesForTrees.Add(positionX);
                 }
@@ -331,85 +329,23 @@ public class MeshGenerator : MonoBehaviour
         }
     }
 
-    public void CreateShape(bool spawnBarriers = true, Vector3[] vertices = null, int[] triangles = null)
-    {
-        if (vertices is not null && triangles is not null)
-        {
-            _vertices = vertices;
-            _triangles = triangles;
-            UpdateShape();
-
-            if (spawnBarriers)
-            {
-                SpawnBarriers(false);
-            }
-
-            return;
-        }
-
-        _vertices = new Vector3[(xSize + 1) * (zSize + 1)];
-        _triangles = new int[xSize * zSize * 6];
-
-        int index = 0;
-        for (int z = 0; z <= zSize; z++)
-        {
-            for (int x = 0; x <= xSize; x++)
-            {
-                float y = Mathf.PerlinNoise(x * .3f, z * .3f) * surfaceCurve;
-                _vertices[index] = new Vector3(x, y, z);
-
-                index++;
-            }
-        }
-
-        SetCurveOfSurface();
-
-        if (spawnBarriers)
-        {
-            SpawnBarriers(true);
-        }
-
-        int vertexIndex = 0;
-        int triangleIndex = 0;
-        for (int z = 0; z < zSize; z++)
-        {
-            for (int x = 0; x < xSize; x++)
-            {
-                _triangles[triangleIndex + 0] = vertexIndex + 0;
-                _triangles[triangleIndex + 1] = vertexIndex + xSize + 1;
-                _triangles[triangleIndex + 2] = vertexIndex + 1;
-                _triangles[triangleIndex + 3] = vertexIndex + 1;
-                _triangles[triangleIndex + 4] = vertexIndex + xSize + 1;
-                _triangles[triangleIndex + 5] = vertexIndex + xSize + 2;
-
-                vertexIndex++;
-                triangleIndex += 6;
-            }
-            vertexIndex++;
-        }
-
-        UpdateShape();
-    }
-
-    private void UpdateShape()
-    {
-        _mesh.Clear();
-        _mesh.vertices = _vertices;
-        _mesh.triangles = _triangles;
-        _mesh.RecalculateNormals();
-
-        _meshCollider.sharedMesh = _mesh;
-        _meshFilter.mesh = _mesh;
-    }
-
+    /// <summary>
+    /// —оздать следующую поверхность
+    /// </summary>
+    /// <param name="spawnBarriers"></param>
     public void GenerateNext(bool spawnBarriers)
     {
+        Vector3 originalPosition = transform.position;
+        Vector3 direction = transform.rotation * Vector3.forward;
+        // Ќемного меньше чтобы спр€тать шов
+        Vector3 displacement = direction * (zSize - 0.08f);
+        Vector3 newPosition = originalPosition + displacement;
+
         var _barriersParent = new GameObject();
 
         var nextMeshGenerator = Instantiate(this,
-            new Vector3(transform.position.x + 112.434f, transform.position.y -64.932f, transform.position.z),
+            newPosition,
             transform.rotation);
-        nextMeshGenerator.curvesCounter = this.curvesCounter;
 
         Destroy(nextMeshGenerator.barriersParent);
         _barriersParent.transform.parent = nextMeshGenerator.transform;
@@ -419,6 +355,91 @@ public class MeshGenerator : MonoBehaviour
 
         nextMeshGenerator.triggerForGenerator = nextMeshGenerator.GetComponentInChildren<TriggerForGeneratorController>().gameObject;
         nextMeshGenerator.CreateShape(spawnBarriers, _vertices, _triangles);
-        nextMeshGenerator.triggerForGenerator.GetComponent<TriggerForGeneratorController>().previousMeshGenerator = this.gameObject;
+        nextMeshGenerator.triggerForGenerator.GetComponent<TriggerForGeneratorController>().previousMeshGenerator = gameObject;
+    }
+
+    /// <summary>
+    /// «аспавнить трамплины
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator SpawnHills()
+    {
+        int result = UnityEngine.Random.Range(0, 17);
+        int hillsCount = 0;
+        if (result >= 3 && result <= 7)
+        {
+            hillsCount = 1;
+        }
+        else if (result >= 8 && result <= 11)
+        {
+            hillsCount = 2;
+        }
+        else if (result >= 12 || result <= 14)
+        {
+            hillsCount = 3;
+        }
+        else if (result >= 15 && result <= 16)
+        {
+            hillsCount = 4;
+        }
+
+        float height = 0.4f;
+        while (hillsCount > 0)
+        {
+            int z = UnityEngine.Random.Range(2, zSize - 34);
+            int x = UnityEngine.Random.Range(9, xSize - 9);
+            int index = z * (xSize + 1) + x;
+            int lengthZ = UnityEngine.Random.Range(12, 32);
+            int lengthX = UnityEngine.Random.Range(3, 6);
+            int thirdPartOfLengthZ = lengthZ / 3;
+            float heightLevel = 1;
+
+            //вот это добавил если что удали и в цикле чтоб ++ было
+            index = index + lengthX;
+            for (int line = 1; line <= lengthZ; line++)
+            {
+                for (int indexX = 0; indexX < lengthX; indexX++)
+                {
+                    _vertices[index].y += height * heightLevel;
+                    //index++;
+                    index--;
+                }
+
+
+                int deltaX;
+                //возрастание в начале
+                if (line <= thirdPartOfLengthZ)
+                {
+                    deltaX = UnityEngine.Random.Range(0, 4);
+                    lengthX += deltaX;
+                    heightLevel += height;
+                }
+                //убавание в конце
+                else if (line >= lengthZ - thirdPartOfLengthZ)
+                {
+                    deltaX = UnityEngine.Random.Range(0, 4);
+                    lengthX += deltaX;
+                    heightLevel -= height;
+                }
+                //середина
+                else
+                {
+                    deltaX = UnityEngine.Random.Range(-1, 3);
+                    lengthX += deltaX;
+                    heightLevel -= height;
+                }
+                if (heightLevel < 0)
+                    heightLevel = 0;
+
+                z++;
+                if (deltaX < 0)
+                    deltaX = 0;
+                x -= UnityEngine.Random.Range(1, deltaX + 1);
+                index = z * (xSize + 1) + x;
+            }
+
+            hillsCount--;
+        }
+        yield return null;
     }
 }
