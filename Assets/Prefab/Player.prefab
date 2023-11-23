@@ -1365,6 +1365,7 @@ GameObject:
   - component: {fileID: 703849035744145023}
   - component: {fileID: 703849035744145022}
   - component: {fileID: 4278902303515957428}
+  - component: {fileID: 371262465130767844}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -1415,14 +1416,14 @@ MonoBehaviour:
   groundPoint: {fileID: 4478607306320871023}
   groundCheckLength: 0.5
   speedOfTiltX: 0.3
-  strafeSpeedLimit: 1
-  deathSpeedX: 72
-  deathSpeedZ: 32
-  velocityToLoseSki: 27
   _velocityFreeRide: 0.24
   _velocitySidewise: 0.45
   _velocityStrafeCoefficient: 0
   _strafeStopperCoefficient: 0.03
+  _strafeSpeedLimit: 1
+  _deathSpeedX: 72
+  _deathSpeedZ: 32
+  _velocityToLoseSki: 27
   speedOfNormalRotationY: 0.74
   speedOfStrafeRotationY: 4.5
   angleOfTurn: 50
@@ -1514,6 +1515,26 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!114 &371262465130767844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4278902303515957429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8927fdbe71747e743a77c48c497ea0b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlideEvent:
+    Guid:
+      Data1: 1425166693
+      Data2: 1091253026
+      Data3: 1144598179
+      Data4: -235126595
+    Path: event:/Player/Glide
+  playerController: {fileID: 703849035744145023}
 --- !u!1 &4327654683215077681
 GameObject:
   m_ObjectHideFlags: 0

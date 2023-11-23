@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{ddcdf5fe-c379-475a-b6b3-20b6e6f28e7a}">
+		<property name="assetPath">
+			<value>AMB 2d/AMB 2d scatter-009.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>2.6582086167800454</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{94d3a7df-1f6f-4505-8ba9-a4ce7e0932eb}</destination>
+		</relationship>
+	</object>
+</objects>

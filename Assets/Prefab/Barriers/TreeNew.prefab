@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 3842234268392971394}
   - component: {fileID: 2833774508946006430}
   - component: {fileID: -7834397536908889260}
+  - component: {fileID: 4157528084574236976}
   m_Layer: 6
   m_Name: TreeNew
   m_TagString: Untagged
@@ -28,6 +29,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 358.53458, y: 474.86768, z: -287.4968}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 753051535839093444}
   - {fileID: 8938976767142673232}
@@ -62,6 +64,26 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &4157528084574236976
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4474760645833983544}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab335dec16e26b64cb8ca1a1fc6ccfa1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TreesEvent:
+    Guid:
+      Data1: -1016071935
+      Data2: 1271974190
+      Data3: 1212020387
+      Data4: -1474650187
+    Path: event:/Amb/Trees
+  playerController: {fileID: 0}
 --- !u!1 &5049793042858048140
 GameObject:
   m_ObjectHideFlags: 0
@@ -91,6 +113,7 @@ Transform:
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
   m_LocalPosition: {x: -0, y: 0.06681967, z: 0}
   m_LocalScale: {x: 72.71165, y: 72.71165, z: 72.71165}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3842234268392971394}
   m_RootOrder: 1
@@ -114,6 +137,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -187,6 +211,7 @@ Transform:
   m_LocalRotation: {x: 0.47024983, y: 0.5280769, z: 0.5280761, w: -0.4702505}
   m_LocalPosition: {x: 0.2633928, y: 1.3183696, z: 0.30945987}
   m_LocalScale: {x: 72.71164, y: 72.71164, z: 72.71165}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3842234268392971394}
   m_RootOrder: 0
@@ -210,6 +235,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
