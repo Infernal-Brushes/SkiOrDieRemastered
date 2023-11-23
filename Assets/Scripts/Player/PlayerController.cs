@@ -249,6 +249,14 @@ namespace Assets.Scripts
         /// </summary>
         private bool _isDebugEnabled = false;
 
+        public delegate void OnGroundOnDelegate();
+
+        public event OnGroundOnDelegate OnGroundOn;
+
+        public delegate void OnGroundOffDelegate();
+
+        public event OnGroundOffDelegate OnGroundOff;
+
         private void Awake()
         {
             playerRigidBody = GetComponent<Rigidbody>();
@@ -343,6 +351,7 @@ namespace Assets.Scripts
                 if (!isGrounded)
                 {
                     isGrounded = true;
+                    OnGroundOn?.Invoke();
 
                     // направление наклона. 1 - накланять вперёд, -1 - наклонять назад
                     int turningCoefficient = 1;
@@ -357,7 +366,11 @@ namespace Assets.Scripts
                 return;
             }
 
+            if (isGrounded)
+            {
             isGrounded = false;
+                OnGroundOff?.Invoke();
+            }
 
             // для улучшения гравитациии
             playerRigidBody.AddForce(Vector3.down * 1f, ForceMode.Impulse);
