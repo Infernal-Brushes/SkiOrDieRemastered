@@ -503,7 +503,6 @@ namespace Assets.Scripts
                 if (playerRigidBody.velocity.x > _strafeSpeedLimit)
                 {
                     //сила назад
-                    Debug.Log(_velocityStrafeStopper);
                     playerRigidBody.AddForce(Vector3.left * _velocityStrafeStopper, ForceMode.Impulse);
                     //сила в бок
                     float impulse = -_axisX * _velocityStrafe;

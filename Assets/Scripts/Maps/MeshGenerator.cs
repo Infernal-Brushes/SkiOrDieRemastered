@@ -1,10 +1,11 @@
 using Assets.Scripts;
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
+/// <summary>
+/// √енератор меша ландшафта
+/// </summary>
 [RequireComponent(typeof(MeshFilter))]
 public class MeshGenerator : MonoBehaviour
 {
@@ -13,34 +14,51 @@ public class MeshGenerator : MonoBehaviour
     public GameObject treePrefab;
     public GameObject stumpPrefab;
 
-    Mesh _mesh;
-    MeshCollider _meshCollider;
-    MeshFilter _meshFilter;
+    private Mesh _mesh;
+    private MeshCollider _meshCollider;
+    private MeshFilter _meshFilter;
+    
+    /// <summary>
+    /// ¬ершины меша
+    /// </summary>
+    private Vector3[] _vertices;
 
-    Vector3[] _vertices;
-    int[] _triangles;
+    /// <summary>
+    /// “реугольники поверхности
+    /// </summary>
+    private int[] _triangles;
 
+    /// <summary>
+    /// Ўирина пол€
+    /// </summary>
     public int xSize;
+
+    /// <summary>
+    /// ƒлина пол€
+    /// </summary>
     public int zSize;
+
+    /// <summary>
+    ///  оеффициент кривизны поверхности
+    /// </summary>
     public float surfaceCurve = 0.3f;
 
     /// <summary>
-    /// координата по Z с которой начнЄт расти деревь€ на стартовом меше
+    ///  оордината по Z с которой начнут расти преграды на стартовом меше
     /// </summary>
+    [Tooltip(" оордината по Z с которой начнут расти преграды на стартовом меше")]
+    [SerializeField]
     private int startZLineToGenerateTrees = 42;
 
     /// <summary>
-    /// лини€ кривой по X
+    /// Ћини€ искревлений по X
     /// </summary>
-    float[] lineX;
-    CurveTendention firstTendention;
-    int curvesCounter = 0;
+    float[] lineX = null;
 
+    int curvesCounter = 0;
 
     private void Awake()
     {
-        lineX = new float[xSize + 1];
-
         _mesh = new Mesh { name = "Snow" };
         _meshCollider = GetComponent<MeshCollider>();
         _meshFilter = GetComponent<MeshFilter>();
@@ -134,8 +152,13 @@ public class MeshGenerator : MonoBehaviour
         goingUp,
         goingStraight
     }
+
+    /// <summary>
+    /// »скривить поверхность меша
+    /// </summary>
     private void SetCurveOfSurface()
     {
+        lineX = new float[xSize + 1];
         curvesCounter++;
 
         int lengthOfIncreaseTendention = 33;
@@ -147,85 +170,29 @@ public class MeshGenerator : MonoBehaviour
         float minStraightStep = 0.01f;
         float maxStraightStep = 0.02f;
 
-        float minIncreaseStepIfNotFirst = 0.02f;
-        float maxIncreaseStepIfNotFirst = 0.04f;
-        float minStraightStepIfNotFirst = 0.005f;
-        float maxStraightStepIfNotFirst = 0.01f;
+        CurveTendention tendention = Random.Range(0, 2) == 0
+            ? CurveTendention.goingDown
+            : CurveTendention.goingUp;
 
-        CurveTendention tendention;
-
-        //if (lineX == null)
-        //{
-
-        //}
-        bool firstCurve = false;
-        if (firstTendention == CurveTendention.none)
-        {
-            firstCurve = true;
-            if (UnityEngine.Random.Range(0, 2) == 0)
-            {
-                tendention = CurveTendention.goingDown;
-                firstTendention = CurveTendention.goingDown;
-            }
-            else
-            {
-                tendention = CurveTendention.goingUp;
-                firstTendention = CurveTendention.goingUp;
-            }
-        }
-        else
-        {
-            tendention = firstTendention;
-        }
-       
         CurveTendention lastTendention = tendention;
 
-        //смена тенденций кривых по Z
-        if (curvesCounter == 4)
-        {
-            //Debug.Log("—мена тенденции кривых по Z");
-            curvesCounter = 0;
-            if (tendention == CurveTendention.goingDown)
-            {
-                lastTendention = CurveTendention.goingUp;
-                tendention = CurveTendention.goingStraight;
-            }
-            else if (tendention == CurveTendention.goingUp)
-            {
-                lastTendention = CurveTendention.goingDown;
-                tendention = CurveTendention.goingStraight;
-            }
-            else if (tendention == CurveTendention.goingStraight)
-            {
-                if (firstTendention == CurveTendention.goingDown)
-                    tendention = CurveTendention.goingUp;
-                else if (firstTendention == CurveTendention.goingDown)
-                    tendention = CurveTendention.goingDown;
-
-                firstTendention = tendention;
-            }
-        }
-
-
-
         lineX[0] = 0;
-        int index = 1;
-        for (; index < xSize + 1; index++)
+        for (int index = 1; index < xSize + 1; index++)
         {
             if (tendention == CurveTendention.goingDown)
             {
-                lineX[index] = lineX[index - 1] - UnityEngine.Random.Range(minIncreaseStep, maxIncreaseStep);
+                lineX[index] = lineX[index - 1] - Random.Range(minIncreaseStep, maxIncreaseStep);
             }
             else if (tendention == CurveTendention.goingUp)
             {
-                lineX[index] = lineX[index - 1] + UnityEngine.Random.Range(minIncreaseStep, maxIncreaseStep);
+                lineX[index] = lineX[index - 1] + Random.Range(minIncreaseStep, maxIncreaseStep);
             }
             else
             {
-                float step = UnityEngine.Random.Range(minStraightStep, maxStraightStep);
-                if (UnityEngine.Random.Range(0, 2) == 0)
+                float step = Random.Range(minStraightStep, maxStraightStep);
+                if (Random.Range(0, 2) == 0)
                 {
-                    lineX[index] = lineX[index - 1] -step;
+                    lineX[index] = lineX[index - 1] - step;
                 }
                 else
                 {
@@ -241,8 +208,11 @@ public class MeshGenerator : MonoBehaviour
             {
                 tendention = CurveTendention.goingStraight;
                 lengthOfCurrentDuration = 0;
+
+                continue;
             }
-            else if (tendention == CurveTendention.goingStraight &&
+
+            if (tendention == CurveTendention.goingStraight &&
                 lengthOfCurrentDuration > lengthOfStraightTendention)
             {
                 if (lastTendention == CurveTendention.goingDown)
@@ -258,19 +228,13 @@ public class MeshGenerator : MonoBehaviour
             }
         }
 
-        //строка с которой начинаем
-        int z = 0;
-        if (!firstCurve)
-            z = 2;
-        //начинаем с 0 элемента строки z = 1, то есть строку z = 0 пропускаем чтоб шов не сломать
-        //то есть xSize+1 это первый элемент второй строки
-        index = (xSize+1) * z;
-        for(; z <= zSize; z++)
+        int vertexIndex = 0;
+        for(int z = 0; z <= zSize; z++)
         {
             for (int x = 0; x <= xSize; x++)
             {
-                _vertices[index].y += lineX[x];
-                index++;
+                _vertices[vertexIndex].y += lineX[x];
+                vertexIndex++;
             }
         }
     }
@@ -281,37 +245,37 @@ public class MeshGenerator : MonoBehaviour
     /// <param name="isFirstMesh"></param>
     private void SpawnBarriers(bool isFirstMesh = false)
     {
-        List<GameObject> barriers = new List<GameObject>();
         //кроме ближней линии стыка
         int z = 1;
         if (isFirstMesh)
+        {
             z = startZLineToGenerateTrees;
+        }
 
         //и кроме задней линии стыка
         for (; z < zSize; z++)
         {
-            List<int> xCoordinatesForTrees = new List<int>();
+            List<int> xCoordinatesForTrees = new();
 
             //такой шанс что на этой линии будут деревь€
-            int chanceToTree = UnityEngine.Random.Range(0, 16);
+            int chanceToTree = Random.Range(0, 16);
             if (chanceToTree != 0)
             {
                 continue;
             }
 
-            //Debug.Log(chanceToTree);
-            int result = UnityEngine.Random.Range(1, 12);
+            // шансы сколько будет деревьев на линии
             int countOfTreesForThisLine;
-            //такой шанс что будет 1 дерево на линии
-            if (result >= 1 && result <= 7)
+            int barrierChance = Random.Range(1, 12);
+            if (barrierChance <= 7)
             {
                 countOfTreesForThisLine = 1;
             }
-            else if (result >= 7 && result <= 10)
+            else if (barrierChance > 7 && barrierChance <= 10)
             {
                 countOfTreesForThisLine = 2;
             }
-            else if (result >= 10 && result <= 11)
+            else if (barrierChance > 10)
             {
                 countOfTreesForThisLine = 3;
             }
@@ -320,19 +284,18 @@ public class MeshGenerator : MonoBehaviour
                 countOfTreesForThisLine = 4;
             }
 
-
             for (int i = 0; i < countOfTreesForThisLine; i++)
             {
                 int x;
                 do
                 {
-                    x = UnityEngine.Random.Range(1, 130);
+                    x = Random.Range(1, 130);
                 }
                 while (xCoordinatesForTrees.Contains(x));
 
                 float y = _vertices[z * (xSize + 1) + x].y;
 
-                //если дерево по€витс€ на снежном надуве то заного его подобрать
+                //если дерево по€витс€ на возвышенности то заного его подобрать
                 if (y > 1)
                 {
                     continue;
@@ -343,70 +306,67 @@ public class MeshGenerator : MonoBehaviour
                 {
                     xCoordinatesForTrees.Add(positionX);
                 }
-       
 
-                int rotationX = UnityEngine.Random.Range(-13, -6);
-                int rotationZ = UnityEngine.Random.Range(-5, 6);
-
-                    
-
-
-                result = UnityEngine.Random.Range(0, 5);
-                GameObject tree;
-                if (result == 0)
+                barrierChance = Random.Range(0, 5);
+                GameObject barrier;
+                if (barrierChance == 0)
                 {
-                    tree = Instantiate(stumpPrefab, barriersParent.transform);
-                    //y += 0.1f;
+                    barrier = Instantiate(stumpPrefab, barriersParent.transform);
                     y -= 0.1f;
                 }
                 else
                 {
-                    tree = Instantiate(treePrefab, barriersParent.transform);
+                    barrier = Instantiate(treePrefab, barriersParent.transform);
                     y += 1.6f;
                 }
 
-                tree.transform.localPosition = new Vector3(x, y, z);
-                tree.transform.localRotation = Quaternion.Euler(rotationX, UnityEngine.Random.Range(0, 180), rotationZ);
-                barriers.Add(tree);
+                int rotationX = Random.Range(-13, -6);
+                int rotationZ = Random.Range(-5, 6);
+                int rotationY = Random.Range(0, 180);
+
+                barrier.transform.SetLocalPositionAndRotation(
+                    new Vector3(x, y, z),
+                    Quaternion.Euler(rotationX, rotationY, rotationZ));
             }
         }
     }
 
-
-    public void CreateShape(float[] _lineX = null, Vector3[] lastLine = null, bool spawnBarriers = true)
+    public void CreateShape(bool spawnBarriers = true, Vector3[] vertices = null, int[] triangles = null)
     {
+        if (vertices is not null && triangles is not null)
+        {
+            _vertices = vertices;
+            _triangles = triangles;
+            UpdateShape();
+
+            if (spawnBarriers)
+            {
+                SpawnBarriers(false);
+            }
+
+            return;
+        }
+
         _vertices = new Vector3[(xSize + 1) * (zSize + 1)];
         _triangles = new int[xSize * zSize * 6];
 
         int index = 0;
         for (int z = 0; z <= zSize; z++)
         {
-            //генерируем точки меша по x
             for (int x = 0; x <= xSize; x++)
             {
-                float y;
-                //дл€ первого р€да ставим Y как у последнего р€да предыдущего мэша
-                if (z == 0 && lastLine != null)
-                {
-                    y = lastLine[index].y;
-                }
-                else
-                {
-                    y = Mathf.PerlinNoise(x * .3f, z * .3f) * surfaceCurve;
-                }
-
+                float y = Mathf.PerlinNoise(x * .3f, z * .3f) * surfaceCurve;
                 _vertices[index] = new Vector3(x, y, z);
 
                 index++;
             }
         }
 
-        //модификации спуска вс€кие
         SetCurveOfSurface();
 
         if (spawnBarriers)
         {
-            SpawnBarriers(lastLine == null);
+            SpawnBarriers(true);
         }
 
         int vertexIndex = 0;
@@ -428,6 +388,11 @@ public class MeshGenerator : MonoBehaviour
             vertexIndex++;
         }
 
+        UpdateShape();
+    }
+
+    private void UpdateShape()
+    {
         _mesh.Clear();
         _mesh.vertices = _vertices;
         _mesh.triangles = _triangles;
@@ -440,15 +405,10 @@ public class MeshGenerator : MonoBehaviour
     public void GenerateNext(bool spawnBarriers)
     {
         var _barriersParent = new GameObject();
-    
-        
-        //_barriersParent.name = "Barriers";
 
         var nextMeshGenerator = Instantiate(this,
-            new Vector3(transform.position.x + 112.434f, transform.position.y -64.932f, transform.position.z), 
-            //new Vector3(transform.position.x + 109.8f, transform.position.y -63.53f, transform.position.z),
+            new Vector3(transform.position.x + 112.434f, transform.position.y -64.932f, transform.position.z),
             transform.rotation);
-        nextMeshGenerator.firstTendention = this.firstTendention;
         nextMeshGenerator.curvesCounter = this.curvesCounter;
 
         Destroy(nextMeshGenerator.barriersParent);
@@ -458,10 +418,7 @@ public class MeshGenerator : MonoBehaviour
         nextMeshGenerator.barriersParent = _barriersParent;
 
         nextMeshGenerator.triggerForGenerator = nextMeshGenerator.GetComponentInChildren<TriggerForGeneratorController>().gameObject;
-
-        Vector3[] lastLine = _vertices.TakeLast(xSize + 1).ToArray();
-        nextMeshGenerator.CreateShape(lineX, lastLine, spawnBarriers);
-
+        nextMeshGenerator.CreateShape(spawnBarriers, _vertices, _triangles);
         nextMeshGenerator.triggerForGenerator.GetComponent<TriggerForGeneratorController>().previousMeshGenerator = this.gameObject;
     }
 }
