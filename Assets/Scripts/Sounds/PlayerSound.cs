@@ -15,7 +15,7 @@ public class PlayerSound : MonoBehaviour
     void Start()
     {
         glideInstance = RuntimeManager.CreateInstance(GlideEvent);
-        glideInstance.set3DAttributes(FMODUnity.RuntimeUtils.To3DAttributes(transform.position));
+       RuntimeManager.AttachInstanceToGameObject(glideInstance, transform, playerController);
         glideInstance.start();
         
     }
@@ -23,7 +23,7 @@ public class PlayerSound : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-         glideInstance.setParameterByName("Speed",playerController.speedOfTiltX);
+         glideInstance.setParameterByName("Speed",playerController.VelocityForward);
     }
 
     void StopSoundGlide()

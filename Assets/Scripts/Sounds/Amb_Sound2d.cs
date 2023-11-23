@@ -19,7 +19,7 @@ public class Amb_Sound2d : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ambInstance.setParameterByName("SpeedAmb",playerController.speedOfTiltX);
+        ambInstance.setParameterByName("SpeedAmb",playerController.VelocityForward);
     }
 
      void OnDestroy()

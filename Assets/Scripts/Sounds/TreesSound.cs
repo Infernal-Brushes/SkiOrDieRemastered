@@ -20,6 +20,6 @@ public class TreesSound : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-         treesInstance.setParameterByName("Speed",playerController.speedOfTiltX);
+         treesInstance.setParameterByName("Speed",playerController.VelocityForward);
     }
 }

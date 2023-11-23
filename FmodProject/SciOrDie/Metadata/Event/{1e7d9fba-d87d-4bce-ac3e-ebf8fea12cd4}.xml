@@ -66,7 +66,7 @@
 			<destination>{2654fa1f-faa6-4858-a142-86c9fe9cdcad}</destination>
 		</relationship>
 		<relationship name="output">
-			<destination>{9ce7b5d6-252b-436d-87d0-d94423b81778}</destination>
+			<destination>{58e47520-d4da-4ecf-bcff-3fbd8c8a33f8}</destination>
 		</relationship>
 	</object>
 	<object class="EventAutomatableProperties" id="{6cc0c6b3-4447-4dca-8580-bec1cdd5cffb}">
@@ -768,7 +768,10 @@
 	<object class="MixerBusFader" id="{fca63331-f781-4ff6-951c-8eedf7ce6e11}" />
 	<object class="CompressorEffect" id="{9ca8443c-86e5-4e8a-9377-4ca379c9db6b}">
 		<property name="threshold">
-			<value>-12</value>
+			<value>-16</value>
+		</property>
+		<property name="ratio">
+			<value>5</value>
 		</property>
 	</object>
 	<object class="LoudnessMeter" id="{4737bd3c-e617-4cfd-b963-feaa904ea238}" />
@@ -1195,7 +1198,7 @@
 			<value>0</value>
 		</property>
 		<property name="value">
-			<value>-21</value>
+			<value>-8</value>
 		</property>
 	</object>
 	<object class="AutomationPoint" id="{f2a6c140-5bcd-4143-b8d0-4fcfd3a67678}">
@@ -1211,7 +1214,7 @@
 			<value>2.6272577996715927</value>
 		</property>
 		<property name="value">
-			<value>-12.6863708</value>
+			<value>-5</value>
 		</property>
 	</object>
 	<object class="AutomationPoint" id="{b17dcfdd-74f8-4577-9baf-d1ac6120056c}">

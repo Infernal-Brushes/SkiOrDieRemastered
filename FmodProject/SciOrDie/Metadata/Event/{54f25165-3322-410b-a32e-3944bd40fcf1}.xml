@@ -5,7 +5,7 @@
 			<value>Glide</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
 			<destination>{572b6fdd-8791-4c63-a157-2b8cad2974b2}</destination>
@@ -68,7 +68,7 @@
 			<destination>{036a28d5-d46f-4490-9058-bc1343addd75}</destination>
 		</relationship>
 		<relationship name="output">
-			<destination>{9ce7b5d6-252b-436d-87d0-d94423b81778}</destination>
+			<destination>{3d7c4e99-05a1-45db-bcfe-69b316c47114}</destination>
 		</relationship>
 	</object>
 	<object class="EventAutomatableProperties" id="{38bac18a-0ae7-4c2d-a289-1d2653134aa2}" />
@@ -961,7 +961,9 @@
 	</object>
 	<object class="MixerBusEffectChain" id="{9c5afdbc-0053-42e9-addf-0b0785fb268f}">
 		<relationship name="effects">
+			<destination>{fa311210-6391-472a-ad4f-c5279e16dfa0}</destination>
 			<destination>{a11c004e-c308-49a5-8cf2-181485693b9b}</destination>
+			<destination>{a1ed4641-22f3-4e55-9a64-62bc7c5d764a}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{ced2a75b-a15c-44b3-8877-15ead05c2b45}" />
@@ -1631,7 +1633,29 @@
 			<destination>{1c6b48d6-8af2-43a1-9be8-eac2509c0bf3}</destination>
 		</relationship>
 	</object>
+	<object class="MultibandEqEffect" id="{fa311210-6391-472a-ad4f-c5279e16dfa0}">
+		<property name="filterTypeA">
+			<value>7</value>
+		</property>
+		<property name="frequencyA">
+			<value>100</value>
+		</property>
+		<property name="gainA">
+			<value>-3.5</value>
+		</property>
+	</object>
 	<object class="MixerBusFader" id="{a11c004e-c308-49a5-8cf2-181485693b9b}" />
+	<object class="SpatialiserEffect" id="{a1ed4641-22f3-4e55-9a64-62bc7c5d764a}">
+		<property name="minimumDistance">
+			<value>0.5</value>
+		</property>
+		<property name="overrideRange">
+			<value>true</value>
+		</property>
+		<property name="extentMode">
+			<value>1</value>
+		</property>
+	</object>
 	<object class="AutomationPoint" id="{af4a4efa-652e-484b-86a3-081aa2855321}">
 		<property name="position">
 			<value>0</value>
