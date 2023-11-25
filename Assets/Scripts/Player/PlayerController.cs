@@ -396,7 +396,6 @@ namespace Assets.Scripts
         private void FlatToGround()
         {
             Ray ray = new(groundPoint.transform.position, -transform.up);
-            Debug.DrawRay(groundPoint.transform.position, -groundPoint.transform.up * groundCheckLength, Color.red, 12);
 
             // если игрок касается земли
             if (Physics.Raycast(ray, out RaycastHit hit, groundCheckLength, LayerMask.GetMask("Ground")))
@@ -500,7 +499,13 @@ namespace Assets.Scripts
 
         private void ReturningToMainRotation(float angleY)
         {
-            isInStrafe = false;
+            if (isInStrafe)
+            {
+                isInStrafe = false;
+                _animator.SetBool("isInStrafeLeft", false);
+                _animator.SetBool("isInStrafeRight", false);
+            }
+
             //восстанавливаем положение лыж
             if (angleY > 90 + angleOfTurn)
             {
@@ -531,7 +536,11 @@ namespace Assets.Scripts
                 }
 
                 //затем когда дошли до угла максимального то держим скорость в пределе (входим в стрэйф)
-                isInStrafe = true;
+                if (!isInStrafe)
+                {
+                    isInStrafe = true;
+                    _animator.SetBool("isInStrafeLeft", true);
+                }
                 if (angleY > 90 - angleOfStrafe)
                 {
                     playerRigidBody.AddTorque(_axisX * speedOfStrafeRotationY * transform.up, ForceMode.VelocityChange);
@@ -570,7 +579,11 @@ namespace Assets.Scripts
                 }
 
                 //затем когда дошли до угла максимального то держим скорость в пределе (входим в стрэйф)
-                isInStrafe = true;
+                if (!isInStrafe)
+                {
+                    isInStrafe = true;
+                    _animator.SetBool("isInStrafeRight", true);
+                }
                 if (angleY < 90 + angleOfStrafe)
                 {
                     playerRigidBody.AddTorque(_axisX * speedOfStrafeRotationY * transform.up, ForceMode.VelocityChange);
@@ -621,7 +634,7 @@ namespace Assets.Scripts
                 ragdollRigidbody[i].isKinematic = true;
                 ragdollRigidbody[i].velocity = Vector3.zero;
                 ragdollRigidbody[i].angularVelocity = Vector3.zero;
-                ragdollRigidbody[i].mass = default;
+                ragdollRigidbody[i].mass = 0f;
             }
         }
 
@@ -729,6 +742,9 @@ namespace Assets.Scripts
         public void RestartToDefaultPosition()
         {
             OnRestarted?.Invoke();
+
+            _animator.SetBool("isInStrafeLeft", false);
+            _animator.SetBool("isInStrafeRight", false);
 
             if (_isDebugEnabled)
             {
