@@ -246,7 +246,11 @@ namespace Assets.Scripts
 
         public PhysicMaterial skiMaterial;
         public GameObject leftSki;
+        private Vector3 _leftSkiDefaultTransformPosition;
+        private Quaternion _leftSkiDefaultTransformRotation;
         public GameObject rightSki;
+        private Quaternion _rightSkiDefaultTransformRotation;
+        private Vector3 _rightSkiDefaultTransformPosition;
         public GameObject leftFoot;
         public GameObject rightFoot;
         public Transform forLeftSki;
@@ -297,10 +301,7 @@ namespace Assets.Scripts
         private void Awake()
         {
             playerRigidBody = GetComponent<Rigidbody>();
-        }
 
-        private void Start()
-        {
             bonesDefaultMass = new float[bonesTransforms.Length];
             for (int i = 0; i < ragdollRigidbody.Length; i++)
             {
@@ -310,7 +311,7 @@ namespace Assets.Scripts
             RagdollOff();
 
             _restartPlayerTransformPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-            _restartPlayerTransformRotation = new Quaternion(transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.rotation.w);    
+            _restartPlayerTransformRotation = new Quaternion(transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.rotation.w);
             defaultBonesPositions = new Vector3[bonesTransforms.Length];
             defaultBonesRotations = new Quaternion[bonesTransforms.Length];
             for (int i = 0; i < bonesTransforms.Length; i++)
@@ -320,10 +321,21 @@ namespace Assets.Scripts
             }
 
             _startPositionX = transform.position.x;
+
+            _leftSkiDefaultTransformPosition = leftSki.transform.localPosition;
+            _leftSkiDefaultTransformRotation = leftSki.transform.localRotation;
+            _rightSkiDefaultTransformPosition = rightSki.transform.localPosition;
+            _rightSkiDefaultTransformRotation = rightSki.transform.localRotation;
+        }
+
+        private void Start()
+        {
         }
 
         private void Update()
         {
+            Debug.Log(transform.rotation.eulerAngles.y);
+
             if (Input.GetKeyDown(KeyCode.V))
             {
                 RagdollOn();
@@ -726,11 +738,14 @@ namespace Assets.Scripts
             playerRigidBody.angularDrag = 18;
             playerRigidBody.constraints = RigidbodyConstraints.FreezeRotationZ;
             isLose = false;
+
             //лыжи на место
-            rightSki.transform.SetParent(transform);
-            rightSki.GetComponent<CapsuleCollider>().material = skiMaterial;
             leftSki.transform.SetParent(transform);
+            rightSki.transform.SetParent(transform);
+            leftSki.transform.SetLocalPositionAndRotation(_leftSkiDefaultTransformPosition, _leftSkiDefaultTransformRotation);
+            rightSki.transform.SetLocalPositionAndRotation(_rightSkiDefaultTransformPosition, _rightSkiDefaultTransformRotation);
             leftSki.GetComponent<CapsuleCollider>().material = skiMaterial;
+            rightSki.GetComponent<CapsuleCollider>().material = skiMaterial;
 
             rightSki.layer = 10;
             leftSki.layer = 10;
