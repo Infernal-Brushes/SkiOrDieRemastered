@@ -181,7 +181,7 @@ namespace Assets.Scripts
         /// <summary>
         /// Текущее растояние, которое проехал игрок
         /// </summary>
-        private int _currentMeters => Convert.ToInt32(transform.position.x - _startPositionX);
+        private int _currentMeters => Convert.ToInt32(transform.position.x - _startPositionX) / 6;
 
         /// <summary>
         /// Угол поворота игрока
