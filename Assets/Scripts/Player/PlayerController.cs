@@ -97,6 +97,13 @@ namespace Assets.Scripts
         private float _strafeSpeedLimit = 1f;
 
         /// <summary>
+        /// Процент скорости центробежной силы от текущей скорости
+        /// </summary>
+        [Tooltip("Процент скорости центробежной силы от текущей скорости")]
+        [SerializeField]
+        private float _centrifugalForceCoefficient = 0.011f;
+
+        /// <summary>
         /// Скорость прямо для проигрыша
         /// </summary>
         [Tooltip("Скорость прямо для проигрыша")]
@@ -313,8 +320,6 @@ namespace Assets.Scripts
             }
 
             _startPositionX = transform.position.x;
-
-            OnGroundOff += Update;
         }
 
         private void Update()
@@ -500,7 +505,12 @@ namespace Assets.Scripts
                 if (angleY > 90 - angleOfTurn)
                 {
                     isInStrafe = false;
+                    // поворот
                     playerRigidBody.AddTorque(_axisX * speedOfNormalRotationY * transform.up, ForceMode.VelocityChange);
+
+                    // центробежная скорость
+                    float impulse = VelocityForward * _centrifugalForceCoefficient;
+                    playerRigidBody.AddForce(impulse * -transform.right, ForceMode.Impulse);
                     return;
                 }
 
@@ -508,7 +518,7 @@ namespace Assets.Scripts
                 isInStrafe = true;
                 if (angleY > 90 - angleOfStrafe)
                 {
-                    playerRigidBody.AddTorque(transform.up * speedOfStrafeRotationY * _axisX, ForceMode.VelocityChange);
+                    playerRigidBody.AddTorque(_axisX * speedOfStrafeRotationY * transform.up, ForceMode.VelocityChange);
                 }
 
                 if (VelocityForward > _strafeSpeedLimit)
@@ -534,7 +544,12 @@ namespace Assets.Scripts
                 if (angleY < 90 + angleOfTurn)
                 {
                     isInStrafe = false;
+                    // поворот
                     playerRigidBody.AddTorque(_axisX * speedOfNormalRotationY * transform.up, ForceMode.VelocityChange);
+
+                    // центробежная скорость
+                    float impulse = VelocityForward * _centrifugalForceCoefficient;
+                    playerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
                     return;
                 }
 
@@ -542,7 +557,7 @@ namespace Assets.Scripts
                 isInStrafe = true;
                 if (angleY < 90 + angleOfStrafe)
                 {
-                    playerRigidBody.AddTorque(transform.up * speedOfStrafeRotationY * _axisX, ForceMode.VelocityChange);
+                    playerRigidBody.AddTorque(_axisX * speedOfStrafeRotationY * transform.up, ForceMode.VelocityChange);
                 }
 
                 if (VelocityForward > _strafeSpeedLimit)
@@ -706,7 +721,6 @@ namespace Assets.Scripts
             transform.SetPositionAndRotation(_restartPlayerTransformPosition, _restartPlayerTransformRotation);
             playerRigidBody.angularDrag = 18;
             playerRigidBody.constraints = RigidbodyConstraints.FreezeRotationZ;
-            //rb.useGravity = false;
             isLose = false;
             //лыжи на место
             rightSki.transform.SetParent(transform);
