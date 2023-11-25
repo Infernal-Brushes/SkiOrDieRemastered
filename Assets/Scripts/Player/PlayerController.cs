@@ -39,7 +39,7 @@ namespace Assets.Scripts
         private TMP_Text _velocitySidewiseText;
 
         [SerializeField]
-        private TMP_Text _scoreText;
+        private TMP_Text _metersText;
 
         /// <summary>
         /// Объект проверки контакта с землёй
@@ -345,7 +345,7 @@ namespace Assets.Scripts
 
             PrintText(_velocityForwardText, VelocityForward);
             PrintText(_velocitySidewiseText, (VelocitySidewise));
-            PrintText(_scoreText, $"{_currentMeters} m");
+            PrintText(_metersText, $"{_currentMeters} m");
             if (!isInStrafe)
             {
                 PrintText(_strafeSpeedText, "0");
@@ -614,6 +614,8 @@ namespace Assets.Scripts
                 return;
             }
 
+            _metersText.gameObject.SetActive(false);
+
             rightSki.layer = 7;
             leftSki.layer = 7;
 
@@ -714,6 +716,8 @@ namespace Assets.Scripts
             {
                 _debugPanel.SetActive(true);
             }
+
+            _metersText.gameObject.SetActive(true);
 
             joystick.gameObject.SetActive(true);
             playerRigidBody.velocity = Vector3.zero;

@@ -3642,7 +3642,7 @@ GameObject:
   - component: {fileID: 1404260521}
   - component: {fileID: 1404260520}
   m_Layer: 5
-  m_Name: Score
+  m_Name: Meters
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6069,6 +6069,10 @@ PrefabInstance:
       propertyPath: _debugPanel
       value: 
       objectReference: {fileID: 1371783135}
+    - target: {fileID: 703849035744145023, guid: 2e1ca19ccb9119c4fa62309397b57bed, type: 3}
+      propertyPath: _metersText
+      value: 
+      objectReference: {fileID: 1404260520}
     - target: {fileID: 703849035744145023, guid: 2e1ca19ccb9119c4fa62309397b57bed, type: 3}
       propertyPath: forRightSki
       value: 
