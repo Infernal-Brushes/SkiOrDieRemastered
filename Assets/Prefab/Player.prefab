@@ -1415,15 +1415,16 @@ MonoBehaviour:
   groundPoint: {fileID: 4478607306320871023}
   groundCheckLength: 0.5
   speedOfTiltX: 0.3
-  strafeSpeedLimit: 1
-  deathSpeedX: 72
-  deathSpeedZ: 32
-  velocityToLoseSki: 27
   _velocityFreeRide: 0.24
   _velocitySidewise: 0.45
   _velocityStrafeCoefficient: 0
   _strafeStopperCoefficient: 0.03
-  speedOfNormalRotationY: 0.74
+  _strafeSpeedLimit: 1
+  _centrifugalForce: 0.011
+  _deathSpeedX: 90
+  _deathSpeedZ: 72
+  _velocityToLoseSki: 27
+  speedOfNormalRotationY: 0.68
   speedOfStrafeRotationY: 4.5
   angleOfTurn: 50
   angleOfStrafe: 68
