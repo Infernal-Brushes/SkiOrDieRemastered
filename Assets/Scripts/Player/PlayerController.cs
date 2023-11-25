@@ -41,6 +41,9 @@ namespace Assets.Scripts
         [SerializeField]
         private TMP_Text _metersText;
 
+        [SerializeField]
+        private Animator _animator;
+
         /// <summary>
         /// Объект проверки контакта с землёй
         /// </summary>
@@ -369,7 +372,7 @@ namespace Assets.Scripts
             if (isLose)
                 return;
 
-            Debug.DrawRay(groundPoint.transform.position, groundPoint.transform.up, Color.red, 12);
+            //Debug.DrawRay(groundPoint.transform.position, groundPoint.transform.up, Color.red, 12);
 
             if (VelocityForward >= _deathSpeedX)
             {
@@ -393,6 +396,7 @@ namespace Assets.Scripts
         private void FlatToGround()
         {
             Ray ray = new(groundPoint.transform.position, -transform.up);
+            Debug.DrawRay(groundPoint.transform.position, -groundPoint.transform.up * groundCheckLength, Color.red, 12);
 
             // если игрок касается земли
             if (Physics.Raycast(ray, out RaycastHit hit, groundCheckLength, LayerMask.GetMask("Ground")))
@@ -599,6 +603,7 @@ namespace Assets.Scripts
 
         private void RagdollOn()
         {
+            _animator.enabled = false;
             for (int i = 0; i < ragdollRigidbody.Length; i++)
             {
                 ragdollRigidbody[i].isKinematic = false;
@@ -610,6 +615,7 @@ namespace Assets.Scripts
 
         public void RagdollOff()
         {
+            _animator.enabled = true;
             for (int i = 0; i < ragdollRigidbody.Length; i++)
             {
                 ragdollRigidbody[i].isKinematic = true;
