@@ -542,11 +542,10 @@ namespace Assets.Scripts
 
             if (_axisX == 0)
             {
-                _animator.SetTrigger("ToDefault");
                 ReturningToMainRotation(angleY);
                 return;
             }
-            _animator.ResetTrigger("ToDefault");
+            _animator.ResetTrigger("toDefault");
 
             RotatePlayerOnGround();
         }
@@ -568,6 +567,7 @@ namespace Assets.Scripts
         {
             StrafeTurnOff();
             TurningTurnOff();
+            _animator.SetTrigger("toDefault");
 
             //восстанавливаем положение лыж
             if (angleY > 90 + angleOfTurn)
@@ -896,7 +896,7 @@ namespace Assets.Scripts
         /// Обновить текст в <see cref="TMP_Text"/>, если он не <see cref="null"/>
         /// </summary>
         /// <param name="textMesh"></param>
-        /// <param name="text"></param>
+        /// <param name="obj"></param>
         private void PrintText(TMP_Text textMesh, object obj)
         {
             if (textMesh == null)
@@ -957,13 +957,17 @@ namespace Assets.Scripts
 
         private void TurningTurnOn(Sides side)
         {
-            if (_isInTurning)
-            {
-                return;
-            }
-
             _isInTurning = true;
-            _animator.SetBool($"isInTurning{side}", true);
+            if (side == Sides.Left)
+            {
+                _animator.SetBool($"isInTurningLeft", true);
+                _animator.SetBool($"isInTurningRight", false);
+            }
+            else if (side == Sides.Right)
+            {
+                _animator.SetBool($"isInTurningLeft", false);
+                _animator.SetBool($"isInTurningRight", true);
+            }
 
             OnTurningOn?.Invoke();
 

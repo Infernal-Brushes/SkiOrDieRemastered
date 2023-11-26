@@ -366,8 +366,8 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 881607536017835335}
   m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: ccc8703738ef62b4fbba9494944e63e7, type: 3}
-  m_Controller: {fileID: 9100000, guid: 982acb003a21ec04bba82d63b4067e03, type: 2}
+  m_Avatar: {fileID: 9000000, guid: 4167262cac6ed2a428120c7337a46203, type: 3}
+  m_Controller: {fileID: 9100000, guid: eddd2210634d9304db1cdf29afe31835, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -725,9 +725,9 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.13190734
-  m_Height: 0.75935733
+  m_Height: 0.69836885
   m_Direction: 1
-  m_Center: {x: 0.013562355, y: 0.3796798, z: 0.0000005230458}
+  m_Center: {x: 0.01356236, y: 0.34918565, z: 0.0000009384998}
 --- !u!144 &5576049111874409278
 CharacterJoint:
   m_ObjectHideFlags: 0
@@ -1189,9 +1189,9 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.13190734
-  m_Height: 0.75935733
+  m_Height: 0.69836885
   m_Direction: 1
-  m_Center: {x: 0.013562355, y: 0.3796798, z: 0.0000005230458}
+  m_Center: {x: 0.01356236, y: 0.34918565, z: 0.0000009384998}
 --- !u!144 &5576049112730543341
 CharacterJoint:
   m_ObjectHideFlags: 0
