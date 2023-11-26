@@ -8467,6 +8467,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Woodman
       objectReference: {fileID: 0}
+    - target: {fileID: 71337086890701873, guid: c6c79098801dcbf419de3c41c8c30d2c, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 71337086890703823, guid: c6c79098801dcbf419de3c41c8c30d2c, type: 3}
       propertyPath: joystick
       value: 
@@ -8507,5 +8511,33 @@ PrefabInstance:
       propertyPath: _velocitySidewiseText
       value: 
       objectReference: {fileID: 1897044452}
+    - target: {fileID: 7522582619230389696, guid: c6c79098801dcbf419de3c41c8c30d2c, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: -1794744448883837787, guid: ccc8703738ef62b4fbba9494944e63e7, type: 3}
+    - target: {fileID: 7522582619230389696, guid: c6c79098801dcbf419de3c41c8c30d2c, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 7502078511139103545, guid: ccc8703738ef62b4fbba9494944e63e7, type: 3}
+    - target: {fileID: 7522582619230389696, guid: c6c79098801dcbf419de3c41c8c30d2c, type: 3}
+      propertyPath: m_Materials.Array.data[2]
+      value: 
+      objectReference: {fileID: 6320887509696201961, guid: ccc8703738ef62b4fbba9494944e63e7, type: 3}
+    - target: {fileID: 7522582619230389696, guid: c6c79098801dcbf419de3c41c8c30d2c, type: 3}
+      propertyPath: m_Materials.Array.data[3]
+      value: 
+      objectReference: {fileID: -4124982721527674037, guid: ccc8703738ef62b4fbba9494944e63e7, type: 3}
+    - target: {fileID: 7522582619230389696, guid: c6c79098801dcbf419de3c41c8c30d2c, type: 3}
+      propertyPath: m_Materials.Array.data[4]
+      value: 
+      objectReference: {fileID: 8528616488262384133, guid: ccc8703738ef62b4fbba9494944e63e7, type: 3}
+    - target: {fileID: 7522582619230389696, guid: c6c79098801dcbf419de3c41c8c30d2c, type: 3}
+      propertyPath: m_Materials.Array.data[5]
+      value: 
+      objectReference: {fileID: 6378441348856504891, guid: ccc8703738ef62b4fbba9494944e63e7, type: 3}
+    - target: {fileID: 7522582619230389696, guid: c6c79098801dcbf419de3c41c8c30d2c, type: 3}
+      propertyPath: m_Materials.Array.data[6]
+      value: 
+      objectReference: {fileID: -5610973490112776352, guid: ccc8703738ef62b4fbba9494944e63e7, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c6c79098801dcbf419de3c41c8c30d2c, type: 3}
