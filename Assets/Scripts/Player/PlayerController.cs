@@ -952,11 +952,16 @@ namespace Assets.Scripts
             _animator.SetBool($"isInTurningLeft", false);
             _animator.SetBool($"isInTurningRight", false);
 
-            OnStrafeOff?.Invoke();
+            OnTurningOff?.Invoke();
         }
 
         private void TurningTurnOn(Sides side)
         {
+            if (!_isInTurning)
+            {
+                OnTurningOn?.Invoke();
+            }
+
             _isInTurning = true;
             if (side == Sides.Left)
             {
@@ -968,9 +973,6 @@ namespace Assets.Scripts
                 _animator.SetBool($"isInTurningLeft", false);
                 _animator.SetBool($"isInTurningRight", true);
             }
-
-            OnTurningOn?.Invoke();
-
         }
     }
 }
