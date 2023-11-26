@@ -34,4 +34,9 @@ public class PlayerSound : MonoBehaviour
         } 
 
     }
+    void OnDestroy()
+    {
+        glideInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+
+    }
 }
