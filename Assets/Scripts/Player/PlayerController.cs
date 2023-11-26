@@ -196,7 +196,7 @@ namespace Assets.Scripts
         /// <summary>
         /// Коэффициент угла поворота. 0 - нет поворота. 1 - вправо на 90. -1 - влево на 90
         /// </summary>
-        private float _angleCoeficient => Mathf.Clamp(AngleOfCurrentTurning / -90f, -1, 1);
+        private float _angleCoeficient => Mathf.Clamp(AngleOfCurrentTurning / 90f, -1, 1);
 
         /// <summary>
         /// Обратный коэфициент угла поворота. 1 если прямо. Чем дальше от центра, тем ближе к 0
@@ -364,7 +364,8 @@ namespace Assets.Scripts
                 _axisX = Input.GetAxis("Horizontal");
             }
 
-            AngleOfCurrentTurning = 90f - Vector3.Angle(_skiesDirection, Vector3.forward);
+            AngleOfCurrentTurning = -(90f - Vector3.Angle(_skiesDirection, Vector3.forward));
+            Debug.Log(AngleOfCurrentTurning);
 
             PrintText(_velocityForwardText, VelocityForward);
             PrintText(_velocitySidewiseText, (VelocitySidewise));
@@ -520,13 +521,16 @@ namespace Assets.Scripts
             }
         }
 
+        /// <summary>
+        /// Поворачивать игрока по земле
+        /// </summary>
         private void RotatePlayerOnGround()
         {
             // налево повернуть корпус
             if (_axisX < 0)
             {
                 //сначала поворачиваемся до нужного угла
-                if (Mathf.Abs(AngleOfCurrentTurning) < angleOfTurn)
+                if (AngleOfCurrentTurning > -angleOfTurn)
                 {
                     StrafeTurnOff();
                     // поворот
@@ -540,7 +544,7 @@ namespace Assets.Scripts
 
                 //затем когда дошли до угла максимального то держим скорость в пределе (входим в стрэйф)
                 StrafeTurnOn(Sides.Left);
-                if (Mathf.Abs(AngleOfCurrentTurning) < angleOfStrafe)
+                if (AngleOfCurrentTurning > -angleOfStrafe)
                 {
                     playerRigidBody.AddTorque(_axisX * speedOfStrafeRotationY * transform.up, ForceMode.VelocityChange);
                 }
@@ -548,10 +552,9 @@ namespace Assets.Scripts
                 if (VelocityForward > _strafeSpeedLimit)
                 {
                     //сила назад
-                    Debug.Log(_velocityStrafeStopper);
                     playerRigidBody.AddForce(Vector3.left * _velocityStrafeStopper, ForceMode.Impulse);
                     //сила в бок
-                    float impulse = -_axisX * _velocityStrafe;
+                    float impulse = _axisX * _velocityStrafe;
                     playerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
 
                     PrintText(_strafeSpeedText, impulse);
@@ -565,7 +568,7 @@ namespace Assets.Scripts
             else if (_axisX > 0)
             {
                 //сначала поворачиваемся до нужного угла
-                if (Mathf.Abs(AngleOfCurrentTurning) < angleOfTurn)
+                if (AngleOfCurrentTurning < angleOfTurn)
                 {
                     StrafeTurnOff();
                     // поворот
@@ -580,7 +583,7 @@ namespace Assets.Scripts
                 //затем когда дошли до угла максимального то держим скорость в пределе (входим в стрэйф)
 
                 StrafeTurnOn(Sides.Right);
-                if (Mathf.Abs(AngleOfCurrentTurning) < angleOfStrafe)
+                if (AngleOfCurrentTurning < angleOfStrafe)
                 {
                     playerRigidBody.AddTorque(_axisX * speedOfStrafeRotationY * transform.up, ForceMode.VelocityChange);
                 }
@@ -590,8 +593,8 @@ namespace Assets.Scripts
                     //сила назад
                     playerRigidBody.AddForce(Vector3.left * _velocityStrafeStopper, ForceMode.Impulse);
                     //сила в бок
-                    float impulse = -_axisX * _velocityStrafe;
-                    playerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
+                    float impulse = _axisX * _velocityStrafe;
+                    playerRigidBody.AddForce(impulse * -transform.right, ForceMode.Impulse);
 
                     PrintText(_strafeSpeedText, impulse);
                 }
