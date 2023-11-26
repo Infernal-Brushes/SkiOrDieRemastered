@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Enums;
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -288,6 +289,18 @@ namespace Assets.Scripts
         /// </summary>
         public event OnGroundOffDelegate OnGroundOff;
 
+        public delegate void OnStrafeDelegate();
+
+        /// <summary>
+        /// Событие входа в стрейф
+        /// </summary>
+        public event OnStrafeDelegate OnStrafeOn;
+
+        /// <summary>
+        /// Событие выхода из стрейфа
+        /// </summary>
+        public event OnStrafeDelegate OnStrafeOff;
+
         public delegate void OnLoseDelegate();
 
         /// <summary>
@@ -332,10 +345,6 @@ namespace Assets.Scripts
             _rightSkiDefaultTransformRotation = rightSki.transform.localRotation;
         }
 
-        private void Start()
-        {
-        }
-
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.V))
@@ -356,7 +365,6 @@ namespace Assets.Scripts
             }
 
             AngleOfCurrentTurning = 90f - Vector3.Angle(_skiesDirection, Vector3.forward);
-            Debug.Log(AngleOfCurrentTurning);
 
             PrintText(_velocityForwardText, VelocityForward);
             PrintText(_velocitySidewiseText, (VelocitySidewise));
@@ -499,12 +507,7 @@ namespace Assets.Scripts
 
         private void ReturningToMainRotation(float angleY)
         {
-            if (isInStrafe)
-            {
-                isInStrafe = false;
-                _animator.SetBool("isInStrafeLeft", false);
-                _animator.SetBool("isInStrafeRight", false);
-            }
+            StrafeTurnOff();
 
             //восстанавливаем положение лыж
             if (angleY > 90 + angleOfTurn)
@@ -525,7 +528,7 @@ namespace Assets.Scripts
                 //сначала поворачиваемся до нужного угла
                 if (Mathf.Abs(AngleOfCurrentTurning) < angleOfTurn)
                 {
-                    isInStrafe = false;
+                    StrafeTurnOff();
                     // поворот
                     playerRigidBody.AddTorque(_axisX * speedOfNormalRotationY * transform.up, ForceMode.VelocityChange);
 
@@ -536,11 +539,7 @@ namespace Assets.Scripts
                 }
 
                 //затем когда дошли до угла максимального то держим скорость в пределе (входим в стрэйф)
-                if (!isInStrafe)
-                {
-                    isInStrafe = true;
-                    _animator.SetBool("isInStrafeLeft", true);
-                }
+                StrafeTurnOn(Sides.Left);
                 if (Mathf.Abs(AngleOfCurrentTurning) < angleOfStrafe)
                 {
                     playerRigidBody.AddTorque(_axisX * speedOfStrafeRotationY * transform.up, ForceMode.VelocityChange);
@@ -568,7 +567,7 @@ namespace Assets.Scripts
                 //сначала поворачиваемся до нужного угла
                 if (Mathf.Abs(AngleOfCurrentTurning) < angleOfTurn)
                 {
-                    isInStrafe = false;
+                    StrafeTurnOff();
                     // поворот
                     playerRigidBody.AddTorque(_axisX * speedOfNormalRotationY * transform.up, ForceMode.VelocityChange);
 
@@ -579,11 +578,8 @@ namespace Assets.Scripts
                 }
 
                 //затем когда дошли до угла максимального то держим скорость в пределе (входим в стрэйф)
-                if (!isInStrafe)
-                {
-                    isInStrafe = true;
-                    _animator.SetBool("isInStrafeRight", true);
-                }
+
+                StrafeTurnOn(Sides.Right);
                 if (Mathf.Abs(AngleOfCurrentTurning) < angleOfStrafe)
                 {
                     playerRigidBody.AddTorque(_axisX * speedOfStrafeRotationY * transform.up, ForceMode.VelocityChange);
@@ -743,8 +739,7 @@ namespace Assets.Scripts
         {
             OnRestarted?.Invoke();
 
-            _animator.SetBool("isInStrafeLeft", false);
-            _animator.SetBool("isInStrafeRight", false);
+            StrafeTurnOff();
 
             if (_isDebugEnabled)
             {
@@ -814,6 +809,47 @@ namespace Assets.Scripts
             }
 
             textMesh.text = obj.ToString();
+        }
+
+        /// <summary>
+        /// Выйти из стрейфа
+        /// </summary>
+        private void StrafeTurnOff()
+        {
+            if (!isInStrafe)
+            {
+                return;
+            }
+
+            isInStrafe = false;
+            _animator.SetBool("isInStrafeLeft", false);
+            _animator.SetBool("isInStrafeRight", false);
+
+            OnStrafeOff?.Invoke();
+        }
+
+        /// <summary>
+        /// Войти в стрейф
+        /// </summary>
+        /// <param name="side">Направление движения</param>
+        private void StrafeTurnOn(Sides side)
+        {
+            if (isInStrafe)
+            {
+                return;
+            }
+
+            isInStrafe = true;
+            string booleanParameterName = side switch
+            {
+                Sides.Left => "isInStrafeLeft",
+                Sides.Right => "isInStrafeRight",
+                _ => throw new ArgumentException("Некорректный тип поворота для смены стрейфа")
+            };
+
+            _animator.SetBool(booleanParameterName, true);
+
+            OnStrafeOn?.Invoke();
         }
 
         //private IEnumerator SlowMotionOnLose()
