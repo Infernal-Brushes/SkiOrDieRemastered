@@ -249,15 +249,48 @@ namespace Assets.Scripts
         public Quaternion[] defaultBonesRotations;
         private float[] bonesDefaultMass;
 
+        [Header("Лыжи")]
+
         public PhysicMaterial skiMaterial;
-        public GameObject leftSki;
-        private Vector3 _leftSkiDefaultTransformPosition;
-        private Quaternion _leftSkiDefaultTransformRotation;
-        public GameObject rightSki;
-        private Quaternion _rightSkiDefaultTransformRotation;
-        private Vector3 _rightSkiDefaultTransformPosition;
-        public GameObject leftFoot;
-        public GameObject rightFoot;
+
+        [SerializeField]
+        private GameObject _leftSkiCollider;
+
+        [SerializeField]
+        private GameObject _rightSkiCollider;
+
+        [SerializeField]
+        private GameObject _leftSkiModel;
+
+        [SerializeField]
+        private GameObject _rightSkiModel;
+
+        [SerializeField]
+        private float _skiLoseForceForward = 30f;
+
+        [SerializeField]
+        private float _skiLoseForceUp = 10f;
+
+        private Rigidbody _leftSkiRigidBody;
+        private Rigidbody _rightSkiRigidBody;
+
+        [SerializeField]
+        private GameObject _leftFoot;
+
+        [SerializeField] 
+        private GameObject _rightFoot;
+
+        private Vector3 _leftSkiColliderDefaultTransformPosition;
+        private Vector3 _rightSkiColliderDefaultTransformPosition;
+        private Quaternion _leftSkiColliderDefaultTransformRotation;
+        private Quaternion _rightSkiColliderDefaultTransformRotation;
+
+
+        private Vector3 _leftSkiModelDefaultTransformPosition;
+        private Vector3 _rightSkiModelDefaultTransformPosition;
+        private Quaternion _leftSkiModelDefaultTransformRotation;
+        private Quaternion _rightSkiModelDefaultTransformRotation;
+
         public Transform forLeftSki;
         public Transform forRightSki;
 
@@ -339,10 +372,18 @@ namespace Assets.Scripts
 
             _startPositionX = transform.position.x;
 
-            _leftSkiDefaultTransformPosition = leftSki.transform.localPosition;
-            _leftSkiDefaultTransformRotation = leftSki.transform.localRotation;
-            _rightSkiDefaultTransformPosition = rightSki.transform.localPosition;
-            _rightSkiDefaultTransformRotation = rightSki.transform.localRotation;
+            _leftSkiColliderDefaultTransformPosition = _leftSkiCollider.transform.localPosition;
+            _leftSkiColliderDefaultTransformRotation = _leftSkiCollider.transform.localRotation;
+            _rightSkiColliderDefaultTransformPosition = _rightSkiCollider.transform.localPosition;
+            _rightSkiColliderDefaultTransformRotation = _rightSkiCollider.transform.localRotation;
+
+            _leftSkiModelDefaultTransformPosition = _leftSkiModel.transform.localPosition;
+            _leftSkiModelDefaultTransformRotation = _leftSkiModel.transform.localRotation;
+            _rightSkiModelDefaultTransformPosition = _rightSkiModel.transform.localPosition;
+            _rightSkiModelDefaultTransformRotation = _rightSkiModel.transform.localRotation;
+
+            _leftSkiRigidBody = forLeftSki.gameObject.GetComponent<Rigidbody>();
+            _rightSkiRigidBody = forRightSki.gameObject.GetComponent<Rigidbody>();
         }
 
         private void Update()
@@ -365,7 +406,6 @@ namespace Assets.Scripts
             }
 
             AngleOfCurrentTurning = -(90f - Vector3.Angle(_skiesDirection, Vector3.forward));
-            Debug.Log(AngleOfCurrentTurning);
 
             PrintText(_velocityForwardText, VelocityForward);
             PrintText(_velocitySidewiseText, (VelocitySidewise));
@@ -646,8 +686,8 @@ namespace Assets.Scripts
 
             _metersText.gameObject.SetActive(false);
 
-            rightSki.layer = 7;
-            leftSki.layer = 7;
+            _rightSkiCollider.layer = 7;
+            _leftSkiCollider.layer = 7;
 
             joystick.OnPointerUp(new PointerEventData(null));
             joystick.gameObject.SetActive(false);
@@ -655,16 +695,12 @@ namespace Assets.Scripts
             var ingameMenu = FindObjectOfType<InGameMenu>();
             ingameMenu.pauseButton.SetActive(false);
 
+            SetSkiToFeet();
+
             playerRigidBody.constraints = RigidbodyConstraints.None;
             if (cause == LoseCause.fallX)
             {
                 Debug.Log("Проигрыш! Большая скорость прямо");
-
-                //прицепляем лыжи к ногам
-                leftSki.GetComponent<CapsuleCollider>().material = ragdollRigidbody[0].GetComponent<BoxCollider>().material;
-                leftSki.transform.SetParent(leftFoot.transform);
-                rightSki.GetComponent<CapsuleCollider>().material = ragdollRigidbody[0].GetComponent<BoxCollider>().material;
-                rightSki.transform.SetParent(rightFoot.transform);
 
                 StartCoroutine(Fall(-transform.right));
             }
@@ -674,7 +710,7 @@ namespace Assets.Scripts
 
                 LoseSki();
 
-
+                // TODO: разобраться с векторами падений
                 if (VelocitySidewise > 0)
                     StartCoroutine(Fall(-transform.forward));
                 else
@@ -682,6 +718,7 @@ namespace Assets.Scripts
             }
             else if (cause == LoseCause.barrier)
             {
+                Debug.Log("Проигрыш! столкновение");
                 LoseSki();
 
                 RagdollOn();
@@ -716,25 +753,30 @@ namespace Assets.Scripts
                 }
             }
 
+            var vectorToLose = new Vector3(_skiLoseForceForward, _skiLoseForceUp, 0);
             if (isLeftSkiOff)
             {
-                leftSki.transform.SetParent(forLeftSki, true);
-                forLeftSki.gameObject.GetComponent<Rigidbody>().isKinematic = false;
-            }
-            else
-            {
-                leftSki.GetComponent<CapsuleCollider>().material = ragdollRigidbody[0].GetComponent<BoxCollider>().material;
-                leftSki.transform.SetParent(leftFoot.transform);
+                _leftSkiModel.transform.SetParent(_leftSkiCollider.transform, true);
+                _leftSkiModel.transform.SetLocalPositionAndRotation(new Vector3(-0.9300206f, -0.03308737f, 0.9800017f), new Quaternion());
+
+                _leftSkiCollider.transform.SetParent(forLeftSki, true);
+                _leftSkiCollider.transform.rotation =_leftSkiModel.transform.rotation;
+                _leftSkiCollider.GetComponent<CapsuleCollider>().material = skiMaterial;
+
+                _leftSkiRigidBody.isKinematic = false;
+                _leftSkiRigidBody.AddForce(vectorToLose, ForceMode.Impulse);
             }
             if (isRightSkiOff)
             {
-                rightSki.transform.SetParent(forRightSki, true);
-                forRightSki.gameObject.GetComponent<Rigidbody>().isKinematic = false;
-            }
-            else
-            {
-                rightSki.GetComponent<CapsuleCollider>().material = ragdollRigidbody[0].GetComponent<BoxCollider>().material;
-                rightSki.transform.SetParent(rightFoot.transform);
+                _rightSkiModel.transform.SetParent(_rightSkiCollider.transform, true);
+                _rightSkiModel.transform.SetLocalPositionAndRotation(new Vector3(-0.9300206f, -0.03308737f, 0.9800017f), new Quaternion());
+
+                _rightSkiCollider.transform.SetParent(forRightSki, true);
+                _rightSkiCollider.transform.rotation = _rightSkiModel.transform.rotation;
+                _rightSkiCollider.GetComponent<CapsuleCollider>().material = skiMaterial;
+
+                _rightSkiRigidBody.isKinematic = false;
+                _rightSkiRigidBody.AddForce(vectorToLose, ForceMode.Impulse);
             }
         }
 
@@ -759,19 +801,7 @@ namespace Assets.Scripts
             playerRigidBody.constraints = RigidbodyConstraints.FreezeRotationZ;
             isLose = false;
 
-            //лыжи на место
-            leftSki.transform.SetParent(transform);
-            rightSki.transform.SetParent(transform);
-            leftSki.transform.SetLocalPositionAndRotation(_leftSkiDefaultTransformPosition, _leftSkiDefaultTransformRotation);
-            rightSki.transform.SetLocalPositionAndRotation(_rightSkiDefaultTransformPosition, _rightSkiDefaultTransformRotation);
-            leftSki.GetComponent<CapsuleCollider>().material = skiMaterial;
-            rightSki.GetComponent<CapsuleCollider>().material = skiMaterial;
-
-            rightSki.layer = 10;
-            leftSki.layer = 10;
-
-            forLeftSki.gameObject.GetComponent<Rigidbody>().isKinematic = true;
-            forRightSki.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+            ReturnSkiToDefaultPosition();
 
             RagdollOff();
             for (int i = 0; i < bonesTransforms.Length; i++)
@@ -779,6 +809,46 @@ namespace Assets.Scripts
                 bonesTransforms[i].position = defaultBonesPositions[i];
                 bonesTransforms[i].rotation = defaultBonesRotations[i];
             }
+        }
+
+        /// <summary>
+        /// Прицепить лыжи к ногам (только для регдола будет работать адекватно)
+        /// </summary>
+        private void SetSkiToFeet()
+        {
+            _leftSkiCollider.transform.SetParent(_leftFoot.transform);
+            _leftSkiModel.transform.SetParent(_leftSkiCollider.transform);
+
+            _rightSkiCollider.transform.SetParent(_rightFoot.transform);
+            _rightSkiModel.transform.SetParent(_rightSkiCollider.transform);
+
+            _leftSkiCollider.GetComponent<CapsuleCollider>().material = ragdollRigidbody[0].GetComponent<BoxCollider>().material;
+            _rightSkiCollider.GetComponent<CapsuleCollider>().material = ragdollRigidbody[0].GetComponent<BoxCollider>().material;
+        }
+
+        /// <summary>
+        /// Вернуть лыжи на исходную позицию
+        /// </summary>
+        private void ReturnSkiToDefaultPosition()
+        {
+            _leftSkiCollider.transform.SetParent(transform);
+            _leftSkiCollider.transform.SetLocalPositionAndRotation(_leftSkiColliderDefaultTransformPosition, _leftSkiColliderDefaultTransformRotation);
+            _leftSkiCollider.GetComponent<CapsuleCollider>().material = skiMaterial;
+            _leftSkiCollider.layer = 10;
+
+            _rightSkiCollider.transform.SetParent(transform);
+            _rightSkiCollider.transform.SetLocalPositionAndRotation(_rightSkiColliderDefaultTransformPosition, _rightSkiColliderDefaultTransformRotation);
+            _rightSkiCollider.GetComponent<CapsuleCollider>().material = skiMaterial;
+            _rightSkiCollider.layer = 10;
+
+            _leftSkiModel.transform.SetParent(_leftFoot.transform);
+            _leftSkiModel.transform.SetLocalPositionAndRotation(_leftSkiModelDefaultTransformPosition, _leftSkiModelDefaultTransformRotation);
+
+            _rightSkiModel.transform.SetParent(_rightFoot.transform);
+            _rightSkiModel.transform.SetLocalPositionAndRotation(_rightSkiModelDefaultTransformPosition, _rightSkiModelDefaultTransformRotation);
+
+            forLeftSki.gameObject.GetComponent<Rigidbody>().isKinematic = true;
+            forRightSki.gameObject.GetComponent<Rigidbody>().isKinematic = true;
         }
 
         private IEnumerator Fall(Vector3 direction)
