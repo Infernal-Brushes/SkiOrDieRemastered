@@ -15,6 +15,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Cloakroom.unity
     guid: 30813253dc6d5714a96a821676c8c228
   - enabled: 1
-    path: Assets/Scenes/Test/FreerideWoodmanTest.unity
+    path: Assets/Scenes/Freeride.unity
     guid: 0420477957f0cba49b713b0136a24a63
   m_configObjects: {}
