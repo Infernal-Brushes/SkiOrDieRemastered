@@ -3,6 +3,7 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UIElements;
 
 namespace Assets.Scripts
 {
@@ -187,14 +188,14 @@ namespace Assets.Scripts
         private int _currentMeters => Convert.ToInt32(transform.position.x - _startPositionX) / 6;
 
         /// <summary>
-        /// Угол поворота игрока
+        /// Угол поворота игрока текущий
         /// </summary>
-        private float _angle;
+        public float AngleOfCurrentTurning { get; private set; }
 
         /// <summary>
         /// Коэффициент угла поворота. 0 - нет поворота. 1 - вправо на 90. -1 - влево на 90
         /// </summary>
-        private float _angleCoeficient => Mathf.Clamp(_angle / -90f, -1, 1);
+        private float _angleCoeficient => Mathf.Clamp(AngleOfCurrentTurning / -90f, -1, 1);
 
         /// <summary>
         /// Обратный коэфициент угла поворота. 1 если прямо. Чем дальше от центра, тем ближе к 0
@@ -337,8 +338,6 @@ namespace Assets.Scripts
 
         private void Update()
         {
-            Debug.Log(transform.rotation.eulerAngles.y);
-
             if (Input.GetKeyDown(KeyCode.V))
             {
                 RagdollOn();
@@ -356,7 +355,8 @@ namespace Assets.Scripts
                 _axisX = Input.GetAxis("Horizontal");
             }
 
-            _angle = 90f - Vector3.Angle(_skiesDirection, Vector3.forward);
+            AngleOfCurrentTurning = 90f - Vector3.Angle(_skiesDirection, Vector3.forward);
+            Debug.Log(AngleOfCurrentTurning);
 
             PrintText(_velocityForwardText, VelocityForward);
             PrintText(_velocitySidewiseText, (VelocitySidewise));
@@ -481,7 +481,7 @@ namespace Assets.Scripts
                 return;
             }
 
-            RotatePlayerOnGround(angleY);
+            RotatePlayerOnGround();
         }
 
         private void RotatePlayerInAir(float angleY)
@@ -517,13 +517,13 @@ namespace Assets.Scripts
             }
         }
 
-        private void RotatePlayerOnGround(float angleY)
+        private void RotatePlayerOnGround()
         {
             // налево повернуть корпус
             if (_axisX < 0)
             {
                 //сначала поворачиваемся до нужного угла
-                if (angleY > 90 - angleOfTurn)
+                if (Mathf.Abs(AngleOfCurrentTurning) < angleOfTurn)
                 {
                     isInStrafe = false;
                     // поворот
@@ -541,7 +541,7 @@ namespace Assets.Scripts
                     isInStrafe = true;
                     _animator.SetBool("isInStrafeLeft", true);
                 }
-                if (angleY > 90 - angleOfStrafe)
+                if (Mathf.Abs(AngleOfCurrentTurning) < angleOfStrafe)
                 {
                     playerRigidBody.AddTorque(_axisX * speedOfStrafeRotationY * transform.up, ForceMode.VelocityChange);
                 }
@@ -566,7 +566,7 @@ namespace Assets.Scripts
             else if (_axisX > 0)
             {
                 //сначала поворачиваемся до нужного угла
-                if (angleY < 90 + angleOfTurn)
+                if (Mathf.Abs(AngleOfCurrentTurning) < angleOfTurn)
                 {
                     isInStrafe = false;
                     // поворот
@@ -584,7 +584,7 @@ namespace Assets.Scripts
                     isInStrafe = true;
                     _animator.SetBool("isInStrafeRight", true);
                 }
-                if (angleY < 90 + angleOfStrafe)
+                if (Mathf.Abs(AngleOfCurrentTurning) < angleOfStrafe)
                 {
                     playerRigidBody.AddTorque(_axisX * speedOfStrafeRotationY * transform.up, ForceMode.VelocityChange);
                 }
