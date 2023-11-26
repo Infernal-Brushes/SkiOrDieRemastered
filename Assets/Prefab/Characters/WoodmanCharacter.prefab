@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 71337086890703823}
   - component: {fileID: 71337086890703822}
   m_Layer: 0
-  m_Name: Woodman
+  m_Name: WoodmanCharacter
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

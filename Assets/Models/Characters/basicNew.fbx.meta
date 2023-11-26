@@ -1,44 +1,9 @@
 fileFormatVersion: 2
-guid: 1b19dfe0b52c1bc4fb4feba7cbee7cda
+guid: 914b627f23246fe41ac81574a35a8133
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: YM_Boots
-    second: {fileID: 2100000, guid: 3afcfb939ac77454ab9ffb7351435263, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: YM_Hair
-    second: {fileID: 2100000, guid: d28bb7b2a26314646ae64c6f5b1c6db5, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: YM_Hat
-    second: {fileID: 2100000, guid: 973fa3ed1ca7d824f914c13d76211b6d, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: YM_Jacket
-    second: {fileID: 2100000, guid: 4070b0a37f62779438e84f34e549336e, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: YM_Pants
-    second: {fileID: 2100000, guid: 3f943a5743a567648855d6e0260cb0c8, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: YM_T-Shirt
-    second: {fileID: 2100000, guid: b8139dde65baa5344b5313628212849a, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Young_Male_Skin
-    second: {fileID: 2100000, guid: 5ee799f8651a2a34db80442eb24fe145, type: 2}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -59,7 +24,7 @@ ModelImporter:
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
     importConstraints: 0
-    animationCompression: 3
+    animationCompression: 1
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -155,6 +120,35 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
+      name: Armature|default_fast
+      takeName: Armature|default_fast
+      internalID: 838276998905886036
+      firstFrame: 0
+      lastFrame: 120
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
       name: Armature|stay
       takeName: Armature|stay
       internalID: 7560771317261827551
@@ -166,7 +160,7 @@ ModelImporter:
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
+      loopTime: 1
       loopBlend: 0
       loopBlendOrientation: 0
       loopBlendPositionY: 0
@@ -358,7 +352,7 @@ ModelImporter:
     globalScale: 1
     rootMotionBoneName: mixamorig:Hips
     hasTranslationDoF: 0
-    hasExtraRoot: 1
+    hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   autoGenerateAvatarMappingIfUnspecified: 1
