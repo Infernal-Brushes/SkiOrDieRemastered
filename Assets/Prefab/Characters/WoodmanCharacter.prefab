@@ -100,8 +100,8 @@ MonoBehaviour:
   _centrifugalForceCoefficient: 0.011
   _deathSpeedX: 90
   _deathSpeedZ: 72
-  _deathAlertSpeedX: 60
-  _velocityToLoseSki: 1
+  _deathAlertSpeedX: 75
+  _velocityToLoseSki: 32
   speedOfNormalRotationY: 0.68
   speedOfStrafeRotationY: 4.5
   angleOfTurn: 50
@@ -1045,7 +1045,7 @@ SkinnedMeshRenderer:
   m_Quality: 0
   m_UpdateWhenOffscreen: 0
   m_SkinnedMotionVectors: 1
-  m_Mesh: {fileID: 7334728741571333088, guid: 4167262cac6ed2a428120c7337a46203, type: 3}
+  m_Mesh: {fileID: 7334728741571333088, guid: 9ab2e160b1fe7e04e9fa71df1745a7b7, type: 3}
   m_Bones:
   - {fileID: 3581526188231022529}
   - {fileID: 1222860580081786457}

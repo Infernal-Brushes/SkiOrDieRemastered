@@ -112,7 +112,7 @@ namespace Assets.Scripts
         /// </summary>
         [Tooltip("Скорость прямо для проигрыша")]
         [SerializeField]
-        private float _deathSpeedX = 72;
+        private float _deathSpeedX = 90f;
 
         /// <summary>
         /// Боковая скорость для проигрыша
@@ -821,6 +821,7 @@ namespace Assets.Scripts
 
             StrafeTurnOff();
             TurningTurnOff();
+            _animator.SetTrigger("toDefault");
 
             if (_isDebugEnabled)
             {
@@ -840,11 +841,6 @@ namespace Assets.Scripts
             ReturnSkiToDefaultPosition();
 
             RagdollOff();
-            //for (int i = 0; i < bonesTransforms.Length; i++)
-            //{
-            //    bonesTransforms[i].position = defaultBonesPositions[i];
-            //    bonesTransforms[i].rotation = defaultBonesRotations[i];
-            //}
         }
 
         /// <summary>

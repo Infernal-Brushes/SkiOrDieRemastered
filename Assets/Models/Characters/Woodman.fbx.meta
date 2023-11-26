@@ -1,44 +1,9 @@
 fileFormatVersion: 2
-guid: 4167262cac6ed2a428120c7337a46203
+guid: 9ab2e160b1fe7e04e9fa71df1745a7b7
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Beard.002
-    second: {fileID: 2100000, guid: 3235d381515c9064c810488789fb8aa3, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Boots_Bot.002
-    second: {fileID: 2100000, guid: 4998d8108fefdc64f86b44852c16054d, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Boots_Top.002
-    second: {fileID: 2100000, guid: f23adb8f0d1848e4f8a47337d55fe610, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Jacket.002
-    second: {fileID: 2100000, guid: 8c65eed03a231f445a00dfd8a5d67bc3, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Pants.002
-    second: {fileID: 2100000, guid: c3392e7c9fb82f14fb7c2c8d4711806b, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Shirt.002
-    second: {fileID: 2100000, guid: a2b0872445e661942aa9e1eacd9b628a, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Skin_Base.002
-    second: {fileID: 2100000, guid: d669a90f2a7c5fc42978e2fdf38353d3, type: 2}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -160,6 +125,35 @@ ModelImporter:
       internalID: 7871033996822533607
       firstFrame: 0
       lastFrame: 79
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Armature|default_fast
+      takeName: Armature|default_fast
+      internalID: 838276998905886036
+      firstFrame: 0
+      lastFrame: 120
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
