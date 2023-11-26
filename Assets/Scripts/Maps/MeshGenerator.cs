@@ -346,6 +346,7 @@ public class MeshGenerator : MonoBehaviour
         var nextMeshGenerator = Instantiate(this,
             newPosition,
             transform.rotation);
+        nextMeshGenerator.name = name;
 
         Destroy(nextMeshGenerator.barriersParent);
         _barriersParent.transform.parent = nextMeshGenerator.transform;
