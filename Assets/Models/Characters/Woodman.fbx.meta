@@ -3,7 +3,42 @@ guid: 4167262cac6ed2a428120c7337a46203
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Beard.002
+    second: {fileID: 2100000, guid: 3235d381515c9064c810488789fb8aa3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Boots_Bot.002
+    second: {fileID: 2100000, guid: 4998d8108fefdc64f86b44852c16054d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Boots_Top.002
+    second: {fileID: 2100000, guid: f23adb8f0d1848e4f8a47337d55fe610, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Jacket.002
+    second: {fileID: 2100000, guid: 8c65eed03a231f445a00dfd8a5d67bc3, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Pants.002
+    second: {fileID: 2100000, guid: c3392e7c9fb82f14fb7c2c8d4711806b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Shirt.002
+    second: {fileID: 2100000, guid: a2b0872445e661942aa9e1eacd9b628a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Skin_Base.002
+    second: {fileID: 2100000, guid: d669a90f2a7c5fc42978e2fdf38353d3, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
