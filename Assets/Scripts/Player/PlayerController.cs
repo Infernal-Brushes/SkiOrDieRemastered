@@ -4,7 +4,6 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UIElements;
 
 namespace Assets.Scripts
 {
@@ -172,6 +171,11 @@ namespace Assets.Scripts
         private bool isInStrafe = false;
 
         /// <summary>
+        /// true если держится кнопка поворота (до перехода в стрейф)
+        /// </summary>
+        private bool _isInTurning = false;
+
+        /// <summary>
         /// Состояние проигрыша.
         /// <see cref="true"/> игрок проиграл
         /// <see cref="false"/> игрок ещё играет
@@ -333,6 +337,18 @@ namespace Assets.Scripts
         /// Событие выхода из стрейфа
         /// </summary>
         public event OnStrafeDelegate OnStrafeOff;
+
+        public delegate void OnTurningDelegate();
+
+        /// <summary>
+        /// Событие начала поворота
+        /// </summary>
+        public event OnTurningDelegate OnTurningOn;
+
+        /// <summary>
+        /// Событие окончания поворота
+        /// </summary>
+        public event OnTurningDelegate OnTurningOff;
 
         public delegate void OnLoseDelegate();
 
@@ -526,9 +542,11 @@ namespace Assets.Scripts
 
             if (_axisX == 0)
             {
+                _animator.SetTrigger("ToDefault");
                 ReturningToMainRotation(angleY);
                 return;
             }
+            _animator.ResetTrigger("ToDefault");
 
             RotatePlayerOnGround();
         }
@@ -549,6 +567,7 @@ namespace Assets.Scripts
         private void ReturningToMainRotation(float angleY)
         {
             StrafeTurnOff();
+            TurningTurnOff();
 
             //восстанавливаем положение лыж
             if (angleY > 90 + angleOfTurn)
@@ -573,6 +592,7 @@ namespace Assets.Scripts
                 if (AngleOfCurrentTurning > -angleOfTurn)
                 {
                     StrafeTurnOff();
+                    TurningTurnOn(Sides.Left);
                     // поворот
                     playerRigidBody.AddTorque(_axisX * speedOfNormalRotationY * transform.up, ForceMode.VelocityChange);
 
@@ -584,6 +604,7 @@ namespace Assets.Scripts
 
                 //затем когда дошли до угла максимального то держим скорость в пределе (входим в стрэйф)
                 StrafeTurnOn(Sides.Left);
+                TurningTurnOff();
                 if (AngleOfCurrentTurning > -angleOfStrafe)
                 {
                     playerRigidBody.AddTorque(_axisX * speedOfStrafeRotationY * transform.up, ForceMode.VelocityChange);
@@ -611,6 +632,7 @@ namespace Assets.Scripts
                 if (AngleOfCurrentTurning < angleOfTurn)
                 {
                     StrafeTurnOff();
+                    TurningTurnOn(Sides.Right);
                     // поворот
                     playerRigidBody.AddTorque(_axisX * speedOfNormalRotationY * transform.up, ForceMode.VelocityChange);
 
@@ -623,6 +645,7 @@ namespace Assets.Scripts
                 //затем когда дошли до угла максимального то держим скорость в пределе (входим в стрэйф)
 
                 StrafeTurnOn(Sides.Right);
+                TurningTurnOff();
                 if (AngleOfCurrentTurning < angleOfStrafe)
                 {
                     playerRigidBody.AddTorque(_axisX * speedOfStrafeRotationY * transform.up, ForceMode.VelocityChange);
@@ -913,16 +936,37 @@ namespace Assets.Scripts
             }
 
             isInStrafe = true;
-            string booleanParameterName = side switch
-            {
-                Sides.Left => "isInStrafeLeft",
-                Sides.Right => "isInStrafeRight",
-                _ => throw new ArgumentException("Некорректный тип поворота для смены стрейфа")
-            };
-
-            _animator.SetBool(booleanParameterName, true);
+            _animator.SetBool($"isInStrafe{side}", true);
 
             OnStrafeOn?.Invoke();
+        }
+
+        private void TurningTurnOff()
+        {
+            if (!_isInTurning)
+            {
+                return;
+            }
+
+            _isInTurning = false;
+            _animator.SetBool($"isInTurningLeft", false);
+            _animator.SetBool($"isInTurningRight", false);
+
+            OnStrafeOff?.Invoke();
+        }
+
+        private void TurningTurnOn(Sides side)
+        {
+            if (_isInTurning)
+            {
+                return;
+            }
+
+            _isInTurning = true;
+            _animator.SetBool($"isInTurning{side}", true);
+
+            OnTurningOn?.Invoke();
+
         }
 
         //private IEnumerator SlowMotionOnLose()

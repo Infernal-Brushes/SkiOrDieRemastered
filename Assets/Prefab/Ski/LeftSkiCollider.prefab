@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &9021164708775533181
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9021164708775533154}
+  - component: {fileID: 9021164708775533155}
+  m_Layer: 10
+  m_Name: LeftSkiCollider
+  m_TagString: Player
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9021164708775533154
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9021164708775533181}
+  m_LocalRotation: {x: 0.028306108, y: 0.014904646, z: -0.013290962, w: 0.9993998}
+  m_LocalPosition: {x: -0.29123464, y: -0.01587103, z: 0.16560373}
+  m_LocalScale: {x: -0.09818483, y: 0.09818484, z: 0.09818479}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 3.266, y: 1.667, z: -1.476}
+--- !u!136 &9021164708775533155
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9021164708775533181}
+  m_Material: {fileID: 13400000, guid: 8c827599ed20700459e515177de240d4, type: 2}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.49168026
+  m_Height: 20.843998
+  m_Direction: 2
+  m_Center: {x: 0.000015453452, y: -0.31999683, z: 0.826611}
