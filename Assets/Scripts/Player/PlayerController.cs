@@ -121,6 +121,10 @@ namespace Assets.Scripts
         [SerializeField]
         private float _deathSpeedZ = 32;
 
+        [Tooltip("Скорость на которой проигрывается анимации большой скорости")]
+        [SerializeField]
+        private float _deathAlertSpeedX = 60f;
+
         /// <summary>
         /// Скорость, на которой есть шанс потерять лыжи
         /// </summary>
@@ -506,6 +510,14 @@ namespace Assets.Scripts
             // Катить по направлению лыж
             float impulse = _angleCoeficientReversed * _velocityFreeRide;
             playerRigidBody.AddForce(impulse * _skiesDirection, ForceMode.Impulse);
+            if (VelocityForward > _deathAlertSpeedX)
+            {
+                _animator.SetBool("isGoingFast", true);
+            }
+            else
+            {
+                _animator.SetBool("isGoingFast", false);
+            }
 
             PrintText(_forwardSpeedText, impulse);
         }
@@ -808,6 +820,7 @@ namespace Assets.Scripts
             OnRestarted?.Invoke();
 
             StrafeTurnOff();
+            TurningTurnOff();
 
             if (_isDebugEnabled)
             {
@@ -827,11 +840,11 @@ namespace Assets.Scripts
             ReturnSkiToDefaultPosition();
 
             RagdollOff();
-            for (int i = 0; i < bonesTransforms.Length; i++)
-            {
-                bonesTransforms[i].position = defaultBonesPositions[i];
-                bonesTransforms[i].rotation = defaultBonesRotations[i];
-            }
+            //for (int i = 0; i < bonesTransforms.Length; i++)
+            //{
+            //    bonesTransforms[i].position = defaultBonesPositions[i];
+            //    bonesTransforms[i].rotation = defaultBonesRotations[i];
+            //}
         }
 
         /// <summary>
