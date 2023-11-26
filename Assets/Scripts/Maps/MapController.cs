@@ -1,8 +1,7 @@
 ﻿using TMPro;
 using UnityEngine;
 
-namespace Assets.Scripts
-{
+namespace Assets.Scripts {
     public class MapController : MonoBehaviour
     {
         public MeshGenerator meshGeneratorPrefab;
@@ -10,9 +9,8 @@ namespace Assets.Scripts
         private Transform startPositionCamera;
         private Transform startPositionMeshGeneratror;
 
-
         public GameObject loseMenu;
-        public TMP_Text metersText;
+        public TextMeshProUGUI metersText;
 
         /// <summary>
         /// Флаг необходимости спавнить преграды
@@ -76,7 +74,7 @@ namespace Assets.Scripts
 
         public void ShowLoseMenu(int meters)
         {
-            metersText.text = meters.ToString();
+            metersText.text = string.Format("Пройдено метров: {0}", meters) ;
             loseMenu.SetActive(true);
         }
     }
