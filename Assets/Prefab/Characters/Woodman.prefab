@@ -100,7 +100,8 @@ MonoBehaviour:
   _centrifugalForceCoefficient: 0.011
   _deathSpeedX: 90
   _deathSpeedZ: 72
-  _velocityToLoseSki: 1
+  _deathAlertSpeedX: 75
+  _velocityToLoseSki: 27
   speedOfNormalRotationY: 0.68
   speedOfStrafeRotationY: 4.5
   angleOfTurn: 50
