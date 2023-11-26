@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Enums;
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -39,7 +40,10 @@ namespace Assets.Scripts
         private TMP_Text _velocitySidewiseText;
 
         [SerializeField]
-        private TMP_Text _scoreText;
+        private TMP_Text _metersText;
+
+        [SerializeField]
+        private Animator _animator;
 
         /// <summary>
         /// Объект проверки контакта с землёй
@@ -97,11 +101,18 @@ namespace Assets.Scripts
         private float _strafeSpeedLimit = 1f;
 
         /// <summary>
+        /// Процент скорости центробежной силы от текущей скорости
+        /// </summary>
+        [Tooltip("Процент скорости центробежной силы от текущей скорости")]
+        [SerializeField]
+        private float _centrifugalForceCoefficient = 0.011f;
+
+        /// <summary>
         /// Скорость прямо для проигрыша
         /// </summary>
         [Tooltip("Скорость прямо для проигрыша")]
         [SerializeField]
-        private float _deathSpeedX = 72;
+        private float _deathSpeedX = 90f;
 
         /// <summary>
         /// Боковая скорость для проигрыша
@@ -109,6 +120,10 @@ namespace Assets.Scripts
         [Tooltip("Боковая скорость для проигрыша")]
         [SerializeField]
         private float _deathSpeedZ = 32;
+
+        [Tooltip("Скорость на которой проигрывается анимации большой скорости")]
+        [SerializeField]
+        private float _deathAlertSpeedX = 60f;
 
         /// <summary>
         /// Скорость, на которой есть шанс потерять лыжи
@@ -160,6 +175,11 @@ namespace Assets.Scripts
         private bool isInStrafe = false;
 
         /// <summary>
+        /// true если держится кнопка поворота (до перехода в стрейф)
+        /// </summary>
+        private bool _isInTurning = false;
+
+        /// <summary>
         /// Состояние проигрыша.
         /// <see cref="true"/> игрок проиграл
         /// <see cref="false"/> игрок ещё играет
@@ -174,17 +194,17 @@ namespace Assets.Scripts
         /// <summary>
         /// Текущее растояние, которое проехал игрок
         /// </summary>
-        private int _currentMeters => Convert.ToInt32(transform.position.x - _startPositionX);
+        private int _currentMeters => Convert.ToInt32(transform.position.x - _startPositionX) / 6;
 
         /// <summary>
-        /// Угол поворота игрока
+        /// Угол поворота игрока текущий
         /// </summary>
-        private float _angle;
+        public float AngleOfCurrentTurning { get; private set; }
 
         /// <summary>
         /// Коэффициент угла поворота. 0 - нет поворота. 1 - вправо на 90. -1 - влево на 90
         /// </summary>
-        private float _angleCoeficient => Mathf.Clamp(_angle / -90f, -1, 1);
+        private float _angleCoeficient => Mathf.Clamp(AngleOfCurrentTurning / 90f, -1, 1);
 
         /// <summary>
         /// Обратный коэфициент угла поворота. 1 если прямо. Чем дальше от центра, тем ближе к 0
@@ -237,11 +257,48 @@ namespace Assets.Scripts
         public Quaternion[] defaultBonesRotations;
         private float[] bonesDefaultMass;
 
+        [Header("Лыжи")]
+
         public PhysicMaterial skiMaterial;
-        public GameObject leftSki;
-        public GameObject rightSki;
-        public GameObject leftFoot;
-        public GameObject rightFoot;
+
+        [SerializeField]
+        private GameObject _leftSkiCollider;
+
+        [SerializeField]
+        private GameObject _rightSkiCollider;
+
+        [SerializeField]
+        private GameObject _leftSkiModel;
+
+        [SerializeField]
+        private GameObject _rightSkiModel;
+
+        [SerializeField]
+        private float _skiLoseForceForward = 30f;
+
+        [SerializeField]
+        private float _skiLoseForceUp = 10f;
+
+        private Rigidbody _leftSkiRigidBody;
+        private Rigidbody _rightSkiRigidBody;
+
+        [SerializeField]
+        private GameObject _leftFoot;
+
+        [SerializeField] 
+        private GameObject _rightFoot;
+
+        private Vector3 _leftSkiColliderDefaultTransformPosition;
+        private Vector3 _rightSkiColliderDefaultTransformPosition;
+        private Quaternion _leftSkiColliderDefaultTransformRotation;
+        private Quaternion _rightSkiColliderDefaultTransformRotation;
+
+
+        private Vector3 _leftSkiModelDefaultTransformPosition;
+        private Vector3 _rightSkiModelDefaultTransformPosition;
+        private Quaternion _leftSkiModelDefaultTransformRotation;
+        private Quaternion _rightSkiModelDefaultTransformRotation;
+
         public Transform forLeftSki;
         public Transform forRightSki;
 
@@ -273,6 +330,30 @@ namespace Assets.Scripts
         /// </summary>
         public event OnGroundOffDelegate OnGroundOff;
 
+        public delegate void OnStrafeDelegate();
+
+        /// <summary>
+        /// Событие входа в стрейф
+        /// </summary>
+        public event OnStrafeDelegate OnStrafeOn;
+
+        /// <summary>
+        /// Событие выхода из стрейфа
+        /// </summary>
+        public event OnStrafeDelegate OnStrafeOff;
+
+        public delegate void OnTurningDelegate();
+
+        /// <summary>
+        /// Событие начала поворота
+        /// </summary>
+        public event OnTurningDelegate OnTurningOn;
+
+        /// <summary>
+        /// Событие окончания поворота
+        /// </summary>
+        public event OnTurningDelegate OnTurningOff;
+
         public delegate void OnLoseDelegate();
 
         /// <summary>
@@ -290,10 +371,7 @@ namespace Assets.Scripts
         private void Awake()
         {
             playerRigidBody = GetComponent<Rigidbody>();
-        }
 
-        private void Start()
-        {
             bonesDefaultMass = new float[bonesTransforms.Length];
             for (int i = 0; i < ragdollRigidbody.Length; i++)
             {
@@ -303,7 +381,7 @@ namespace Assets.Scripts
             RagdollOff();
 
             _restartPlayerTransformPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z);
-            _restartPlayerTransformRotation = new Quaternion(transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.rotation.w);    
+            _restartPlayerTransformRotation = new Quaternion(transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.rotation.w);
             defaultBonesPositions = new Vector3[bonesTransforms.Length];
             defaultBonesRotations = new Quaternion[bonesTransforms.Length];
             for (int i = 0; i < bonesTransforms.Length; i++)
@@ -314,7 +392,18 @@ namespace Assets.Scripts
 
             _startPositionX = transform.position.x;
 
-            OnGroundOff += Update;
+            _leftSkiColliderDefaultTransformPosition = _leftSkiCollider.transform.localPosition;
+            _leftSkiColliderDefaultTransformRotation = _leftSkiCollider.transform.localRotation;
+            _rightSkiColliderDefaultTransformPosition = _rightSkiCollider.transform.localPosition;
+            _rightSkiColliderDefaultTransformRotation = _rightSkiCollider.transform.localRotation;
+
+            _leftSkiModelDefaultTransformPosition = _leftSkiModel.transform.localPosition;
+            _leftSkiModelDefaultTransformRotation = _leftSkiModel.transform.localRotation;
+            _rightSkiModelDefaultTransformPosition = _rightSkiModel.transform.localPosition;
+            _rightSkiModelDefaultTransformRotation = _rightSkiModel.transform.localRotation;
+
+            _leftSkiRigidBody = forLeftSki.gameObject.GetComponent<Rigidbody>();
+            _rightSkiRigidBody = forRightSki.gameObject.GetComponent<Rigidbody>();
         }
 
         private void Update()
@@ -336,11 +425,11 @@ namespace Assets.Scripts
                 _axisX = Input.GetAxis("Horizontal");
             }
 
-            _angle = 90f - Vector3.Angle(_skiesDirection, Vector3.forward);
+            AngleOfCurrentTurning = -(90f - Vector3.Angle(_skiesDirection, Vector3.forward));
 
             PrintText(_velocityForwardText, VelocityForward);
             PrintText(_velocitySidewiseText, (VelocitySidewise));
-            PrintText(_scoreText, $"{_currentMeters} m");
+            PrintText(_metersText, $"{_currentMeters} m");
             if (!isInStrafe)
             {
                 PrintText(_strafeSpeedText, "0");
@@ -352,7 +441,7 @@ namespace Assets.Scripts
             if (isLose)
                 return;
 
-            Debug.DrawRay(groundPoint.transform.position, groundPoint.transform.up, Color.red, 12);
+            //Debug.DrawRay(groundPoint.transform.position, groundPoint.transform.up, Color.red, 12);
 
             if (VelocityForward >= _deathSpeedX)
             {
@@ -421,6 +510,14 @@ namespace Assets.Scripts
             // Катить по направлению лыж
             float impulse = _angleCoeficientReversed * _velocityFreeRide;
             playerRigidBody.AddForce(impulse * _skiesDirection, ForceMode.Impulse);
+            if (VelocityForward > _deathAlertSpeedX)
+            {
+                _animator.SetBool("isGoingFast", true);
+            }
+            else
+            {
+                _animator.SetBool("isGoingFast", false);
+            }
 
             PrintText(_forwardSpeedText, impulse);
         }
@@ -460,8 +557,9 @@ namespace Assets.Scripts
                 ReturningToMainRotation(angleY);
                 return;
             }
+            _animator.ResetTrigger("toDefault");
 
-            RotatePlayerOnGround(angleY);
+            RotatePlayerOnGround();
         }
 
         private void RotatePlayerInAir(float angleY)
@@ -479,7 +577,10 @@ namespace Assets.Scripts
 
         private void ReturningToMainRotation(float angleY)
         {
-            isInStrafe = false;
+            StrafeTurnOff();
+            TurningTurnOff();
+            _animator.SetTrigger("toDefault");
+
             //восстанавливаем положение лыж
             if (angleY > 90 + angleOfTurn)
             {
@@ -491,33 +592,42 @@ namespace Assets.Scripts
             }
         }
 
-        private void RotatePlayerOnGround(float angleY)
+        /// <summary>
+        /// Поворачивать игрока по земле
+        /// </summary>
+        private void RotatePlayerOnGround()
         {
             // налево повернуть корпус
             if (_axisX < 0)
             {
                 //сначала поворачиваемся до нужного угла
-                if (angleY > 90 - angleOfTurn)
+                if (AngleOfCurrentTurning > -angleOfTurn)
                 {
-                    isInStrafe = false;
+                    StrafeTurnOff();
+                    TurningTurnOn(Sides.Left);
+                    // поворот
                     playerRigidBody.AddTorque(_axisX * speedOfNormalRotationY * transform.up, ForceMode.VelocityChange);
+
+                    // центробежная скорость
+                    float impulse = VelocityForward * _centrifugalForceCoefficient;
+                    playerRigidBody.AddForce(impulse * -transform.right, ForceMode.Impulse);
                     return;
                 }
 
                 //затем когда дошли до угла максимального то держим скорость в пределе (входим в стрэйф)
-                isInStrafe = true;
-                if (angleY > 90 - angleOfStrafe)
+                StrafeTurnOn(Sides.Left);
+                TurningTurnOff();
+                if (AngleOfCurrentTurning > -angleOfStrafe)
                 {
-                    playerRigidBody.AddTorque(transform.up * speedOfStrafeRotationY * _axisX, ForceMode.VelocityChange);
+                    playerRigidBody.AddTorque(_axisX * speedOfStrafeRotationY * transform.up, ForceMode.VelocityChange);
                 }
 
                 if (VelocityForward > _strafeSpeedLimit)
                 {
                     //сила назад
-                    Debug.Log(_velocityStrafeStopper);
                     playerRigidBody.AddForce(Vector3.left * _velocityStrafeStopper, ForceMode.Impulse);
                     //сила в бок
-                    float impulse = -_axisX * _velocityStrafe;
+                    float impulse = _axisX * _velocityStrafe;
                     playerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
 
                     PrintText(_strafeSpeedText, impulse);
@@ -531,18 +641,26 @@ namespace Assets.Scripts
             else if (_axisX > 0)
             {
                 //сначала поворачиваемся до нужного угла
-                if (angleY < 90 + angleOfTurn)
+                if (AngleOfCurrentTurning < angleOfTurn)
                 {
-                    isInStrafe = false;
+                    StrafeTurnOff();
+                    TurningTurnOn(Sides.Right);
+                    // поворот
                     playerRigidBody.AddTorque(_axisX * speedOfNormalRotationY * transform.up, ForceMode.VelocityChange);
+
+                    // центробежная скорость
+                    float impulse = VelocityForward * _centrifugalForceCoefficient;
+                    playerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
                     return;
                 }
 
                 //затем когда дошли до угла максимального то держим скорость в пределе (входим в стрэйф)
-                isInStrafe = true;
-                if (angleY < 90 + angleOfStrafe)
+
+                StrafeTurnOn(Sides.Right);
+                TurningTurnOff();
+                if (AngleOfCurrentTurning < angleOfStrafe)
                 {
-                    playerRigidBody.AddTorque(transform.up * speedOfStrafeRotationY * _axisX, ForceMode.VelocityChange);
+                    playerRigidBody.AddTorque(_axisX * speedOfStrafeRotationY * transform.up, ForceMode.VelocityChange);
                 }
 
                 if (VelocityForward > _strafeSpeedLimit)
@@ -550,8 +668,8 @@ namespace Assets.Scripts
                     //сила назад
                     playerRigidBody.AddForce(Vector3.left * _velocityStrafeStopper, ForceMode.Impulse);
                     //сила в бок
-                    float impulse = -_axisX * _velocityStrafe;
-                    playerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
+                    float impulse = _axisX * _velocityStrafe;
+                    playerRigidBody.AddForce(impulse * -transform.right, ForceMode.Impulse);
 
                     PrintText(_strafeSpeedText, impulse);
                 }
@@ -572,6 +690,7 @@ namespace Assets.Scripts
 
         private void RagdollOn()
         {
+            _animator.enabled = false;
             for (int i = 0; i < ragdollRigidbody.Length; i++)
             {
                 ragdollRigidbody[i].isKinematic = false;
@@ -583,12 +702,13 @@ namespace Assets.Scripts
 
         public void RagdollOff()
         {
+            _animator.enabled = true;
             for (int i = 0; i < ragdollRigidbody.Length; i++)
             {
                 ragdollRigidbody[i].isKinematic = true;
                 ragdollRigidbody[i].velocity = Vector3.zero;
                 ragdollRigidbody[i].angularVelocity = Vector3.zero;
-                ragdollRigidbody[i].mass = default;
+                ragdollRigidbody[i].mass = 0f;
             }
         }
 
@@ -599,8 +719,10 @@ namespace Assets.Scripts
                 return;
             }
 
-            rightSki.layer = 7;
-            leftSki.layer = 7;
+            _metersText.gameObject.SetActive(false);
+
+            _rightSkiCollider.layer = 7;
+            _leftSkiCollider.layer = 7;
 
             joystick.OnPointerUp(new PointerEventData(null));
             joystick.gameObject.SetActive(false);
@@ -608,16 +730,12 @@ namespace Assets.Scripts
             var ingameMenu = FindObjectOfType<InGameMenu>();
             ingameMenu.pauseButton.SetActive(false);
 
+            SetSkiToFeet();
+
             playerRigidBody.constraints = RigidbodyConstraints.None;
             if (cause == LoseCause.fallX)
             {
                 Debug.Log("Проигрыш! Большая скорость прямо");
-
-                //прицепляем лыжи к ногам
-                leftSki.GetComponent<CapsuleCollider>().material = ragdollRigidbody[0].GetComponent<BoxCollider>().material;
-                leftSki.transform.SetParent(leftFoot.transform);
-                rightSki.GetComponent<CapsuleCollider>().material = ragdollRigidbody[0].GetComponent<BoxCollider>().material;
-                rightSki.transform.SetParent(rightFoot.transform);
 
                 StartCoroutine(Fall(-transform.right));
             }
@@ -627,7 +745,7 @@ namespace Assets.Scripts
 
                 LoseSki();
 
-
+                // TODO: разобраться с векторами падений
                 if (VelocitySidewise > 0)
                     StartCoroutine(Fall(-transform.forward));
                 else
@@ -635,6 +753,7 @@ namespace Assets.Scripts
             }
             else if (cause == LoseCause.barrier)
             {
+                Debug.Log("Проигрыш! столкновение");
                 LoseSki();
 
                 RagdollOn();
@@ -669,25 +788,30 @@ namespace Assets.Scripts
                 }
             }
 
+            var vectorToLose = new Vector3(_skiLoseForceForward, _skiLoseForceUp, 0);
             if (isLeftSkiOff)
             {
-                leftSki.transform.SetParent(forLeftSki, true);
-                forLeftSki.gameObject.GetComponent<Rigidbody>().isKinematic = false;
-            }
-            else
-            {
-                leftSki.GetComponent<CapsuleCollider>().material = ragdollRigidbody[0].GetComponent<BoxCollider>().material;
-                leftSki.transform.SetParent(leftFoot.transform);
+                _leftSkiModel.transform.SetParent(_leftSkiCollider.transform, true);
+                _leftSkiModel.transform.SetLocalPositionAndRotation(new Vector3(-0.9300206f, -0.03308737f, 0.9800017f), new Quaternion());
+
+                _leftSkiCollider.transform.SetParent(forLeftSki, true);
+                _leftSkiCollider.transform.rotation =_leftSkiModel.transform.rotation;
+                _leftSkiCollider.GetComponent<CapsuleCollider>().material = skiMaterial;
+
+                _leftSkiRigidBody.isKinematic = false;
+                _leftSkiRigidBody.AddForce(vectorToLose, ForceMode.Impulse);
             }
             if (isRightSkiOff)
             {
-                rightSki.transform.SetParent(forRightSki, true);
-                forRightSki.gameObject.GetComponent<Rigidbody>().isKinematic = false;
-            }
-            else
-            {
-                rightSki.GetComponent<CapsuleCollider>().material = ragdollRigidbody[0].GetComponent<BoxCollider>().material;
-                rightSki.transform.SetParent(rightFoot.transform);
+                _rightSkiModel.transform.SetParent(_rightSkiCollider.transform, true);
+                _rightSkiModel.transform.SetLocalPositionAndRotation(new Vector3(-0.9300206f, -0.03308737f, 0.9800017f), new Quaternion());
+
+                _rightSkiCollider.transform.SetParent(forRightSki, true);
+                _rightSkiCollider.transform.rotation = _rightSkiModel.transform.rotation;
+                _rightSkiCollider.GetComponent<CapsuleCollider>().material = skiMaterial;
+
+                _rightSkiRigidBody.isKinematic = false;
+                _rightSkiRigidBody.AddForce(vectorToLose, ForceMode.Impulse);
             }
         }
 
@@ -695,10 +819,16 @@ namespace Assets.Scripts
         {
             OnRestarted?.Invoke();
 
+            StrafeTurnOff();
+            TurningTurnOff();
+            _animator.SetTrigger("toDefault");
+
             if (_isDebugEnabled)
             {
                 _debugPanel.SetActive(true);
             }
+
+            _metersText.gameObject.SetActive(true);
 
             joystick.gameObject.SetActive(true);
             playerRigidBody.velocity = Vector3.zero;
@@ -706,26 +836,51 @@ namespace Assets.Scripts
             transform.SetPositionAndRotation(_restartPlayerTransformPosition, _restartPlayerTransformRotation);
             playerRigidBody.angularDrag = 18;
             playerRigidBody.constraints = RigidbodyConstraints.FreezeRotationZ;
-            //rb.useGravity = false;
             isLose = false;
-            //лыжи на место
-            rightSki.transform.SetParent(transform);
-            rightSki.GetComponent<CapsuleCollider>().material = skiMaterial;
-            leftSki.transform.SetParent(transform);
-            leftSki.GetComponent<CapsuleCollider>().material = skiMaterial;
 
-            rightSki.layer = 10;
-            leftSki.layer = 10;
+            ReturnSkiToDefaultPosition();
+
+            RagdollOff();
+        }
+
+        /// <summary>
+        /// Прицепить лыжи к ногам (только для регдола будет работать адекватно)
+        /// </summary>
+        private void SetSkiToFeet()
+        {
+            _leftSkiCollider.transform.SetParent(_leftFoot.transform);
+            _leftSkiModel.transform.SetParent(_leftSkiCollider.transform);
+
+            _rightSkiCollider.transform.SetParent(_rightFoot.transform);
+            _rightSkiModel.transform.SetParent(_rightSkiCollider.transform);
+
+            _leftSkiCollider.GetComponent<CapsuleCollider>().material = ragdollRigidbody[0].GetComponent<BoxCollider>().material;
+            _rightSkiCollider.GetComponent<CapsuleCollider>().material = ragdollRigidbody[0].GetComponent<BoxCollider>().material;
+        }
+
+        /// <summary>
+        /// Вернуть лыжи на исходную позицию
+        /// </summary>
+        private void ReturnSkiToDefaultPosition()
+        {
+            _leftSkiCollider.transform.SetParent(transform);
+            _leftSkiCollider.transform.SetLocalPositionAndRotation(_leftSkiColliderDefaultTransformPosition, _leftSkiColliderDefaultTransformRotation);
+            _leftSkiCollider.GetComponent<CapsuleCollider>().material = skiMaterial;
+            _leftSkiCollider.layer = 10;
+
+            _rightSkiCollider.transform.SetParent(transform);
+            _rightSkiCollider.transform.SetLocalPositionAndRotation(_rightSkiColliderDefaultTransformPosition, _rightSkiColliderDefaultTransformRotation);
+            _rightSkiCollider.GetComponent<CapsuleCollider>().material = skiMaterial;
+            _rightSkiCollider.layer = 10;
+
+            _leftSkiModel.transform.SetParent(_leftFoot.transform);
+            _leftSkiModel.transform.SetLocalPositionAndRotation(_leftSkiModelDefaultTransformPosition, _leftSkiModelDefaultTransformRotation);
+
+            _rightSkiModel.transform.SetParent(_rightFoot.transform);
+            _rightSkiModel.transform.SetLocalPositionAndRotation(_rightSkiModelDefaultTransformPosition, _rightSkiModelDefaultTransformRotation);
 
             forLeftSki.gameObject.GetComponent<Rigidbody>().isKinematic = true;
             forRightSki.gameObject.GetComponent<Rigidbody>().isKinematic = true;
-
-            RagdollOff();
-            for (int i = 0; i < bonesTransforms.Length; i++)
-            {
-                bonesTransforms[i].position = defaultBonesPositions[i];
-                bonesTransforms[i].rotation = defaultBonesRotations[i];
-            }
         }
 
         private IEnumerator Fall(Vector3 direction)
@@ -750,7 +905,7 @@ namespace Assets.Scripts
         /// Обновить текст в <see cref="TMP_Text"/>, если он не <see cref="null"/>
         /// </summary>
         /// <param name="textMesh"></param>
-        /// <param name="text"></param>
+        /// <param name="obj"></param>
         private void PrintText(TMP_Text textMesh, object obj)
         {
             if (textMesh == null)
@@ -761,11 +916,72 @@ namespace Assets.Scripts
             textMesh.text = obj.ToString();
         }
 
-        //private IEnumerator SlowMotionOnLose()
-        //{
-        //    Time.timeScale = 0.3f;
-        //    yield return new WaitForSeconds(0.7f);
-        //    Time.timeScale = 1f;
-        //}
+        /// <summary>
+        /// Выйти из стрейфа
+        /// </summary>
+        private void StrafeTurnOff()
+        {
+            if (!isInStrafe)
+            {
+                return;
+            }
+
+            isInStrafe = false;
+            _animator.SetBool("isInStrafeLeft", false);
+            _animator.SetBool("isInStrafeRight", false);
+
+            OnStrafeOff?.Invoke();
+        }
+
+        /// <summary>
+        /// Войти в стрейф
+        /// </summary>
+        /// <param name="side">Направление движения</param>
+        private void StrafeTurnOn(Sides side)
+        {
+            if (isInStrafe)
+            {
+                return;
+            }
+
+            isInStrafe = true;
+            _animator.SetBool($"isInStrafe{side}", true);
+
+            OnStrafeOn?.Invoke();
+        }
+
+        private void TurningTurnOff()
+        {
+            if (!_isInTurning)
+            {
+                return;
+            }
+
+            _isInTurning = false;
+            _animator.SetBool($"isInTurningLeft", false);
+            _animator.SetBool($"isInTurningRight", false);
+
+            OnTurningOff?.Invoke();
+        }
+
+        private void TurningTurnOn(Sides side)
+        {
+            if (!_isInTurning)
+            {
+                OnTurningOn?.Invoke();
+            }
+
+            _isInTurning = true;
+            if (side == Sides.Left)
+            {
+                _animator.SetBool($"isInTurningLeft", true);
+                _animator.SetBool($"isInTurningRight", false);
+            }
+            else if (side == Sides.Right)
+            {
+                _animator.SetBool($"isInTurningLeft", false);
+                _animator.SetBool($"isInTurningRight", true);
+            }
+        }
     }
 }

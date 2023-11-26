@@ -1,9 +1,6 @@
 using Assets.Scripts;
 using Assets.Scripts.Player;
 using Assets.Scripts.Wears;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class GameController : MonoBehaviour
@@ -28,6 +25,11 @@ public class GameController : MonoBehaviour
     private void Start()
     {
         var playerAppearance = FindObjectOfType<PlayerAppearance>();
+
+        if (playerAppearance == null)
+        {
+            return;
+        }
 
         GameObject go;
         if (mockWearTorso != null)
