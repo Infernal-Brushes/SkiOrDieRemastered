@@ -968,12 +968,5 @@ namespace Assets.Scripts
             OnTurningOn?.Invoke();
 
         }
-
-        //private IEnumerator SlowMotionOnLose()
-        //{
-        //    Time.timeScale = 0.3f;
-        //    yield return new WaitForSeconds(0.7f);
-        //    Time.timeScale = 1f;
-        //}
     }
 }
