@@ -15,8 +15,10 @@ public class PlayerSound : MonoBehaviour
     void Start()
     {
         glideInstance = RuntimeManager.CreateInstance(GlideEvent);
-       RuntimeManager.AttachInstanceToGameObject(glideInstance, transform, playerController);
-        glideInstance.start();
+        StartGlideSound();
+        playerController.OnRestarted += StartGlideSound;
+        playerController.OnLose += StopSoundGlide;
+       
         
     }
 
@@ -24,19 +26,25 @@ public class PlayerSound : MonoBehaviour
     void Update()
     {
          glideInstance.setParameterByName("Speed",playerController.VelocityForward);
+         glideInstance.setParameterByName("AngleDrift",playerController.AngleOfCurrentTurning);
+    }
+
+    void StartGlideSound()
+    {
+        glideInstance.start();
     }
 
     void StopSoundGlide()
     {
-        if(Dead == true)
-        {
+    
             glideInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE); 
-        } 
 
     }
     void OnDestroy()
     {
-        glideInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        playerController.OnRestarted -= StartGlideSound;
+        playerController.OnLose -= StopSoundGlide;
 
     }
+
 }
