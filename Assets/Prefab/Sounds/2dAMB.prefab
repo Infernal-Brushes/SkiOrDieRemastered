@@ -50,5 +50,5 @@ MonoBehaviour:
       Data2: 1271847037
       Data3: -118800724
       Data4: -735272450
-    Path: event:/Wind Amb 2d
+    Path: event:/Amb/Wind Amb 2d
   playerController: {fileID: 0}
