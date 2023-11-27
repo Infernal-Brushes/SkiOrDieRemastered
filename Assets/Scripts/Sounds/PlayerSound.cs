@@ -9,8 +9,6 @@ public class PlayerSound : MonoBehaviour
     [SerializeField] private FMODUnity.EventReference GlideEvent;
     FMOD.Studio.EventInstance glideInstance;
     public PlayerController playerController;
-    
-    bool Dead;
     // Start is called before the first frame update
     void Start()
     {
@@ -18,8 +16,6 @@ public class PlayerSound : MonoBehaviour
         StartGlideSound();
         playerController.OnRestarted += StartGlideSound;
         playerController.OnLose += StopSoundGlide;
-       
-        
     }
 
     // Update is called once per frame
@@ -36,15 +32,13 @@ public class PlayerSound : MonoBehaviour
 
     void StopSoundGlide()
     {
-    
-            glideInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE); 
-
+        glideInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE); 
     }
+
     void OnDestroy()
     {
         playerController.OnRestarted -= StartGlideSound;
         playerController.OnLose -= StopSoundGlide;
-
     }
 
 }
