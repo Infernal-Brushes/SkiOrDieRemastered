@@ -1,4 +1,5 @@
 ﻿using Assets.Enums;
+using Assets.Extensions;
 using System;
 using System.Collections;
 using TMPro;
@@ -691,6 +692,7 @@ namespace Assets.Scripts
         private void RagdollOn()
         {
             _animator.enabled = false;
+            _animator.ResetToEntryState();
             for (int i = 0; i < ragdollRigidbody.Length; i++)
             {
                 ragdollRigidbody[i].isKinematic = false;
@@ -702,6 +704,7 @@ namespace Assets.Scripts
 
         public void RagdollOff()
         {
+            _animator.ResetToEntryState();
             _animator.enabled = true;
             for (int i = 0; i < ragdollRigidbody.Length; i++)
             {
@@ -821,7 +824,6 @@ namespace Assets.Scripts
 
             StrafeTurnOff();
             TurningTurnOff();
-            _animator.SetTrigger("toDefault");
 
             if (_isDebugEnabled)
             {
