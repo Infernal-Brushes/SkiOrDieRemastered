@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -51,14 +52,16 @@ namespace Assets.Scripts.Shop
         private bool _isRotating;
 
         /// <summary>
-        /// Текущий индекс персонажа
-        /// </summary>
-        private int _currentCharacterIndex = 0;
-
-        /// <summary>
         /// Градус незанятой области платформы (внешний угол между крайними персонажами)
         /// </summary>
         private float _notPlacedAngle => 360 - _angleOfPlacing + _angle;
+
+        private List<CharacterSaleController> _charactersToSale = new();
+
+        /// <summary>
+        /// Текущий индекс персонажа
+        /// </summary>
+        private int _currentCharacterIndex = 0;
 
         private void Start()
         {
@@ -74,6 +77,9 @@ namespace Assets.Scripts.Shop
                 float y = _mainPodium.transform.localScale.y + _charactersPodium.transform.localScale.y;
 
                 _characterOnPodiums[i].transform.SetPositionAndRotation(new Vector3(x, y, z), Quaternion.identity);
+
+                CharacterSaleController characterSaleController = _characterOnPodiums[i].GetComponentInChildren<CharacterSaleController>();
+                _charactersToSale.Add(characterSaleController);
             }
         }
 
@@ -88,31 +94,27 @@ namespace Assets.Scripts.Shop
             {
                 if (_currentCharacterIndex > 0)
                 {
-                    StartCoroutine(RotatePodium(-1));
                     _currentCharacterIndex--;
+                    StartCoroutine(RotatePodium(-1));
 
                     return;
                 }
-                else
-                {
-                    StartCoroutine(RotatePodium(-1, _notPlacedAngle, _rotationSpeed * _rotationCoefficientForEdges));
-                    _currentCharacterIndex = _characterOnPodiums.Length - 1;
-                }
+
+                _currentCharacterIndex = _characterOnPodiums.Length - 1;
+                StartCoroutine(RotatePodium(-1, _notPlacedAngle, _rotationSpeed * _rotationCoefficientForEdges));
             }
             else if (Input.GetKeyDown(KeyCode.D))
             {
                 if (_currentCharacterIndex < _characterOnPodiums.Length - 1)
                 {
-                    StartCoroutine(RotatePodium(1));
                     _currentCharacterIndex++;
+                    StartCoroutine(RotatePodium(1));
 
                     return;
                 }
-                else
-                {
-                    StartCoroutine(RotatePodium(1, _notPlacedAngle, _rotationSpeed * _rotationCoefficientForEdges));
-                    _currentCharacterIndex = 0;
-                }
+
+                _currentCharacterIndex = 0;
+                StartCoroutine(RotatePodium(1, _notPlacedAngle, _rotationSpeed * _rotationCoefficientForEdges));
             }
         }
 

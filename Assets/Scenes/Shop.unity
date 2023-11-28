@@ -323,13 +323,13 @@ MonoBehaviour:
   _mainPodium: {fileID: 1961496541}
   _charactersPodium: {fileID: 4391581746453922404, guid: 7bc919a6b17f8694195aefb8a02127df, type: 3}
   _characterOnPodiums:
-  - {fileID: 1234664166}
-  - {fileID: 1945591215}
   - {fileID: 380994664}
+  - {fileID: 1945591215}
+  - {fileID: 1234664166}
   _angleOfPlacing: 240
   _offsetPositionFromEdge: 0.2
-  _rotationSpeed: 2.2
-  _rotationCoefficientForEdges: 2.5
+  _rotationSpeed: 1.3
+  _rotationCoefficientForEdges: 1.8
 --- !u!4 &1286558567
 Transform:
   m_ObjectHideFlags: 0
@@ -1210,7 +1210,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2157960451732380993}
   m_LocalRotation: {x: -0, y: 0.72508246, z: -0, w: 0.6886621}
-  m_LocalPosition: {x: 0.1242607, y: 1.3359737, z: 0.01651424}
+  m_LocalPosition: {x: 0.046, y: 1.6273093, z: -0.098}
   m_LocalScale: {x: 0.54468536, y: 8.7893, z: 0.54468536}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1292,9 +1292,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1183481932481871663}
+  - component: {fileID: 5083647367024043350}
   - component: {fileID: 5083647367024043349}
   m_Layer: 0
-  m_Name: Woman
+  m_Name: Girl
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1404,6 +1405,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1637424827111950331}
+  - component: {fileID: 4636844909999168898}
   - component: {fileID: 4636844909999168897}
   m_Layer: 0
   m_Name: basicNew
@@ -1582,7 +1584,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2932149544839765509}
   m_LocalRotation: {x: -0, y: 0.66803735, z: -0, w: 0.74412775}
-  m_LocalPosition: {x: 0.052289777, y: 1.0635058, z: 0.032681093}
+  m_LocalPosition: {x: 0.012928485, y: 1.0805534, z: -0.013441107}
   m_LocalScale: {x: 0.54468536, y: 8.7893, z: 0.54468536}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1762,6 +1764,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2592603154890556607}
+  - component: {fileID: 8438314145332518598}
   - component: {fileID: 8438314145332518597}
   m_Layer: 0
   m_Name: Woodman
@@ -2339,7 +2342,7 @@ Animator:
   m_GameObject: {fileID: 2157960451732380993}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 914b627f23246fe41ac81574a35a8133, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 28f8fca83b260054cbf2a52d3f280448, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -2350,6 +2353,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &4636844909999168898
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2157960451732380993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc8ab32faaa451d4c841ee528404fe23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animator: {fileID: 4636844909999168897}
 --- !u!4 &4645635043089016479
 Transform:
   m_ObjectHideFlags: 0
@@ -2619,7 +2635,7 @@ Animator:
   m_GameObject: {fileID: 1956605270689637781}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 2b194d8f85d98e242ab098c1ca4e19d4, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: cfae245b83bfd1049b278ac5090115bb, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -2630,6 +2646,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &5083647367024043350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1956605270689637781}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc8ab32faaa451d4c841ee528404fe23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animator: {fileID: 5083647367024043349}
 --- !u!4 &5156091324703905361
 Transform:
   m_ObjectHideFlags: 0
@@ -3647,6 +3676,7 @@ GameObject:
   - component: {fileID: 7989288368304599483}
   - component: {fileID: 7989288368304599482}
   - component: {fileID: 7989288368304599485}
+  - component: {fileID: 7989288368304599488}
   m_Layer: 0
   m_Name: Sphere
   m_TagString: Untagged
@@ -3654,6 +3684,27 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!95 &7989288368304599488
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7989288368304599487}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3b7466345046f8742b7ba617254d588f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!33 &7989288368798437938
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -4013,7 +4064,7 @@ Animator:
   m_GameObject: {fileID: 2932149544839765509}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 9ab2e160b1fe7e04e9fa71df1745a7b7, type: 3}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 273cccc03bc9d474b97091146bd095ea, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -4024,6 +4075,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &8438314145332518598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2932149544839765509}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc8ab32faaa451d4c841ee528404fe23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _animator: {fileID: 8438314145332518597}
 --- !u!4 &8447371452227495387
 Transform:
   m_ObjectHideFlags: 0
