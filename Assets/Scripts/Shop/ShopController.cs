@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using Assets.Scripts.Models.Characters;
+using Assets.Scripts.Models.Users;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -63,24 +65,14 @@ namespace Assets.Scripts.Shop
         /// </summary>
         private int _currentCharacterIndex = 0;
 
+        private IUserData _userData;
+
         private void Start()
         {
-            _angle = _angleOfPlacing / _characterOnPodiums.Length;
-            float radius = _mainPodium.transform.localScale.x / 2
-                - _charactersPodium.transform.localScale.x / 2
-                - _offsetPositionFromEdge;
+            _userData = new UserData();
+            _userData.Fetch();
 
-            for (int i = 0; i < _characterOnPodiums.Length; i++)
-            {
-                float x = Mathf.Sin(Mathf.Deg2Rad * (_angle * i)) * radius;
-                float z = Mathf.Cos(Mathf.Deg2Rad * (_angle * i)) * radius;
-                float y = _mainPodium.transform.localScale.y + _charactersPodium.transform.localScale.y;
-
-                _characterOnPodiums[i].transform.SetPositionAndRotation(new Vector3(x, y, z), Quaternion.identity);
-
-                CharacterSaleController characterSaleController = _characterOnPodiums[i].GetComponentInChildren<CharacterSaleController>();
-                _charactersToSale.Add(characterSaleController);
-            }
+            InitPoduim();
         }
 
         private void Update()
@@ -115,6 +107,32 @@ namespace Assets.Scripts.Shop
 
                 _currentCharacterIndex = 0;
                 StartCoroutine(RotatePodium(1, _notPlacedAngle, _rotationSpeed * _rotationCoefficientForEdges));
+            }
+        }
+
+        public void BuySelectedCharacter()
+        {
+            ICharacterModel characterModel = _charactersToSale[_currentCharacterIndex].CharacterModel.Value;
+            _userData.BuyCharacter(characterModel);
+        }
+
+        private void InitPoduim()
+        {
+            _angle = _angleOfPlacing / _characterOnPodiums.Length;
+            float radius = _mainPodium.transform.localScale.x / 2
+                - _charactersPodium.transform.localScale.x / 2
+                - _offsetPositionFromEdge;
+
+            for (int i = 0; i < _characterOnPodiums.Length; i++)
+            {
+                float x = Mathf.Sin(Mathf.Deg2Rad * (_angle * i)) * radius;
+                float z = Mathf.Cos(Mathf.Deg2Rad * (_angle * i)) * radius;
+                float y = _mainPodium.transform.localScale.y + _charactersPodium.transform.localScale.y;
+
+                _characterOnPodiums[i].transform.SetPositionAndRotation(new Vector3(x, y, z), Quaternion.identity);
+
+                CharacterSaleController characterSaleController = _characterOnPodiums[i].GetComponentInChildren<CharacterSaleController>();
+                _charactersToSale.Add(characterSaleController);
             }
         }
 

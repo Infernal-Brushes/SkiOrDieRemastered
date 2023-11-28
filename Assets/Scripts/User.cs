@@ -1,16 +1,13 @@
-﻿using System;
+﻿using Assets.Scripts.Wears;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
-using Assets.Scripts.Wears;
+using System.Runtime.Serialization.Formatters.Binary;
+using UnityEngine;
 
 namespace Assets.Scripts
 {
-   
+
     public class User : MonoBehaviour
     {
         private string localizationCode;

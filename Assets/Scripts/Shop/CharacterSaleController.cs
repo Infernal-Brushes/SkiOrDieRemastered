@@ -1,4 +1,6 @@
 ﻿using Assets.Extensions;
+using Assets.Scripts.Models.Characters;
+using TNRD;
 using UnityEngine;
 
 namespace Assets.Scripts.Shop
@@ -10,6 +12,9 @@ namespace Assets.Scripts.Shop
     {
         [SerializeField]
         private Animator _animator;
+
+        [Tooltip("Модель персонажа")]
+        public SerializableInterface<ICharacterModel> CharacterModel { get; private set; }
 
         private Transform cameraTransform;
 
