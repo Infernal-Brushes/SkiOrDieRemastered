@@ -1383,6 +1383,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7a8a5592a03112498937854e00f67fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <CharacterModel>k__BackingField:
+    mode: 1
+    unityReference: {fileID: 0}
+    rawReference:
+      rid: 9158778601057026052
   joystick: {fileID: 0}
   _debugPanel: {fileID: 0}
   _forwardSpeedText: {fileID: 0}
@@ -1394,7 +1399,6 @@ MonoBehaviour:
   _animator: {fileID: 2417677955061811062}
   groundPoint: {fileID: 5006710662087956484}
   groundCheckLength: 0.5
-  speedOfTiltX: 0.3
   _velocityFreeRide: 0.24
   _velocitySidewise: 0.45
   _velocityStrafeCoefficient: 0
@@ -1405,6 +1409,7 @@ MonoBehaviour:
   _deathSpeedZ: 72
   _deathAlertSpeedX: 75
   _velocityToLoseSki: 32
+  speedOfTiltX: 0.3
   speedOfNormalRotationY: 0.68
   speedOfStrafeRotationY: 4.5
   angleOfTurn: 50
@@ -1435,6 +1440,7 @@ MonoBehaviour:
   - {fileID: 4664016045863703115}
   - {fileID: 2763570899656871078}
   - {fileID: 5006710662087956483}
+  <ObjectForCameraFollowing>k__BackingField: {fileID: 8620982100558545759}
   defaultBonesPositions:
   - {x: 2.8992238, y: 1.2188208, z: -71.30412}
   - {x: 2.949691, y: 1.3264624, z: -71.303276}
@@ -1514,6 +1520,11 @@ MonoBehaviour:
   _rightFoot: {fileID: 220085093453425840}
   forLeftSki: {fileID: 0}
   forRightSki: {fileID: 0}
+  references:
+    version: 2
+    RefIds:
+    - rid: 9158778601057026052
+      type: {class: YoungManModel, ns: Assets.Scripts.Models.Characters, asm: Assembly-CSharp}
 --- !u!54 &5006710662610347950
 Rigidbody:
   m_ObjectHideFlags: 0

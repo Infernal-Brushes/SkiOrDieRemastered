@@ -5,6 +5,13 @@ using UnityEngine;
 namespace Assets.Scripts {
     public class MapController : MonoBehaviour
     {
+        [SerializeField]
+        private FollowingCamera _followingCamera;
+
+        [Tooltip("Играбельные персонажи")]
+        [SerializeField]
+        private PlayerController[] _characterGameObjects;
+
         public MeshGenerator meshGeneratorPrefab;
 
         private Transform startPositionCamera;
@@ -23,10 +30,22 @@ namespace Assets.Scripts {
 
         private IUserData _userData;
 
-        private void Start()
+        private void Awake()
         {
             _userData = new UserData();
             _userData.Fetch();
+
+            foreach (PlayerController character in _characterGameObjects)
+            {
+                if (_userData.SelectedCharacterKey == character.CharacterModel.Value.Key)
+                {
+                    character.gameObject.SetActive(true);
+                    _followingCamera.SetObjectToFollow(character.ObjectForCameraFollowing);
+                    continue;
+                }
+
+                character.gameObject.SetActive(false);
+            }
 
             loseMenu.SetActive(false);
             startPositionCamera = FindObjectOfType<Camera>().transform;

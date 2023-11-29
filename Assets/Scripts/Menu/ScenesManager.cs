@@ -1,13 +1,27 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class MainMenu : MonoBehaviour
+public class ScenesManager : MonoBehaviour
 {
     public void StartScene(string sceneName)
     {
         StartCoroutine(LoadsyncScene(sceneName));
+    }
+
+    public void StartMainMenuScene()
+    {
+        StartScene("MainMenu");
+    }
+
+    public void StartShopScene()
+    {
+        StartScene("Shop");
+    }
+
+    public void StartFreerideScene()
+    {
+        StartScene("Freeride");
     }
 
     IEnumerator LoadsyncScene(string sceneName)

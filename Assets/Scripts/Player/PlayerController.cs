@@ -1,9 +1,11 @@
 ﻿using Assets.Enums;
 using Assets.Extensions;
+using Assets.Scripts.Models.Characters;
 using Assets.Scripts.Models.Users;
 using System;
 using System.Collections;
 using TMPro;
+using TNRD;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -11,6 +13,9 @@ namespace Assets.Scripts
 {
     public class PlayerController : MonoBehaviour
     {
+        [field: SerializeField]
+        public SerializableInterface<ICharacterModel> CharacterModel { get; private set; }
+
         public Joystick joystick;
 
         /// <summary>
@@ -58,12 +63,6 @@ namespace Assets.Scripts
         /// </summary>
         [Tooltip("Длина луча для проверки контакта с землёй")]
         public float groundCheckLength = 0.5f;
-
-        /// <summary>
-        /// Скорость наклона вперёд назад
-        /// </summary>
-        [Tooltip("Скорость наклона вперёд назад")]
-        public float speedOfTiltX = 0.3f;
 
         [Header("Скорости")]
 
@@ -133,6 +132,12 @@ namespace Assets.Scripts
         [Tooltip("Скорость, на которой есть шанс потерять лыжи")]
         [SerializeField]
         private float _velocityToLoseSki = 27;
+
+        /// <summary>
+        /// Скорость наклона вперёд назад
+        /// </summary>
+        [Tooltip("Скорость наклона вперёд назад")]
+        public float speedOfTiltX = 0.3f;
 
         [Header("Повороты")]
 
@@ -258,6 +263,11 @@ namespace Assets.Scripts
 
         public Rigidbody[] ragdollRigidbody;
         public Transform[] bonesTransforms;
+
+        [Tooltip("Объект для следования камеры")]
+        [field: SerializeField]
+        public GameObject ObjectForCameraFollowing { get; private set; }
+
         [HideInInspector]
         public Vector3[] defaultBonesPositions;
         [HideInInspector]
