@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using Assets.Scripts.Models.Users;
+using TMPro;
 using UnityEngine;
 
 namespace Assets.Scripts {
@@ -11,6 +12,7 @@ namespace Assets.Scripts {
 
         public GameObject loseMenu;
         public TextMeshProUGUI metersText;
+        public TextMeshProUGUI metersBestText;
 
         /// <summary>
         /// Флаг необходимости спавнить преграды
@@ -19,8 +21,13 @@ namespace Assets.Scripts {
         /// </summary>
         public bool SpawnBarriers { get; protected set; } = true;
 
+        private IUserData _userData;
+
         private void Start()
         {
+            _userData = new UserData();
+            _userData.Fetch();
+
             loseMenu.SetActive(false);
             startPositionCamera = FindObjectOfType<Camera>().transform;
             startPositionMeshGeneratror = meshGeneratorPrefab.transform;
@@ -74,7 +81,10 @@ namespace Assets.Scripts {
 
         public void ShowLoseMenu(int meters)
         {
-            metersText.text = string.Format("Пройдено метров: {0}", meters) ;
+            _userData.Fetch();
+
+            metersText.text = string.Format("Пройдено метров: {0}", meters);
+            metersBestText.text = string.Format("Лучший результат: {0}", _userData.BestMetersRecord);
             loseMenu.SetActive(true);
         }
     }

@@ -1,5 +1,6 @@
 ﻿using Assets.Enums;
 using Assets.Extensions;
+using Assets.Scripts.Models.Users;
 using System;
 using System.Collections;
 using TMPro;
@@ -198,6 +199,11 @@ namespace Assets.Scripts
         private int _currentMeters => Convert.ToInt32(transform.position.x - _startPositionX) / 6;
 
         /// <summary>
+        /// Расстояние, на котором игрок проиграл
+        /// </summary>
+        private int _resultMeters;
+
+        /// <summary>
         /// Угол поворота игрока текущий
         /// </summary>
         public float AngleOfCurrentTurning { get; private set; }
@@ -369,8 +375,13 @@ namespace Assets.Scripts
         /// </summary>
         public event OnRestartedDelegate OnRestarted;
 
+        private IUserData _userData;
+
         private void Awake()
         {
+            _userData = new UserData();
+            _userData.Fetch();
+
             playerRigidBody = GetComponent<Rigidbody>();
 
             bonesDefaultMass = new float[bonesTransforms.Length];
@@ -722,7 +733,9 @@ namespace Assets.Scripts
                 return;
             }
 
+            _resultMeters = _currentMeters;
             _metersText.gameObject.SetActive(false);
+            CalculateScore();
 
             _rightSkiCollider.layer = 7;
             _leftSkiCollider.layer = 7;
@@ -766,6 +779,17 @@ namespace Assets.Scripts
             StartCoroutine(ShowLoseMenu());
             isLose = true;
             OnLose?.Invoke();
+        }
+
+        /// <summary>
+        /// Посчитать счёт, заработать денег
+        /// </summary>
+        private void CalculateScore()
+        {
+            _userData.TrySetBestMetersRecord(_resultMeters);
+
+            int money = _resultMeters / 3;
+            _userData.EarnMoney(money);
         }
 
         private void LoseSki()
@@ -831,6 +855,7 @@ namespace Assets.Scripts
             }
 
             _metersText.gameObject.SetActive(true);
+            _resultMeters = 0;
 
             joystick.gameObject.SetActive(true);
             playerRigidBody.velocity = Vector3.zero;
@@ -900,7 +925,7 @@ namespace Assets.Scripts
         {
             yield return new WaitForSeconds(3);
             _debugPanel.SetActive(false);
-            FindObjectOfType<MapController>().ShowLoseMenu(Convert.ToInt32(_currentMeters));
+            FindObjectOfType<MapController>().ShowLoseMenu(_resultMeters);
         }
 
         /// <summary>
