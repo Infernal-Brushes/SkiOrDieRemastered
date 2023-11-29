@@ -83,6 +83,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7a8a5592a03112498937854e00f67fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <CharacterModel>k__BackingField:
+    mode: 1
+    unityReference: {fileID: 0}
+    rawReference:
+      rid: 9158778601057026053
   joystick: {fileID: 0}
   _debugPanel: {fileID: 0}
   _forwardSpeedText: {fileID: 0}
@@ -94,7 +99,6 @@ MonoBehaviour:
   _animator: {fileID: 5879419738662831495}
   groundPoint: {fileID: 71337086471647006}
   groundCheckLength: 0.5
-  speedOfTiltX: 0.3
   _velocityFreeRide: 0.24
   _velocitySidewise: 0.45
   _velocityStrafeCoefficient: 0
@@ -105,6 +109,7 @@ MonoBehaviour:
   _deathSpeedZ: 72
   _deathAlertSpeedX: 75
   _velocityToLoseSki: 32
+  speedOfTiltX: 0.3
   speedOfNormalRotationY: 0.68
   speedOfStrafeRotationY: 4.5
   angleOfTurn: 50
@@ -135,6 +140,7 @@ MonoBehaviour:
   - {fileID: 3504747952042545338}
   - {fileID: 6215136016614559319}
   - {fileID: 71337086471647005}
+  <ObjectForCameraFollowing>k__BackingField: {fileID: 556570428485697966}
   defaultBonesPositions:
   - {x: 2.8992238, y: 1.2188208, z: -71.30412}
   - {x: 2.949691, y: 1.3264624, z: -71.303276}
@@ -214,6 +220,11 @@ MonoBehaviour:
   _rightFoot: {fileID: 8293187852084047425}
   forLeftSki: {fileID: 0}
   forRightSki: {fileID: 0}
+  references:
+    version: 2
+    RefIds:
+    - rid: 9158778601057026053
+      type: {class: WoodmanModel, ns: Assets.Scripts.Models.Characters, asm: Assembly-CSharp}
 --- !u!54 &71337086890703822
 Rigidbody:
   m_ObjectHideFlags: 0
