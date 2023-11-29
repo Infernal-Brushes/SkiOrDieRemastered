@@ -249,6 +249,13 @@ MonoBehaviour:
       Data3: 1144598179
       Data4: -235126595
     Path: event:/Player/Glide
+  BodyEvent:
+    Guid:
+      Data1: 732014775
+      Data2: 1132498212
+      Data3: 1911604363
+      Data4: 515015810
+    Path: event:/Player/BodyFall
   playerController: {fileID: 71337086890703823}
 --- !u!1 &250876180639273943
 GameObject:

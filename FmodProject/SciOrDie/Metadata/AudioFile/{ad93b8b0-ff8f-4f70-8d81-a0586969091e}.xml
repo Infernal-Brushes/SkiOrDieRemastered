@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{ad93b8b0-ff8f-4f70-8d81-a0586969091e}">
+		<property name="assetPath">
+			<value>BodyFall/BoduFall-002.wav</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>0.4042857142857143</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{94d3a7df-1f6f-4505-8ba9-a4ce7e0932eb}</destination>
+		</relationship>
+	</object>
+</objects>
