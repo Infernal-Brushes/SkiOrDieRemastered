@@ -9,6 +9,8 @@ namespace Assets.Scripts.Models.Users
     /// <inheritdoc/>
     public sealed class UserData : IUserData
     {
+        private const string DefaultCharacterKey = "fb7df1cf4762c4f98935c2b2e6bb8fb3";
+
         /// <inheritdoc/>
         [field: SerializeField]
         public int Money { get; private set; }
@@ -19,7 +21,10 @@ namespace Assets.Scripts.Models.Users
 
         /// <inheritdoc/>
         [field: SerializeField]
-        public List<string> CharacterKeys { get; private set; } = new () { "fb7df1cf4762c4f98935c2b2e6bb8fb3" };
+        public List<string> CharacterKeys { get; private set; } = new () { DefaultCharacterKey };
+
+        /// <inheritdoc/>
+        public string SelectedCharacterKey { get; private set; } = DefaultCharacterKey;
 
         private string _storePath;
 
@@ -32,6 +37,12 @@ namespace Assets.Scripts.Models.Users
             _storePath = $"{Application.dataPath}{Path.AltDirectorySeparatorChar}{_fileStoreName}";
             _persistentStorePath = $"{Application.persistentDataPath}{Path.AltDirectorySeparatorChar}{_fileStoreName}";
         }
+
+        /// <inheritdoc/>
+        public bool IsCharacterSelected(ICharacterModel character) => SelectedCharacterKey == character.Key;
+
+        /// <inheritdoc/>
+        public bool IsCharacterOwned(ICharacterModel character) => CharacterKeys.Contains(character.Key);
 
         /// <inheritdoc/>
         public void EarnMoney(int money)
@@ -48,21 +59,34 @@ namespace Assets.Scripts.Models.Users
         /// <inheritdoc/>
         public bool BuyCharacter(ICharacterModel character)
         {
-            if (CharacterKeys.Contains(character.CharacterKey))
+            if (CharacterKeys.Contains(character.Key))
             {
                 return false;
             }
 
-            if (Money < character.CharacterPrice)
+            if (Money < character.Price)
             {
                 return false;
             }
 
-            Money -= character.CharacterPrice;
-            CharacterKeys.Add(character.CharacterKey);
+            Money -= character.Price;
+            CharacterKeys.Add(character.Key);
             Commit();
 
             return true;
+        }
+
+        /// <inheritdoc/>
+        public void SelectCharacter(ICharacterModel character)
+        {
+            if (!CharacterKeys.Contains(character.Key))
+            {
+                Debug.Log("Персонаж не куплен");
+                return;
+            }
+
+            SelectedCharacterKey = character.Key;
+            Debug.Log($"Выбран персонаж {character.Name}");
         }
 
         /// <inheritdoc/>
@@ -100,7 +124,7 @@ namespace Assets.Scripts.Models.Users
             string json = reader.ReadToEnd();
 
             JsonUtility.FromJsonOverwrite(json, this);
-            Debug.Log($"Fetched data, money: {Money}");
+            Debug.Log($"Fetched data, money: {Money }");
         }
 
         public void Reset()

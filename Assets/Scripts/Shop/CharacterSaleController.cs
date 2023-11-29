@@ -14,8 +14,12 @@ namespace Assets.Scripts.Shop
         private Animator _animator;
 
         [Tooltip("Модель персонажа")]
+        [field: SerializeField]
         public SerializableInterface<ICharacterModel> CharacterModel { get; private set; }
 
+        /// <summary>
+        /// Позиция камеры
+        /// </summary>
         private Transform cameraTransform;
 
         private void Start()
@@ -28,21 +32,13 @@ namespace Assets.Scripts.Shop
             FaceCamera();
         }
 
+        /// <summary>
+        /// Повернуть лицом к камере
+        /// </summary>
         private void FaceCamera()
         {
             Vector3 directionToCamera = cameraTransform.position - transform.position;
             transform.rotation = Quaternion.LookRotation(new Vector3(directionToCamera.x, 0f, directionToCamera.z));
-        }
-
-        public void StartIdleAnimation()
-        {
-            _animator.enabled = true;
-        }
-
-        public void StopAnimation()
-        {
-            _animator.ResetToEntryState();
-            _animator.enabled = false;
         }
     }
 }

@@ -1,11 +1,21 @@
 ﻿namespace Assets.Scripts.Models.Characters
 {
+    /// <inheritdoc/>
     internal class YoungManModel : ICharacterModel
     {
-        public int CharacterIndex => 0;
+        /// <inheritdoc/>
+        public string Name => "Ричард";
 
-        public string CharacterKey => "fb7df1cf4762c4f98935c2b2e6bb8fb3";
+        /// <inheritdoc/>
+        public string Description => "Типа пацан";
 
-        public int CharacterPrice => 0;
+        /// <inheritdoc/>
+        public int Index => 0;
+
+        /// <inheritdoc/>
+        public string Key => "fb7df1cf4762c4f98935c2b2e6bb8fb3";
+
+        /// <inheritdoc/>
+        public int Price => 0;
     }
 }

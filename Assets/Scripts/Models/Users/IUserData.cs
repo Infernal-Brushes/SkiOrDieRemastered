@@ -25,6 +25,31 @@ namespace Assets.Scripts.Models.Users
         public List<string> CharacterKeys { get; }
 
         /// <summary>
+        /// Ключ текущего выбранного персонажа
+        /// </summary>
+        public string SelectedCharacterKey { get; }
+
+        /// <summary>
+        /// Признак того что персонаж выбран
+        /// </summary>
+        /// <param name="character">Персонаж для проверки</param>
+        /// <returns>
+        /// <see cref="true"/> - этот персонаж выбран
+        /// <see cref="false"/> - этот персонаж не выбран
+        /// </returns>
+        public bool IsCharacterSelected(ICharacterModel character);
+
+        /// <summary>
+        /// Признак того что персонаж куплен
+        /// </summary>
+        /// <param name="character">Персонаж для проверки</param>
+        /// <returns>
+        /// <see cref="true"/> - этот персонаж куплен
+        /// <see cref="false"/> - этот персонаж не куплен
+        /// </returns>
+        public bool IsCharacterOwned(ICharacterModel character);
+
+        /// <summary>
         /// Заработать денег
         /// </summary>
         /// <param name="money">Поступившие деньги</param>
@@ -39,6 +64,12 @@ namespace Assets.Scripts.Models.Users
         /// <see cref="false"/> - персонаж не преобретён
         /// </returns>
         public bool BuyCharacter(ICharacterModel character);
+
+        /// <summary>
+        /// Выбрать персонажа для игры
+        /// </summary>
+        /// <param name="character">Персонаж для выбора</param>
+        public void SelectCharacter(ICharacterModel character);
 
         /// <summary>
         /// Задать новый лучший рекорд спуска в метрах, если предыдущий был меньше

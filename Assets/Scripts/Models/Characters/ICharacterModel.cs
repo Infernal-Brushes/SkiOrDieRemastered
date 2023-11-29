@@ -1,23 +1,33 @@
 ﻿namespace Assets.Scripts.Models.Characters
 {
     /// <summary>
-    /// Модель персонажа на продажу
+    /// Модель персонажа
     /// </summary>
     public interface ICharacterModel
     {
         /// <summary>
-        /// Индекс персонажа
+        /// Имя персонажа
         /// </summary>
-        public int CharacterIndex { get; }
+        public string Name { get; }
+        
+        /// <summary>
+        /// Описание персонажа
+        /// </summary>
+        public string Description { get; }
 
         /// <summary>
-        /// Ключ персонажа
+        /// Индекс персонажа
         /// </summary>
-        public string CharacterKey { get; }
+        public int Index { get; }
+
+        /// <summary>
+        /// Уникальный ключ персонажа
+        /// </summary>
+        public string Key { get; }
 
         /// <summary>
         /// Стоимость персонажа
         /// </summary>
-        public int CharacterPrice { get; }
+        public int Price { get; }
     }
 }

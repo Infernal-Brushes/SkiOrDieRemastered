@@ -1,11 +1,21 @@
 ﻿namespace Assets.Scripts.Models.Characters
 {
+    /// <inheritdoc/>
     public class WoodmanModel : ICharacterModel
     {
-        public int CharacterIndex => 1;
+        /// <inheritdoc/>
+        public string Name => "Хэнк";
 
-        public string CharacterKey => "4b0c364c6db11ddeced087ac1dfe56d5";
+        /// <inheritdoc/>
+        public string Description => "Типа узбек";
 
-        public int CharacterPrice => 600;
+        /// <inheritdoc/>
+        public int Index => 1;
+
+        /// <inheritdoc/>
+        public string Key => "4b0c364c6db11ddeced087ac1dfe56d5";
+
+        /// <inheritdoc/>
+        public int Price => 600;
     }
 }
