@@ -24,6 +24,7 @@ namespace Assets.Scripts.Models.Users
         public List<string> CharacterKeys { get; private set; } = new () { DefaultCharacterKey };
 
         /// <inheritdoc/>
+        [field: SerializeField]
         public string SelectedCharacterKey { get; private set; } = DefaultCharacterKey;
 
         private string _storePath;
@@ -73,20 +74,26 @@ namespace Assets.Scripts.Models.Users
             CharacterKeys.Add(character.Key);
             Commit();
 
+            Debug.Log($"Куплен {character.Name}");
+
             return true;
         }
 
         /// <inheritdoc/>
-        public void SelectCharacter(ICharacterModel character)
+        public bool SelectCharacter(ICharacterModel character)
         {
             if (!CharacterKeys.Contains(character.Key))
             {
                 Debug.Log("Персонаж не куплен");
-                return;
+                return false;
             }
 
             SelectedCharacterKey = character.Key;
+            Commit();
+
             Debug.Log($"Выбран персонаж {character.Name}");
+
+            return true;
         }
 
         /// <inheritdoc/>

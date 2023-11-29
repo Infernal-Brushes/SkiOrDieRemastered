@@ -38,11 +38,15 @@ namespace Assets.Scripts.Shop
 
         [Tooltip("Скорость поворота подиума")]
         [SerializeField]
-        private float _rotationSpeed = 10f;
+        private float _rotationSpeed = 1.3f;
 
         [Tooltip("Коэфициент скорости для крайних персонажей при конце списка")]
         [SerializeField]
-        private float _rotationCoefficientForEdges = 3f;
+        private float _rotationCoefficientForEdges = 1.8f;
+
+        [Tooltip("Скорость поворота подиума для первого запуска")]
+        [SerializeField]
+        private float _firstSelectionRotationSpeed = 2.8f;
 
         [Header("UI")]
 
@@ -63,6 +67,10 @@ namespace Assets.Scripts.Shop
         [Tooltip("Кнопка выбора персонажа")]
         [SerializeField]
         private UnityEngine.UI.Button _selectButton;
+
+        [Tooltip("Текст количества денег игрока")]
+        [SerializeField]
+        private TextMeshProUGUI _moneyText;
 
         /// <summary>
         /// Угол между соседними персонажами
@@ -90,6 +98,8 @@ namespace Assets.Scripts.Shop
 
         private IUserData _userData;
 
+        private ICharacterModel _currentCharacter => _charactersToSale[_currentCharacterIndex].CharacterModel.Value;
+
         private void Awake()
         {
             _userData = new UserData();
@@ -98,7 +108,7 @@ namespace Assets.Scripts.Shop
             _buyButtonText = _buyButton.GetComponentInChildren<TextMeshProUGUI>();
 
             InitPoduim();
-            UpdateCurrentCharacterMenu();
+            UpdateUI();
         }
 
         private void Update()
@@ -110,7 +120,7 @@ namespace Assets.Scripts.Shop
 
             if (Input.GetKeyDown(KeyCode.A))
             {
-                ClearCharacterMenu();
+                ClearCharacterMenuUI();
                 if (_currentCharacterIndex > 0)
                 {
                     _currentCharacterIndex--;
@@ -124,7 +134,7 @@ namespace Assets.Scripts.Shop
             }
             else if (Input.GetKeyDown(KeyCode.D))
             {
-                ClearCharacterMenu();
+                ClearCharacterMenuUI();
                 if (_currentCharacterIndex < _charactersOnPodiums.Length - 1)
                 {
                     _currentCharacterIndex++;
@@ -138,10 +148,30 @@ namespace Assets.Scripts.Shop
             }
         }
 
-        public void BuySelectedCharacter()
+        /// <summary>
+        /// Купить текущего персонажа
+        /// </summary>
+        public void BuyCurrentCharacter()
         {
-            ICharacterModel characterModel = _charactersToSale[_currentCharacterIndex].CharacterModel.Value;
-            _userData.BuyCharacter(characterModel);
+            bool wasOwned = _userData.BuyCharacter(_currentCharacter);
+            if (wasOwned)
+            {
+                UpdateSelectButtonUI();
+                UpdateUserDataUI();
+            }
+        }
+
+        /// <summary>
+        /// Выбрать текущего персонажа
+        /// </summary>
+        public void SelectCurrentCharacter()
+        {
+            bool wasSelected = _userData.SelectCharacter(_currentCharacter);
+            if (wasSelected)
+            {
+                _userData.SelectCharacter(_currentCharacter);
+                UpdateSelectButtonUI();
+            }
         }
 
         /// <summary>
@@ -173,12 +203,28 @@ namespace Assets.Scripts.Shop
 
                 _charactersOnPodiums[i].transform.SetPositionAndRotation(new Vector3(x, y, z), Quaternion.identity);
             }
+
+            if (_userData.SelectedCharacterKey != _currentCharacter.Key)
+            {
+                ClearCharacterMenuUI();
+
+                _currentCharacterIndex = _charactersToSale
+                    .Select(characterGO => characterGO.CharacterModel.Value)
+                    .Where(character => character.Key == _userData.SelectedCharacterKey)
+                    .Select(character => character.Index)
+                    .Single();
+
+                int sectionsToRotate = _currentCharacterIndex;
+                Debug.Log(sectionsToRotate);
+                float angle = _angle * sectionsToRotate;
+                StartCoroutine(RotatePodium(1,  angle, _firstSelectionRotationSpeed));
+            }
         }
 
         /// <summary>
         /// Очистить UI меню персонажа
         /// </summary>
-        private void ClearCharacterMenu()
+        private void ClearCharacterMenuUI()
         {
             _nameText.enabled = false;
             _descriptionText.enabled = false;
@@ -187,31 +233,60 @@ namespace Assets.Scripts.Shop
         }
 
         /// <summary>
+        /// Обновить UI сцены
+        /// </summary>
+        private void UpdateUI()
+        {
+            UpdateUserDataUI();
+            UpdateCurrentCharacterMenuUI();
+        }
+
+        private void UpdateUserDataUI()
+        {
+            // TODO: вместо текста подписи сделать иконку
+            _moneyText.text = $"Денег: {_userData.Money}";
+        }
+
+        /// <summary>
         /// Обновить UI меню персонажа информацией о текущем персонаже
         /// </summary>
-        private void UpdateCurrentCharacterMenu()
+        private void UpdateCurrentCharacterMenuUI()
         {
-            var currentCharacter = _charactersToSale[_currentCharacterIndex].CharacterModel.Value;
-
-            _nameText.text = currentCharacter.Name;
+            _nameText.text = _currentCharacter.Name;
             _nameText.enabled = true;
 
-            _descriptionText.text = currentCharacter.Description;
+            _descriptionText.text = _currentCharacter.Description;
             _descriptionText.enabled = true;
 
-            if (!_userData.IsCharacterOwned(currentCharacter))
+            if (!_userData.IsCharacterOwned(_currentCharacter))
             {
-                _buyButtonText.text = currentCharacter.Price.ToString();
-                _buyButton.interactable = _userData.Money >= currentCharacter.Price;
-                _buyButton.gameObject.SetActive(true);
-                _selectButton.gameObject.SetActive(false);
+                UpdateBuyButtonUI();
             }
             else
             {
-                bool isCurrentCharacterSelected = _userData.IsCharacterSelected(currentCharacter);
-                _selectButton.interactable = !isCurrentCharacterSelected;
-                _selectButton.gameObject.SetActive(true);
+                UpdateSelectButtonUI();
             }
+        }
+
+        /// <summary>
+        /// Отобразить кнопку покупки персонажа
+        /// </summary>
+        private void UpdateBuyButtonUI()
+        {
+            _buyButtonText.text = _currentCharacter.Price.ToString();
+            _buyButton.interactable = _userData.Money >= _currentCharacter.Price;
+            _buyButton.gameObject.SetActive(true);
+            _selectButton.gameObject.SetActive(false);
+        }
+
+        /// <summary>
+        /// Отобразить кнопку выбора персонажа
+        /// </summary>
+        private void UpdateSelectButtonUI()
+        {
+            _selectButton.interactable = !_userData.IsCharacterSelected(_currentCharacter);
+            _selectButton.gameObject.SetActive(true);
+            _buyButton.gameObject.SetActive(false);
         }
 
         /// <summary>
@@ -245,7 +320,7 @@ namespace Assets.Scripts.Shop
             }
 
             _isRotating = false;
-            UpdateCurrentCharacterMenu();
+            UpdateCurrentCharacterMenuUI();
         }
     }
 }

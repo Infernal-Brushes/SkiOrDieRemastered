@@ -69,7 +69,7 @@ namespace Assets.Scripts.Models.Users
         /// Выбрать персонажа для игры
         /// </summary>
         /// <param name="character">Персонаж для выбора</param>
-        public void SelectCharacter(ICharacterModel character);
+        public bool SelectCharacter(ICharacterModel character);
 
         /// <summary>
         /// Задать новый лучший рекорд спуска в метрах, если предыдущий был меньше
