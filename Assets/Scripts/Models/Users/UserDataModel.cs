@@ -30,7 +30,7 @@ namespace Assets.Scripts.Models.Users
         [field: SerializeField]
         public string LocalizationCode { get; private set; } = "ru-RU";
 
-        private string _userDataPath => $"{Application.streamingAssetsPath}{Path.AltDirectorySeparatorChar}{_fileStoreName}";
+        private string _userDataPath => $"{Application.persistentDataPath}{Path.AltDirectorySeparatorChar}{_fileStoreName}";
 
         private string _fileStoreName => "UserData.json";
 
@@ -123,6 +123,7 @@ namespace Assets.Scripts.Models.Users
         /// <inheritdoc/>
         public void Fetch()
         {
+            Debug.Log(_userDataPath);
             if (!File.Exists(_userDataPath))
             {
                 Commit();
