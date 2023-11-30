@@ -7,7 +7,7 @@ namespace Assets.Scripts.Models.Users
     /// <summary>
     /// Модель данных игрока
     /// </summary>
-    public interface IUserData
+    public interface IUserDataModel
     {
         /// <summary>
         /// Деньги игрока
@@ -28,6 +28,11 @@ namespace Assets.Scripts.Models.Users
         /// Ключ текущего выбранного персонажа
         /// </summary>
         public string SelectedCharacterKey { get; }
+
+        /// <summary>
+        /// Код локализации
+        /// </summary>
+        public string LocalizationCode { get; }
 
         /// <summary>
         /// Признак того что персонаж выбран
@@ -80,6 +85,12 @@ namespace Assets.Scripts.Models.Users
         /// <see cref="false"/> - новый результат не самый лучший
         /// </returns>
         public bool TrySetBestMetersRecord(int meters);
+
+        /// <summary>
+        /// Сменить локализацию игры
+        /// </summary>
+        /// <param name="localizationCode">Код локализации</param>
+        public void SetLocalizationCode(string localizationCode);
 
         /// <summary>
         /// Сохранить данные игрока

@@ -96,13 +96,13 @@ namespace Assets.Scripts.Shop
         /// </summary>
         private int _currentCharacterIndex = 0;
 
-        private IUserData _userData;
+        private IUserDataModel _userData;
 
         private ICharacterModel _currentCharacter => _charactersToSale[_currentCharacterIndex].CharacterModel.Value;
 
         private void Awake()
         {
-            _userData = new UserData();
+            _userData = new UserDataModel();
             _userData.Fetch();
 
             _buyButtonText = _buyButton.GetComponentInChildren<TextMeshProUGUI>();

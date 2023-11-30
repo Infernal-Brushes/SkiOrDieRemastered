@@ -28,11 +28,11 @@ namespace Assets.Scripts {
         /// </summary>
         public bool SpawnBarriers { get; protected set; } = true;
 
-        private IUserData _userData;
+        private IUserDataModel _userData;
 
         private void Awake()
         {
-            _userData = new UserData();
+            _userData = new UserDataModel();
             _userData.Fetch();
 
             foreach (PlayerController character in _characterGameObjects)

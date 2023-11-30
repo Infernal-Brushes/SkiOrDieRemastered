@@ -29,19 +29,6 @@ namespace Assets.Scripts
         }
         private List<WearSerializable> userWears;
 
-        public void SetLocalizationCode(string _localizationCode)
-        {
-            if (FindObjectOfType<LocalizationManager>().IsHavingLocalication(_localizationCode) &&
-                LocalizationCode != _localizationCode)
-            {
-                Debug.Log("Настройки отличались");
-                localizationCode = _localizationCode;
-                
-                SaveUser();
-                FindObjectOfType<GameController>().ChangeLocalization(localizationCode);
-            }   
-        }
-
         private WearSerializable WearToWearSerializable(Wear wear)
         {
             WearSerializable wearSerializable = new WearSerializable();
