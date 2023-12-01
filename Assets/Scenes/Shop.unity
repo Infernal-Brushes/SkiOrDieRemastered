@@ -693,5 +693,9 @@ PrefabInstance:
       propertyPath: m_Name
       value: MainPodium
       objectReference: {fileID: 0}
+    - target: {fileID: 9138130039115176719, guid: 48ea31443302e5b40a4944c71d9901d3, type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: -2880104175794452353, guid: ccfd7ed7d2a95844ead27d4a8658a968, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 48ea31443302e5b40a4944c71d9901d3, type: 3}
