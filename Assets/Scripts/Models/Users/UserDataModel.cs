@@ -1,13 +1,13 @@
 ﻿using Assets.Scripts.Models.Characters;
-using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 namespace Assets.Scripts.Models.Users
 {
     /// <inheritdoc/>
-    public sealed class UserData : IUserData
+    public sealed class UserDataModel : IUserDataModel
     {
         private const string DefaultCharacterKey = "fb7df1cf4762c4f98935c2b2e6bb8fb3";
 
@@ -27,17 +27,13 @@ namespace Assets.Scripts.Models.Users
         [field: SerializeField]
         public string SelectedCharacterKey { get; private set; } = DefaultCharacterKey;
 
-        private string _storePath;
+        /// <inheritdoc/>
+        [field: SerializeField]
+        public string LocalizationCode { get; private set; } = "ru-RU";
 
-        private string _persistentStorePath;
+        private string _userDataPath => $"{Application.persistentDataPath}{Path.AltDirectorySeparatorChar}{_fileStoreName}";
 
         private string _fileStoreName => "UserData.json";
-
-        public UserData()
-        {
-            _storePath = $"{Application.dataPath}{Path.AltDirectorySeparatorChar}{_fileStoreName}";
-            _persistentStorePath = $"{Application.persistentDataPath}{Path.AltDirectorySeparatorChar}{_fileStoreName}";
-        }
 
         /// <inheritdoc/>
         public bool IsCharacterSelected(ICharacterModel character) => SelectedCharacterKey == character.Key;
@@ -111,28 +107,50 @@ namespace Assets.Scripts.Models.Users
         }
 
         /// <inheritdoc/>
+        public void SetLocalizationCode(string localizationCode)
+        {
+            LocalizationCode = localizationCode;
+            Commit();
+        }
+
+        /// <inheritdoc/>
         public void Commit()
         {
             string json = JsonUtility.ToJson(this);
-            using StreamWriter writer = new(_storePath);
+#if UNITY_WEBGL
+            CommitToYandex(json);
+#else
+            using StreamWriter writer = new(_userDataPath);
             writer.Write(json);
+#endif
         }
 
         /// <inheritdoc/>
         public void Fetch()
         {
-            if (!File.Exists(_storePath))
+#if UNITY_WEBGL
+            FetchFromYandex();
+#else 
+            Debug.Log(_userDataPath);
+            if (!File.Exists(_userDataPath))
             {
                 Commit();
                 return;
             }
 
-            using StreamReader reader = new(_storePath);
+            using StreamReader reader = new(_userDataPath);
             string json = reader.ReadToEnd();
 
             JsonUtility.FromJsonOverwrite(json, this);
             Debug.Log($"Fetched data, money: {Money }");
+#endif
         }
+
+        [DllImport("__Internal")]
+        private static extern void CommitToYandex(string data);
+
+        [DllImport("__Internal")]
+        private static extern void FetchFromYandex();
 
         public void Reset()
         {

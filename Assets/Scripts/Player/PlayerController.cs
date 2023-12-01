@@ -385,11 +385,11 @@ namespace Assets.Scripts
         /// </summary>
         public event OnRestartedDelegate OnRestarted;
 
-        private IUserData _userData;
+        private IUserDataModel _userData;
 
         private void Awake()
         {
-            _userData = new UserData();
+            _userData = new UserDataModel();
             _userData.Fetch();
 
             playerRigidBody = GetComponent<Rigidbody>();
