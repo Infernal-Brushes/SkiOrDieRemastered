@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.Models.Characters;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 namespace Assets.Scripts.Models.Users
@@ -116,13 +117,20 @@ namespace Assets.Scripts.Models.Users
         public void Commit()
         {
             string json = JsonUtility.ToJson(this);
+#if UNITY_WEBGL
+            CommitToYandex(json);
+#else
             using StreamWriter writer = new(_userDataPath);
             writer.Write(json);
+#endif
         }
 
         /// <inheritdoc/>
         public void Fetch()
         {
+#if UNITY_WEBGL
+            FetchFromYandex();
+#else 
             Debug.Log(_userDataPath);
             if (!File.Exists(_userDataPath))
             {
@@ -135,7 +143,14 @@ namespace Assets.Scripts.Models.Users
 
             JsonUtility.FromJsonOverwrite(json, this);
             Debug.Log($"Fetched data, money: {Money }");
+#endif
         }
+
+        [DllImport("__Internal")]
+        private static extern void CommitToYandex(string data);
+
+        [DllImport("__Internal")]
+        private static extern void FetchFromYandex();
 
         public void Reset()
         {
