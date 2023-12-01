@@ -48,6 +48,7 @@ public class PlayerSound : MonoBehaviour
 
     void OnDestroy()
     {
+        playerController.OnRestarted -= StartGlideSound;
         playerController.OnLose -= StopSoundGlide;
         playerController.OnGroundOff -= StopSoundGlide; 
         playerController.OnGroundOn -= StartGlideSound;

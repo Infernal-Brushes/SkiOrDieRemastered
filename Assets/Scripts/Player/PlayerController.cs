@@ -1,8 +1,11 @@
 ﻿using Assets.Enums;
 using Assets.Extensions;
+using Assets.Scripts.Models.Characters;
+using Assets.Scripts.Models.Users;
 using System;
 using System.Collections;
 using TMPro;
+using TNRD;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -10,6 +13,9 @@ namespace Assets.Scripts
 {
     public class PlayerController : MonoBehaviour
     {
+        [field: SerializeField]
+        public SerializableInterface<ICharacterModel> CharacterModel { get; private set; }
+
         public Joystick joystick;
 
         /// <summary>
@@ -57,12 +63,6 @@ namespace Assets.Scripts
         /// </summary>
         [Tooltip("Длина луча для проверки контакта с землёй")]
         public float groundCheckLength = 0.5f;
-
-        /// <summary>
-        /// Скорость наклона вперёд назад
-        /// </summary>
-        [Tooltip("Скорость наклона вперёд назад")]
-        public float speedOfTiltX = 0.3f;
 
         [Header("Скорости")]
 
@@ -133,6 +133,12 @@ namespace Assets.Scripts
         [SerializeField]
         private float _velocityToLoseSki = 27;
 
+        /// <summary>
+        /// Скорость наклона вперёд назад
+        /// </summary>
+        [Tooltip("Скорость наклона вперёд назад")]
+        public float speedOfTiltX = 0.3f;
+
         [Header("Повороты")]
 
         /// <summary>
@@ -198,6 +204,11 @@ namespace Assets.Scripts
         private int _currentMeters => Convert.ToInt32(transform.position.x - _startPositionX) / 6;
 
         /// <summary>
+        /// Расстояние, на котором игрок проиграл
+        /// </summary>
+        private int _resultMeters;
+
+        /// <summary>
         /// Угол поворота игрока текущий
         /// </summary>
         public float AngleOfCurrentTurning { get; private set; }
@@ -252,6 +263,11 @@ namespace Assets.Scripts
 
         public Rigidbody[] ragdollRigidbody;
         public Transform[] bonesTransforms;
+
+        [Tooltip("Объект для следования камеры")]
+        [field: SerializeField]
+        public GameObject ObjectForCameraFollowing { get; private set; }
+
         [HideInInspector]
         public Vector3[] defaultBonesPositions;
         [HideInInspector]
@@ -273,12 +289,6 @@ namespace Assets.Scripts
 
         [SerializeField]
         private GameObject _rightSkiModel;
-
-        [SerializeField]
-        private float _skiLoseForceForward = 30f;
-
-        [SerializeField]
-        private float _skiLoseForceUp = 10f;
 
         private Rigidbody _leftSkiRigidBody;
         private Rigidbody _rightSkiRigidBody;
@@ -375,8 +385,13 @@ namespace Assets.Scripts
         /// </summary>
         public event OnRestartedDelegate OnRestarted;
 
+        private IUserDataModel _userData;
+
         private void Awake()
         {
+            _userData = new UserDataModel();
+            _userData.Fetch();
+
             playerRigidBody = GetComponent<Rigidbody>();
 
             bonesDefaultMass = new float[bonesTransforms.Length];
@@ -729,7 +744,9 @@ namespace Assets.Scripts
                 return;
             }
 
+            _resultMeters = _currentMeters;
             _metersText.gameObject.SetActive(false);
+            CalculateScore();
 
             _rightSkiCollider.layer = 7;
             _leftSkiCollider.layer = 7;
@@ -776,6 +793,17 @@ namespace Assets.Scripts
             OnLose?.Invoke();
         }
 
+        /// <summary>
+        /// Посчитать счёт, заработать денег
+        /// </summary>
+        private void CalculateScore()
+        {
+            _userData.TrySetBestMetersRecord(_resultMeters);
+
+            int money = _resultMeters / 3;
+            _userData.EarnMoney(money);
+        }
+
         private void LoseSki()
         {
             bool isLeftSkiOff = false;
@@ -799,14 +827,12 @@ namespace Assets.Scripts
                 }
             }
 
-            var vectorToLose = new Vector3(_skiLoseForceForward, _skiLoseForceUp, 0);
+            var vectorToLose = -_skiesDirection;
             if (isLeftSkiOff)
             {
-                _leftSkiModel.transform.SetParent(_leftSkiCollider.transform, true);
-                _leftSkiModel.transform.SetLocalPositionAndRotation(new Vector3(-0.9300206f, -0.03308737f, 0.9800017f), new Quaternion());
+                _leftSkiModel.transform.SetParent(forLeftSki, true);
 
-                _leftSkiCollider.transform.SetParent(forLeftSki, true);
-                _leftSkiCollider.transform.rotation =_leftSkiModel.transform.rotation;
+                _leftSkiCollider.transform.SetParent(_leftSkiModel.transform, true);
                 _leftSkiCollider.GetComponent<CapsuleCollider>().material = skiMaterial;
 
                 _leftSkiRigidBody.isKinematic = false;
@@ -814,11 +840,9 @@ namespace Assets.Scripts
             }
             if (isRightSkiOff)
             {
-                _rightSkiModel.transform.SetParent(_rightSkiCollider.transform, true);
-                _rightSkiModel.transform.SetLocalPositionAndRotation(new Vector3(-0.9300206f, -0.03308737f, 0.9800017f), new Quaternion());
+                _rightSkiModel.transform.SetParent(forRightSki, true);
 
-                _rightSkiCollider.transform.SetParent(forRightSki, true);
-                _rightSkiCollider.transform.rotation = _rightSkiModel.transform.rotation;
+                _rightSkiCollider.transform.SetParent(_rightSkiModel.transform, true);
                 _rightSkiCollider.GetComponent<CapsuleCollider>().material = skiMaterial;
 
                 _rightSkiRigidBody.isKinematic = false;
@@ -839,6 +863,7 @@ namespace Assets.Scripts
             }
 
             _metersText.gameObject.SetActive(true);
+            _resultMeters = 0;
 
             joystick.gameObject.SetActive(true);
             playerRigidBody.velocity = Vector3.zero;
@@ -908,7 +933,7 @@ namespace Assets.Scripts
         {
             yield return new WaitForSeconds(3);
             _debugPanel.SetActive(false);
-            FindObjectOfType<MapController>().ShowLoseMenu(Convert.ToInt32(_currentMeters));
+            FindObjectOfType<MapController>().ShowLoseMenu(_resultMeters);
         }
 
         /// <summary>

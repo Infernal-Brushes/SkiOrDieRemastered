@@ -1,39 +1,9 @@
 fileFormatVersion: 2
-guid: 2b194d8f85d98e242ab098c1ca4e19d4
+guid: ccfd7ed7d2a95844ead27d4a8658a968
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects:
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Body_Cloth
-    second: {fileID: 2100000, guid: eaf16c6e13dbf1847b245b6be41eb185, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Female_Hair
-    second: {fileID: 2100000, guid: d5e66845561e7b34f96c440e4b919dcb, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Female_Skin_Base
-    second: {fileID: 2100000, guid: 28b6d51ba710e67438fef81d9d63ae84, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Mask_Glass
-    second: {fileID: 2100000, guid: addee22bfd4338c45814ef9a996d92f1, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Suit_Primary_Color
-    second: {fileID: 2100000, guid: 46f0064804f531d449fc007eb641459b, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Suit_Secondary_Color
-    second: {fileID: 2100000, guid: 721e79e730e79f44192fec0a416a23ac, type: 2}
+  externalObjects: {}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -67,7 +37,7 @@ ModelImporter:
       takeName: Armature|0.default
       internalID: -3782933226882471986
       firstFrame: 0
-      lastFrame: 145
+      lastFrame: 140
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

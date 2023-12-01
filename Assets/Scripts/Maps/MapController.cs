@@ -1,9 +1,17 @@
-﻿using TMPro;
+﻿using Assets.Scripts.Models.Users;
+using TMPro;
 using UnityEngine;
 
 namespace Assets.Scripts {
     public class MapController : MonoBehaviour
     {
+        [SerializeField]
+        private FollowingCamera _followingCamera;
+
+        [Tooltip("Играбельные персонажи")]
+        [SerializeField]
+        private PlayerController[] _characterGameObjects;
+
         public MeshGenerator meshGeneratorPrefab;
 
         private Transform startPositionCamera;
@@ -11,6 +19,7 @@ namespace Assets.Scripts {
 
         public GameObject loseMenu;
         public TextMeshProUGUI metersText;
+        public TextMeshProUGUI metersBestText;
 
         /// <summary>
         /// Флаг необходимости спавнить преграды
@@ -19,8 +28,25 @@ namespace Assets.Scripts {
         /// </summary>
         public bool SpawnBarriers { get; protected set; } = true;
 
-        private void Start()
+        private IUserDataModel _userData;
+
+        private void Awake()
         {
+            _userData = new UserDataModel();
+            _userData.Fetch();
+
+            foreach (PlayerController character in _characterGameObjects)
+            {
+                if (_userData.SelectedCharacterKey == character.CharacterModel.Value.Key)
+                {
+                    character.gameObject.SetActive(true);
+                    _followingCamera.SetObjectToFollow(character.ObjectForCameraFollowing);
+                    continue;
+                }
+
+                character.gameObject.SetActive(false);
+            }
+
             loseMenu.SetActive(false);
             startPositionCamera = FindObjectOfType<Camera>().transform;
             startPositionMeshGeneratror = meshGeneratorPrefab.transform;
@@ -74,7 +100,10 @@ namespace Assets.Scripts {
 
         public void ShowLoseMenu(int meters)
         {
-            metersText.text = string.Format("Пройдено метров: {0}", meters) ;
+            _userData.Fetch();
+
+            metersText.text = string.Format("Пройдено метров: {0}", meters);
+            metersBestText.text = string.Format("Лучший результат: {0}", _userData.BestMetersRecord);
             loseMenu.SetActive(true);
         }
     }
