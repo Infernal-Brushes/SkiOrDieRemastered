@@ -290,11 +290,11 @@ namespace Assets.Scripts
         [SerializeField]
         private GameObject _rightSkiModel;
 
-        [SerializeField]
-        private float _skiLoseForceForward = 30f;
+        //[SerializeField]
+        //private float _skiLoseForceForward = 30f;
 
-        [SerializeField]
-        private float _skiLoseForceUp = 10f;
+        //[SerializeField]
+        //private float _skiLoseForceUp = 5f;
 
         private Rigidbody _leftSkiRigidBody;
         private Rigidbody _rightSkiRigidBody;
@@ -825,14 +825,12 @@ namespace Assets.Scripts
                 }
             }
 
-            var vectorToLose = new Vector3(_skiLoseForceForward, _skiLoseForceUp, 0);
+            var vectorToLose = transform.forward;
             if (isLeftSkiOff)
             {
-                _leftSkiModel.transform.SetParent(_leftSkiCollider.transform, true);
-                _leftSkiModel.transform.SetLocalPositionAndRotation(new Vector3(-0.9300206f, -0.03308737f, 0.9800017f), new Quaternion());
+                _leftSkiModel.transform.SetParent(forLeftSki, true);
 
-                _leftSkiCollider.transform.SetParent(forLeftSki, true);
-                _leftSkiCollider.transform.rotation =_leftSkiModel.transform.rotation;
+                _leftSkiCollider.transform.SetParent(_leftSkiModel.transform, true);
                 _leftSkiCollider.GetComponent<CapsuleCollider>().material = skiMaterial;
 
                 _leftSkiRigidBody.isKinematic = false;
@@ -840,11 +838,9 @@ namespace Assets.Scripts
             }
             if (isRightSkiOff)
             {
-                _rightSkiModel.transform.SetParent(_rightSkiCollider.transform, true);
-                _rightSkiModel.transform.SetLocalPositionAndRotation(new Vector3(-0.9300206f, -0.03308737f, 0.9800017f), new Quaternion());
+                _rightSkiModel.transform.SetParent(forRightSki, true);
 
-                _rightSkiCollider.transform.SetParent(forRightSki, true);
-                _rightSkiCollider.transform.rotation = _rightSkiModel.transform.rotation;
+                _rightSkiCollider.transform.SetParent(_rightSkiModel.transform, true);
                 _rightSkiCollider.GetComponent<CapsuleCollider>().material = skiMaterial;
 
                 _rightSkiRigidBody.isKinematic = false;
