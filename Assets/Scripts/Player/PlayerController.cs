@@ -290,12 +290,6 @@ namespace Assets.Scripts
         [SerializeField]
         private GameObject _rightSkiModel;
 
-        //[SerializeField]
-        //private float _skiLoseForceForward = 30f;
-
-        //[SerializeField]
-        //private float _skiLoseForceUp = 5f;
-
         private Rigidbody _leftSkiRigidBody;
         private Rigidbody _rightSkiRigidBody;
 
@@ -825,7 +819,7 @@ namespace Assets.Scripts
                 }
             }
 
-            var vectorToLose = transform.forward;
+            var vectorToLose = -_skiesDirection;
             if (isLeftSkiOff)
             {
                 _leftSkiModel.transform.SetParent(forLeftSki, true);
