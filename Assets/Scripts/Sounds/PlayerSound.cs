@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class PlayerSound : MonoBehaviour
 {
-    [SerializeField] private FMODUnity.EventReference GlideEvent;
-    [SerializeField] private FMODUnity.EventReference BodyEvent;
+    [SerializeField] private EventReference GlideEvent;
+    [SerializeField] private EventReference BodyEvent;
     FMOD.Studio.EventInstance glideInstance;
     FMOD.Studio.EventInstance bodyInstance;
     public PlayerController playerController;
@@ -46,7 +46,6 @@ public class PlayerSound : MonoBehaviour
 
     void OnDestroy()
     {
-        playerController.OnRestarted -= StartGlideSound;
         playerController.OnLose -= StopSoundGlide;
         playerController.OnGroundOff -= StopSoundGlide; 
         playerController.OnGroundOn -= StartGlideSound;

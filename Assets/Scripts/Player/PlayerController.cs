@@ -373,7 +373,7 @@ namespace Assets.Scripts.Player
         public delegate void BarrierCollisionDelegate();
 
         /// <summary>
-        /// Событие для звука столкновений
+        /// Событие столкновений с препятсвий
         /// </summary>
         public event BarrierCollisionDelegate OnBarrierCollision; 
         public delegate void OnRestartedDelegate();
@@ -702,7 +702,6 @@ namespace Assets.Scripts.Player
             if (collision.collider.gameObject.TryGetComponent(out Barrier barrier) && !isLose)
             {
                 Lose(LoseCause.barrier);
-                
             }
         }
 
