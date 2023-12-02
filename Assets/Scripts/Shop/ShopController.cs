@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Models.Characters;
 using Assets.Scripts.Models.Users;
+using Assets.Scripts.Player;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -96,13 +97,13 @@ namespace Assets.Scripts.Shop
         /// </summary>
         private int _currentCharacterIndex = 0;
 
-        private IUserDataModel _userData;
+        private UserDataController _userDataController;
 
         private ICharacterModel _currentCharacter => _charactersToSale[_currentCharacterIndex].CharacterModel.Value;
 
         private void Awake()
         {
-            _userData = new UserDataModel();
+            _userDataController = FindObjectOfType<UserDataController>();
 
             _buyButtonText = _buyButton.GetComponentInChildren<TextMeshProUGUI>();
 
@@ -152,7 +153,7 @@ namespace Assets.Scripts.Shop
         /// </summary>
         public void BuyCurrentCharacter()
         {
-            bool wasOwned = _userData.BuyCharacter(_currentCharacter);
+            bool wasOwned = _userDataController.UserDataModel.BuyCharacter(_currentCharacter);
             if (wasOwned)
             {
                 UpdateSelectButtonUI();
@@ -165,10 +166,10 @@ namespace Assets.Scripts.Shop
         /// </summary>
         public void SelectCurrentCharacter()
         {
-            bool wasSelected = _userData.SelectCharacter(_currentCharacter);
+            bool wasSelected = _userDataController.UserDataModel.SelectCharacter(_currentCharacter);
             if (wasSelected)
             {
-                _userData.SelectCharacter(_currentCharacter);
+                _userDataController.UserDataModel.SelectCharacter(_currentCharacter);
                 UpdateSelectButtonUI();
             }
         }
@@ -203,13 +204,13 @@ namespace Assets.Scripts.Shop
                 _charactersOnPodiums[i].transform.SetPositionAndRotation(new Vector3(x, y, z), Quaternion.identity);
             }
 
-            if (_userData.SelectedCharacterKey != _currentCharacter.Key)
+            if (_userDataController.UserDataModel.SelectedCharacterKey != _currentCharacter.Key)
             {
                 ClearCharacterMenuUI();
 
                 _currentCharacterIndex = _charactersToSale
                     .Select(characterGO => characterGO.CharacterModel.Value)
-                    .Where(character => character.Key == _userData.SelectedCharacterKey)
+                    .Where(character => character.Key == _userDataController.UserDataModel.SelectedCharacterKey)
                     .Select(character => character.Index)
                     .Single();
 
@@ -243,7 +244,7 @@ namespace Assets.Scripts.Shop
         private void UpdateUserDataUI()
         {
             // TODO: вместо текста подписи сделать иконку
-            _moneyText.text = $"Денег: {_userData.Money}";
+            _moneyText.text = $"Денег: {_userDataController.UserDataModel.Money}";
         }
 
         /// <summary>
@@ -257,7 +258,7 @@ namespace Assets.Scripts.Shop
             _descriptionText.text = _currentCharacter.Description;
             _descriptionText.enabled = true;
 
-            if (!_userData.IsCharacterOwned(_currentCharacter))
+            if (!_userDataController.UserDataModel.IsCharacterOwned(_currentCharacter))
             {
                 UpdateBuyButtonUI();
             }
@@ -273,7 +274,7 @@ namespace Assets.Scripts.Shop
         private void UpdateBuyButtonUI()
         {
             _buyButtonText.text = _currentCharacter.Price.ToString();
-            _buyButton.interactable = _userData.Money >= _currentCharacter.Price;
+            _buyButton.interactable = _userDataController.UserDataModel.Money >= _currentCharacter.Price;
             _buyButton.gameObject.SetActive(true);
             _selectButton.gameObject.SetActive(false);
         }
@@ -283,7 +284,7 @@ namespace Assets.Scripts.Shop
         /// </summary>
         private void UpdateSelectButtonUI()
         {
-            _selectButton.interactable = !_userData.IsCharacterSelected(_currentCharacter);
+            _selectButton.interactable = !_userDataController.UserDataModel.IsCharacterSelected(_currentCharacter);
             _selectButton.gameObject.SetActive(true);
             _buyButton.gameObject.SetActive(false);
         }

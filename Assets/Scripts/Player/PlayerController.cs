@@ -9,7 +9,7 @@ using TNRD;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace Assets.Scripts
+namespace Assets.Scripts.Player
 {
     public class PlayerController : MonoBehaviour
     {
@@ -379,12 +379,11 @@ namespace Assets.Scripts
         /// </summary>
         public event OnRestartedDelegate OnRestarted;
 
-        private IUserDataModel _userData;
+        private UserDataController _userDataController;
 
         private void Awake()
         {
-            _userData = new UserDataModel();
-
+            _userDataController = new UserDataController();
             playerRigidBody = GetComponent<Rigidbody>();
 
             bonesDefaultMass = new float[bonesTransforms.Length];
@@ -789,10 +788,10 @@ namespace Assets.Scripts
         /// </summary>
         private void CalculateScore()
         {
-            _userData.TrySetBestMetersRecord(_resultMeters);
+            _userDataController.UserDataModel.TrySetBestMetersRecord(_resultMeters);
 
             int money = _resultMeters / 3;
-            _userData.EarnMoney(money);
+            _userDataController.UserDataModel.EarnMoney(money);
         }
 
         private void LoseSki()

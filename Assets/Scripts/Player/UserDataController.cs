@@ -4,15 +4,15 @@ using UnityEngine;
 namespace Assets.Scripts.Player
 {
     /// <summary>
-    /// Контроллер данных пользователя
+    /// Контроллер для доступа к данным пользователя
     /// </summary>
-    public class UserDataController : MonoBehaviour
+    public sealed class UserDataController : MonoBehaviour
     {
-        private IUserDataModel _userDataModel;
+        public IUserDataModel UserDataModel { get; private set; }
 
         private void Awake()
         {
-            _userDataModel = new UserDataModel();
+            UserDataModel = new UserDataModel();
             DontDestroyOnLoad(gameObject);
         }
 
@@ -20,6 +20,6 @@ namespace Assets.Scripts.Player
         /// Задать данные пользователя из JSON
         /// </summary>
         /// <param name="json">JSON с данными пользователя</param>
-        public void SetUserDataFromJson(string json) => _userDataModel.SetDataFromJson(json);
+        public void SetUserDataFromJson(string json) => UserDataModel.SetDataFromJson(json);
     }
 }

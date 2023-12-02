@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Models.Users;
+using Assets.Scripts.Player;
 using TMPro;
 using UnityEngine;
 
@@ -28,15 +29,13 @@ namespace Assets.Scripts {
         /// </summary>
         public bool SpawnBarriers { get; protected set; } = true;
 
-        private IUserDataModel _userData;
+        private UserDataController _userDataController;
 
         private void Awake()
         {
-            _userData = new UserDataModel();
-
             foreach (PlayerController character in _characterGameObjects)
             {
-                if (_userData.SelectedCharacterKey == character.CharacterModel.Value.Key)
+                if (_userDataController.UserDataModel.SelectedCharacterKey == character.CharacterModel.Value.Key)
                 {
                     character.gameObject.SetActive(true);
                     _followingCamera.SetObjectToFollow(character.ObjectForCameraFollowing);
@@ -99,10 +98,10 @@ namespace Assets.Scripts {
 
         public void ShowLoseMenu(int meters)
         {
-            _userData.Fetch();
+            _userDataController.UserDataModel.Fetch();
 
             metersText.text = string.Format("Пройдено метров: {0}", meters);
-            metersBestText.text = string.Format("Лучший результат: {0}", _userData.BestMetersRecord);
+            metersBestText.text = string.Format("Лучший результат: {0}", _userDataController.UserDataModel.BestMetersRecord);
             loseMenu.SetActive(true);
         }
     }
