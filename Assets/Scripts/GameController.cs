@@ -9,7 +9,7 @@ public class GameController : MonoBehaviour
     private UserDataController _userDataController;
 
     // Start is called before the first frame update
-    void Awake()
+    void Start()
     {
         _userDataController = FindObjectOfType<UserDataController>();
 

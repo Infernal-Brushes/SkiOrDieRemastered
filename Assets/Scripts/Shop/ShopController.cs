@@ -100,7 +100,7 @@ namespace Assets.Scripts.Shop
 
         private ICharacterModel _currentCharacter => _charactersToSale[_currentCharacterIndex].CharacterModel.Value;
 
-        private void Awake()
+        private void Start()
         {
             _userDataController = FindObjectOfType<UserDataController>();
 

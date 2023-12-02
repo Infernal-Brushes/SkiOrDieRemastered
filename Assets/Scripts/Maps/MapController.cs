@@ -31,7 +31,7 @@ namespace Assets.Scripts {
 
         private UserDataController _userDataController;
 
-        private void Awake()
+        private void Start()
         {
             _userDataController = FindObjectOfType<UserDataController>();
             foreach (PlayerController character in _characterGameObjects)

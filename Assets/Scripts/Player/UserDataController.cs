@@ -8,6 +8,8 @@ namespace Assets.Scripts.Player
     /// </summary>
     public sealed class UserDataController : MonoBehaviour
     {
+        private static UserDataController _instance = null;
+
         /// <summary>
         /// Модель данных игрока
         /// </summary>
@@ -15,7 +17,15 @@ namespace Assets.Scripts.Player
 
         private void Awake()
         {
+            if (_instance != null)
+            {
+                return;
+            }
+
+            _instance = this;
             UserDataModel = new UserDataModel();
+            UserDataModel.Fetch();
+
             DontDestroyOnLoad(gameObject);
         }
 

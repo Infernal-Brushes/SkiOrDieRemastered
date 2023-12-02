@@ -382,7 +382,6 @@ namespace Assets.Scripts.Player
 
         private void Awake()
         {
-            _userDataController = FindObjectOfType<UserDataController>();
             playerRigidBody = GetComponent<Rigidbody>();
 
             bonesDefaultMass = new float[bonesTransforms.Length];
@@ -417,6 +416,11 @@ namespace Assets.Scripts.Player
 
             _leftSkiRigidBody = forLeftSki.gameObject.GetComponent<Rigidbody>();
             _rightSkiRigidBody = forRightSki.gameObject.GetComponent<Rigidbody>();
+        }
+
+        private void Start()
+        {
+            _userDataController = FindObjectOfType<UserDataController>();
         }
 
         private void Update()
