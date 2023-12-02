@@ -1,9 +1,13 @@
+using FMODUnity;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class ScenesManager : MonoBehaviour
 {
+    [SerializeField]
+    private StudioEventEmitter _studioEventEmitter;
+
     public void StartScene(string sceneName)
     {
         StartCoroutine(LoadsyncScene(sceneName));
@@ -21,6 +25,7 @@ public class ScenesManager : MonoBehaviour
 
     public void StartFreerideScene()
     {
+        _studioEventEmitter.Stop();
         StartScene("Freeride");
     }
 
