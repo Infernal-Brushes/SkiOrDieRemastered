@@ -41,7 +41,6 @@ public class InGameMenu : MonoBehaviour
     public void Pause()
     {
         pauseButton.SetActive(false);
-        Debug.Log("Paused");
         Time.timeScale = 0;
         isPaused = true;
         inGameMenuGO.SetActive(true);
@@ -52,7 +51,6 @@ public class InGameMenu : MonoBehaviour
     public void Resume()
     {
         pauseButton.SetActive(true);
-        Debug.Log("Unpaused");
         Time.timeScale = 1;
         isPaused = false;
         inGameMenuGO.SetActive(false);
