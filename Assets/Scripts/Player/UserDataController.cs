@@ -17,9 +17,14 @@ namespace Assets.Scripts.Player
 
         private void Awake()
         {
-            if (_instance != null)
+            if (_instance == this)
             {
                 return;
+            }
+
+            if (_instance != null)
+            {
+                Destroy(_instance.gameObject);
             }
 
             _instance = this;
