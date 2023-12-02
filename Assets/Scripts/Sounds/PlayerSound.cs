@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using Assets.Scripts;
-using UnityEngine;
+using Assets.Scripts.Player;
 using FMODUnity;
+using UnityEngine;
 
 public class PlayerSound : MonoBehaviour
 {

@@ -1,6 +1,4 @@
-using Assets.Scripts;
-using System.Collections;
-using System.Collections.Generic;
+using Assets.Scripts.Player;
 using UnityEngine;
 
 public class LimbChecker : MonoBehaviour

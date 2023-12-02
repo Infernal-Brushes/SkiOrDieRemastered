@@ -1,13 +1,26 @@
 mergeInto(LibraryManager.library, {
-  CommitToYandex: (data) => {
+  CommitToYandex: function (data) {
+    if (!player) {
+      return;
+    }
+
     const dataString = UTF8ToString(data);
     const dataObject = JSON.parse(dataString);
     player.setData(dataObject);
   },
-  FetchFromYandex: () => {
+  FetchFromYandex: function () {
+    if (!player) {
+      return;
+    }
+
     player.getData().then((data) => {
       const jsonData = JSON.stringify(data);
-      myGameInstance.SendMessage("PlayerData: ", jsonData);
+
+      myGameInstance.SendMessage(
+        "UserDataController",
+        "SetUserDataFromJson",
+        jsonData
+      );
     });
   },
 });

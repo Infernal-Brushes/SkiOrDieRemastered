@@ -70,8 +70,6 @@ namespace Assets.Scripts.Models.Users
             CharacterKeys.Add(character.Key);
             Commit();
 
-            Debug.Log($"Куплен {character.Name}");
-
             return true;
         }
 
@@ -80,14 +78,11 @@ namespace Assets.Scripts.Models.Users
         {
             if (!CharacterKeys.Contains(character.Key))
             {
-                Debug.Log("Персонаж не куплен");
                 return false;
             }
 
             SelectedCharacterKey = character.Key;
             Commit();
-
-            Debug.Log($"Выбран персонаж {character.Name}");
 
             return true;
         }
@@ -119,7 +114,7 @@ namespace Assets.Scripts.Models.Users
             string json = JsonUtility.ToJson(this);
 #if UNITY_WEBGL
             CommitToYandex(json);
-#else
+#elif UNITY_STANDALONE_WIN
             using StreamWriter writer = new(_userDataPath);
             writer.Write(json);
 #endif
@@ -130,8 +125,7 @@ namespace Assets.Scripts.Models.Users
         {
 #if UNITY_WEBGL
             FetchFromYandex();
-#else 
-            Debug.Log(_userDataPath);
+#elif UNITY_STANDALONE_WIN
             if (!File.Exists(_userDataPath))
             {
                 Commit();
@@ -140,10 +134,20 @@ namespace Assets.Scripts.Models.Users
 
             using StreamReader reader = new(_userDataPath);
             string json = reader.ReadToEnd();
-
-            JsonUtility.FromJsonOverwrite(json, this);
-            Debug.Log($"Fetched data, money: {Money }");
+            SetDataFromJson(json);
+            reader.Close();
 #endif
+        }
+
+        public void SetDataFromJson(string json)
+        {
+            UserDataModel newData = JsonUtility.FromJson<UserDataModel>(json);
+
+            Money = newData.Money;
+            BestMetersRecord = newData.BestMetersRecord;
+            CharacterKeys = newData.CharacterKeys;
+            SelectedCharacterKey = newData.SelectedCharacterKey;
+            LocalizationCode = newData.LocalizationCode;
         }
 
         [DllImport("__Internal")]

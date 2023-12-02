@@ -1,25 +1,24 @@
 using Assets.Scripts;
-using Assets.Scripts.Models.Users;
+using Assets.Scripts.Player;
 using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
     public LocalizationManager localizationManager;
 
-    private IUserDataModel _userDataModel;
+    private UserDataController _userDataController;
 
     // Start is called before the first frame update
-    void Awake()
+    void Start()
     {
-        _userDataModel = new UserDataModel();
-        _userDataModel.Fetch();
+        _userDataController = FindObjectOfType<UserDataController>();
 
-        localizationManager?.SetLocalization(_userDataModel.LocalizationCode);
+        localizationManager?.SetLocalization(_userDataController.UserDataModel.LocalizationCode);
     }
 
     public void ChangeLocalization(string localizationCode)
     {
-        _userDataModel.SetLocalizationCode(localizationCode);
+        _userDataController.UserDataModel.SetLocalizationCode(localizationCode);
         localizationManager.SetLocalization(localizationCode);
 
         var texts = FindObjectsOfType<LocalizedText>(true);

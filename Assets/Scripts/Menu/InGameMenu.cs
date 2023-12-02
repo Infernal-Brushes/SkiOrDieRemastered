@@ -1,6 +1,6 @@
 using Assets.Scripts;
+using Assets.Scripts.Player;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 

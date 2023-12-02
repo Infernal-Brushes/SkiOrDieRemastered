@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using Assets.Scripts.Player;
 using FMODUnity;
-using Assets.Scripts;
+using UnityEngine;
 
 public class TreesSound : MonoBehaviour
 {
