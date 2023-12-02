@@ -364,12 +364,18 @@ namespace Assets.Scripts.Player
         public event OnTurningDelegate OnTurningOff;
 
         public delegate void OnLoseDelegate();
-
+        
         /// <summary>
         /// Событие проигрыша игрока
         /// </summary>
         public event OnLoseDelegate OnLose;
 
+        public delegate void OnBarrierCollisionDelegate();
+
+        /// <summary>
+        /// Событие столкновений с препятсвий
+        /// </summary>
+        public event OnBarrierCollisionDelegate OnBarrierCollision; 
         public delegate void OnRestartedDelegate();
 
         /// <summary>
@@ -773,6 +779,7 @@ namespace Assets.Scripts.Player
 
                 RagdollOn();
                 playerRigidBody.angularDrag = 0.06f;
+                OnBarrierCollision?.Invoke();
             }
 
             StartCoroutine(ShowLoseMenu());

@@ -1,37 +1,46 @@
+using FMODUnity;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class ScenesManager : MonoBehaviour
+namespace Assets.Scripts.Menu
 {
-    public void StartScene(string sceneName)
+    public class ScenesManager : MonoBehaviour
     {
-        StartCoroutine(LoadsyncScene(sceneName));
-    }
+        public delegate void OnSceneChangingDelegate(string sceneName);
 
-    public void StartMainMenuScene()
-    {
-        StartScene("MainMenu");
-    }
+        public event OnSceneChangingDelegate OnSceneChanging;
 
-    public void StartShopScene()
-    {
-        StartScene("Shop");
-    }
-
-    public void StartFreerideScene()
-    {
-        StartScene("Freeride");
-    }
-
-    IEnumerator LoadsyncScene(string sceneName)
-    {
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
-
-        // Wait until the asynchronous scene fully loads
-        while (!asyncLoad.isDone)
+        public void StartScene(string sceneName)
         {
-            yield return null;
+            StartCoroutine(LoadsyncScene(sceneName));
+        }
+
+        public void StartMainMenuScene()
+        {
+            StartScene("MainMenu");
+        }
+
+        public void StartShopScene()
+        {
+            StartScene("Shop");
+        }
+
+        public void StartFreerideScene()
+        {
+            StartScene("Freeride");
+        }
+
+        private IEnumerator LoadsyncScene(string sceneName)
+        {
+            OnSceneChanging?.Invoke(sceneName);
+            AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
+
+            // Wait until the asynchronous scene fully loads
+            while (!asyncLoad.isDone)
+            {
+                yield return null;
+            }
         }
     }
 }

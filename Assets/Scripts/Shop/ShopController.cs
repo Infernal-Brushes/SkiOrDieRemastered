@@ -215,7 +215,6 @@ namespace Assets.Scripts.Shop
                     .Single();
 
                 int sectionsToRotate = _currentCharacterIndex;
-                Debug.Log(sectionsToRotate);
                 float angle = _angle * sectionsToRotate;
                 StartCoroutine(RotatePodium(1,  angle, _firstSelectionRotationSpeed));
             }

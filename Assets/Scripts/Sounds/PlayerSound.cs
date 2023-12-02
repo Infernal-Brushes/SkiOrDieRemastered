@@ -4,16 +4,22 @@ using UnityEngine;
 
 public class PlayerSound : MonoBehaviour
 {
-    [SerializeField] private FMODUnity.EventReference GlideEvent;
+    [SerializeField] private EventReference GlideEvent;
+    [SerializeField] private EventReference BodyEvent;
     FMOD.Studio.EventInstance glideInstance;
+    FMOD.Studio.EventInstance bodyInstance;
     public PlayerController playerController;
     // Start is called before the first frame update
     void Start()
     {
         glideInstance = RuntimeManager.CreateInstance(GlideEvent);
+        bodyInstance = RuntimeManager.CreateInstance(BodyEvent);
         StartGlideSound();
-        playerController.OnRestarted += StartGlideSound;
+        playerController.OnGroundOn += StartGlideSound;
         playerController.OnLose += StopSoundGlide;
+        playerController.OnGroundOff += StopSoundGlide;
+        playerController.OnBarrierCollision += SoundFallBody;
+        
     }
 
     // Update is called once per frame
@@ -33,10 +39,19 @@ public class PlayerSound : MonoBehaviour
         glideInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE); 
     }
 
+    void SoundFallBody()
+    {
+       bodyInstance.start();
+    }
+
     void OnDestroy()
     {
-        playerController.OnRestarted -= StartGlideSound;
         playerController.OnLose -= StopSoundGlide;
+        playerController.OnGroundOff -= StopSoundGlide; 
+        playerController.OnGroundOn -= StartGlideSound;
+        playerController.OnBarrierCollision -= SoundFallBody;
+        glideInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+        bodyInstance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
     }
 
 }
