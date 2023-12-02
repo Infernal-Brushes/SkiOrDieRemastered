@@ -431,10 +431,10 @@ namespace Assets.Scripts.Player
             }
 
             //_axisX = joystick.Horizontal;
-            if (Input.GetAxis("Horizontal") != 0)
-            {
-                _axisX = Input.GetAxis("Horizontal");
-            }
+            //if (Input.GetAxis("Horizontal") != 0)
+            //{
+            _axisX = Input.GetAxis("Horizontal");
+            //}
 
             AngleOfCurrentTurning = -(90f - Vector3.Angle(_skiesDirection, Vector3.forward));
 
