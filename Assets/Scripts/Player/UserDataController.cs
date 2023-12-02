@@ -8,10 +8,11 @@ namespace Assets.Scripts.Player
     /// </summary>
     public class UserDataController : MonoBehaviour
     {
-        private readonly IUserDataModel _userDataModel;
+        private IUserDataModel _userDataModel;
 
         private void Awake()
         {
+            _userDataModel = new UserDataModel();
             DontDestroyOnLoad(gameObject);
         }
 
