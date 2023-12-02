@@ -33,7 +33,6 @@ namespace Assets.Scripts {
         private void Awake()
         {
             _userData = new UserDataModel();
-            _userData.Fetch();
 
             foreach (PlayerController character in _characterGameObjects)
             {

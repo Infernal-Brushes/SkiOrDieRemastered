@@ -35,6 +35,12 @@ namespace Assets.Scripts.Models.Users
         public string LocalizationCode { get; }
 
         /// <summary>
+        /// Задать данные игрока из json
+        /// </summary>
+        /// <param name="json">Данные игрока в виде JSON</param>
+        public void SetDataFromJson(string json);
+
+        /// <summary>
         /// Признак того что персонаж выбран
         /// </summary>
         /// <param name="character">Персонаж для проверки</param>

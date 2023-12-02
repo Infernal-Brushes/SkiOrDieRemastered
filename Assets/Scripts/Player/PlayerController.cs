@@ -384,7 +384,6 @@ namespace Assets.Scripts
         private void Awake()
         {
             _userData = new UserDataModel();
-            _userData.Fetch();
 
             playerRigidBody = GetComponent<Rigidbody>();
 

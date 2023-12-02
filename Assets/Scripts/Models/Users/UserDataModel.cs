@@ -35,6 +35,11 @@ namespace Assets.Scripts.Models.Users
 
         private string _fileStoreName => "UserData.json";
 
+        public UserDataModel()
+        {
+            Fetch();
+        }
+
         /// <inheritdoc/>
         public bool IsCharacterSelected(ICharacterModel character) => SelectedCharacterKey == character.Key;
 
@@ -140,10 +145,14 @@ namespace Assets.Scripts.Models.Users
 
             using StreamReader reader = new(_userDataPath);
             string json = reader.ReadToEnd();
-
-            JsonUtility.FromJsonOverwrite(json, this);
-            Debug.Log($"Fetched data, money: {Money }");
+            SetDataFromJson(json);
 #endif
+        }
+
+        public void SetDataFromJson(string json)
+        {
+            JsonUtility.FromJson<UserDataModel>(json);
+            Debug.Log($"Fetched data, money: {Money}");
         }
 
         [DllImport("__Internal")]

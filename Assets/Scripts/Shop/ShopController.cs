@@ -103,7 +103,6 @@ namespace Assets.Scripts.Shop
         private void Awake()
         {
             _userData = new UserDataModel();
-            _userData.Fetch();
 
             _buyButtonText = _buyButton.GetComponentInChildren<TextMeshProUGUI>();
 

@@ -12,7 +12,6 @@ public class GameController : MonoBehaviour
     void Awake()
     {
         _userDataModel = new UserDataModel();
-        _userDataModel.Fetch();
 
         localizationManager?.SetLocalization(_userDataModel.LocalizationCode);
     }
