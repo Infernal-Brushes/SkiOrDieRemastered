@@ -370,12 +370,12 @@ namespace Assets.Scripts.Player
         /// </summary>
         public event OnLoseDelegate OnLose;
 
-        public delegate void BarrierCollisionDelegate();
+        public delegate void OnBarrierCollisionDelegate();
 
         /// <summary>
         /// Событие столкновений с препятсвий
         /// </summary>
-        public event BarrierCollisionDelegate OnBarrierCollision; 
+        public event OnBarrierCollisionDelegate OnBarrierCollision; 
         public delegate void OnRestartedDelegate();
 
         /// <summary>
