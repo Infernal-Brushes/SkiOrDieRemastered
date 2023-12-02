@@ -1,7 +1,6 @@
 ﻿using Assets.Enums;
 using Assets.Extensions;
 using Assets.Scripts.Models.Characters;
-using Assets.Scripts.Models.Users;
 using System;
 using System.Collections;
 using TMPro;
@@ -383,7 +382,7 @@ namespace Assets.Scripts.Player
 
         private void Awake()
         {
-            _userDataController = new UserDataController();
+            _userDataController = FindObjectOfType<UserDataController>();
             playerRigidBody = GetComponent<Rigidbody>();
 
             bonesDefaultMass = new float[bonesTransforms.Length];

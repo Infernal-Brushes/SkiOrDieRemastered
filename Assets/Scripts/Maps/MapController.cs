@@ -33,6 +33,7 @@ namespace Assets.Scripts {
 
         private void Awake()
         {
+            _userDataController = FindObjectOfType<UserDataController>();
             foreach (PlayerController character in _characterGameObjects)
             {
                 if (_userDataController.UserDataModel.SelectedCharacterKey == character.CharacterModel.Value.Key)

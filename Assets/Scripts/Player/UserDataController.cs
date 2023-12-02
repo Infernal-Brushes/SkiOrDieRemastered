@@ -8,6 +8,9 @@ namespace Assets.Scripts.Player
     /// </summary>
     public sealed class UserDataController : MonoBehaviour
     {
+        /// <summary>
+        /// Модель данных игрока
+        /// </summary>
         public IUserDataModel UserDataModel { get; private set; }
 
         private void Awake()

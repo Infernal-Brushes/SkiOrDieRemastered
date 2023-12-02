@@ -1,5 +1,4 @@
 ﻿using Assets.Scripts.Models.Characters;
-using Assets.Scripts.Models.Users;
 using Assets.Scripts.Player;
 using System.Collections;
 using System.Collections.Generic;
