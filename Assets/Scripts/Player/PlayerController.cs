@@ -6,7 +6,6 @@ using System.Collections;
 using TMPro;
 using TNRD;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 namespace Assets.Scripts.Player
 {
@@ -15,7 +14,7 @@ namespace Assets.Scripts.Player
         [field: SerializeField]
         public SerializableInterface<ICharacterModel> CharacterModel { get; private set; }
 
-        public Joystick joystick;
+        //public Joystick joystick;
 
         /// <summary>
         /// Позиция рестарта игрока
@@ -425,18 +424,13 @@ namespace Assets.Scripts.Player
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.V))
-            {
-                RagdollOn();
-            }
-
             if (!isLose && Input.GetKeyDown(KeyCode.Q))
             {
                 _isDebugEnabled = !_isDebugEnabled;
                 _debugPanel.SetActive(!_debugPanel.activeSelf);
             }
 
-            _axisX = joystick.Horizontal;
+            //_axisX = joystick.Horizontal;
             if (Input.GetAxis("Horizontal") != 0)
             {
                 _axisX = Input.GetAxis("Horizontal");
@@ -456,9 +450,9 @@ namespace Assets.Scripts.Player
         private void FixedUpdate()
         {
             if (isLose)
+            {
                 return;
-
-            //Debug.DrawRay(groundPoint.transform.position, groundPoint.transform.up, Color.red, 12);
+            }
 
             if (VelocityForward >= _deathSpeedX)
             {
@@ -745,8 +739,8 @@ namespace Assets.Scripts.Player
             _rightSkiCollider.layer = 7;
             _leftSkiCollider.layer = 7;
 
-            joystick.OnPointerUp(new PointerEventData(null));
-            joystick.gameObject.SetActive(false);
+            //joystick.OnPointerUp(new PointerEventData(null));
+            //joystick.gameObject.SetActive(false);
 
             var ingameMenu = FindObjectOfType<InGameMenu>();
             ingameMenu.pauseButton.SetActive(false);
@@ -858,7 +852,7 @@ namespace Assets.Scripts.Player
             _metersText.gameObject.SetActive(true);
             _resultMeters = 0;
 
-            joystick.gameObject.SetActive(true);
+            //joystick.gameObject.SetActive(true);
             playerRigidBody.velocity = Vector3.zero;
             playerRigidBody.angularVelocity = Vector3.zero;
             transform.SetPositionAndRotation(_restartPlayerTransformPosition, _restartPlayerTransformRotation);
