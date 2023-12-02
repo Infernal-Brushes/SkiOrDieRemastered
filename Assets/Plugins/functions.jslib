@@ -23,4 +23,14 @@ mergeInto(LibraryManager.library, {
       );
     });
   },
+  SetLeaderboard: function () {
+    ysdk.getLeaderboards().then((leaderboard) => {
+      player.getData().then((data) => {
+        leaderboard.setLeaderboardScore(
+          "leaderBoardMain",
+          data["<BestMetersRecord>k__BackingField"]
+        );
+      });
+    });
+  },
 });
