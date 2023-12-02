@@ -1,4 +1,4 @@
-using Assets.Scripts;
+using Assets.Scripts.Player;
 using UnityEngine;
 
 public class FollowingCamera : MonoBehaviour

@@ -1,6 +1,6 @@
 using Assets.Scripts;
+using Assets.Scripts.Player;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -46,7 +46,7 @@ public class InGameMenu : MonoBehaviour
         isPaused = true;
         inGameMenuGO.SetActive(true);
 
-        FindObjectOfType<Joystick>().gameObject.SetActive(false);
+        //FindObjectOfType<Joystick>().gameObject.SetActive(false);
     }
 
     public void Resume()
@@ -57,7 +57,7 @@ public class InGameMenu : MonoBehaviour
         isPaused = false;
         inGameMenuGO.SetActive(false);
 
-        FindObjectOfType<Joystick>(true).gameObject.SetActive(true);
+        //FindObjectOfType<Joystick>(true).gameObject.SetActive(true);
     }
 
     public void Restart()

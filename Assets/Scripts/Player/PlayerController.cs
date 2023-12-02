@@ -1,22 +1,20 @@
 ﻿using Assets.Enums;
 using Assets.Extensions;
 using Assets.Scripts.Models.Characters;
-using Assets.Scripts.Models.Users;
 using System;
 using System.Collections;
 using TMPro;
 using TNRD;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
-namespace Assets.Scripts
+namespace Assets.Scripts.Player
 {
     public class PlayerController : MonoBehaviour
     {
         [field: SerializeField]
         public SerializableInterface<ICharacterModel> CharacterModel { get; private set; }
 
-        public Joystick joystick;
+        //public Joystick joystick;
 
         /// <summary>
         /// Позиция рестарта игрока
@@ -385,13 +383,10 @@ namespace Assets.Scripts
         /// </summary>
         public event OnRestartedDelegate OnRestarted;
 
-        private IUserDataModel _userData;
+        private UserDataController _userDataController;
 
         private void Awake()
         {
-            _userData = new UserDataModel();
-            _userData.Fetch();
-
             playerRigidBody = GetComponent<Rigidbody>();
 
             bonesDefaultMass = new float[bonesTransforms.Length];
@@ -428,24 +423,24 @@ namespace Assets.Scripts
             _rightSkiRigidBody = forRightSki.gameObject.GetComponent<Rigidbody>();
         }
 
+        private void Start()
+        {
+            _userDataController = FindObjectOfType<UserDataController>();
+        }
+
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.V))
-            {
-                RagdollOn();
-            }
-
             if (!isLose && Input.GetKeyDown(KeyCode.Q))
             {
                 _isDebugEnabled = !_isDebugEnabled;
                 _debugPanel.SetActive(!_debugPanel.activeSelf);
             }
 
-            _axisX = joystick.Horizontal;
-            if (Input.GetAxis("Horizontal") != 0)
-            {
-                _axisX = Input.GetAxis("Horizontal");
-            }
+            //_axisX = joystick.Horizontal;
+            //if (Input.GetAxis("Horizontal") != 0)
+            //{
+            _axisX = Input.GetAxis("Horizontal");
+            //}
 
             AngleOfCurrentTurning = -(90f - Vector3.Angle(_skiesDirection, Vector3.forward));
 
@@ -461,9 +456,9 @@ namespace Assets.Scripts
         private void FixedUpdate()
         {
             if (isLose)
+            {
                 return;
-
-            //Debug.DrawRay(groundPoint.transform.position, groundPoint.transform.up, Color.red, 12);
+            }
 
             if (VelocityForward >= _deathSpeedX)
             {
@@ -751,8 +746,8 @@ namespace Assets.Scripts
             _rightSkiCollider.layer = 7;
             _leftSkiCollider.layer = 7;
 
-            joystick.OnPointerUp(new PointerEventData(null));
-            joystick.gameObject.SetActive(false);
+            //joystick.OnPointerUp(new PointerEventData(null));
+            //joystick.gameObject.SetActive(false);
 
             var ingameMenu = FindObjectOfType<InGameMenu>();
             ingameMenu.pauseButton.SetActive(false);
@@ -798,10 +793,10 @@ namespace Assets.Scripts
         /// </summary>
         private void CalculateScore()
         {
-            _userData.TrySetBestMetersRecord(_resultMeters);
+            _userDataController.UserDataModel.TrySetBestMetersRecord(_resultMeters);
 
             int money = _resultMeters / 3;
-            _userData.EarnMoney(money);
+            _userDataController.UserDataModel.EarnMoney(money);
         }
 
         private void LoseSki()
@@ -865,7 +860,7 @@ namespace Assets.Scripts
             _metersText.gameObject.SetActive(true);
             _resultMeters = 0;
 
-            joystick.gameObject.SetActive(true);
+            //joystick.gameObject.SetActive(true);
             playerRigidBody.velocity = Vector3.zero;
             playerRigidBody.angularVelocity = Vector3.zero;
             transform.SetPositionAndRotation(_restartPlayerTransformPosition, _restartPlayerTransformRotation);
