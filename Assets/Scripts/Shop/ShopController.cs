@@ -159,8 +159,6 @@ namespace Assets.Scripts.Shop
             bool wasOwned = _userDataController.UserDataModel.BuyCharacter(_currentCharacter);
             if (wasOwned)
             {
-                _userDataController.UserDataModel.SelectCharacter(_currentCharacter);
-                _userDataController.UserDataModel.Commit();
                 UpdatePlayButtonUI();
                 UpdateUserDataUI();
             }
@@ -174,7 +172,6 @@ namespace Assets.Scripts.Shop
             bool wasSelected = _userDataController.UserDataModel.SelectCharacter(_currentCharacter);
             if (wasSelected)
             {
-                _userDataController.UserDataModel.Commit();
                 UpdatePlayButtonUI();
             }
         }

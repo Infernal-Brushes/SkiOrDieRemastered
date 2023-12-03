@@ -92,11 +92,12 @@ namespace Assets.Scripts.Models.Users
         /// Задать новый лучший рекорд спуска в метрах, если предыдущий был меньше
         /// </summary>
         /// <param name="meters">Количество пройденных метров</param>
+        /// <param name="money">Сколько заработано денег</param>
         /// <returns>
         /// <see cref="true"/> - новый результат - лучший.
         /// <see cref="false"/> - новый результат не самый лучший
         /// </returns>
-        public bool TrySetBestMetersRecord(int meters);
+        public void EarnMoneyAndTrySetBestMetersRecord(int meters, int money);
 
         /// <summary>
         /// Сменить локализацию игры

@@ -58,8 +58,7 @@ namespace Assets.Scripts.Player
         {
             var bestMeters = UserDataModel.BestMetersRecord;
             UserDataModel = new UserDataModel();
-            UserDataModel.TrySetBestMetersRecord(bestMeters);
-            UserDataModel.Commit();
+            UserDataModel.EarnMoneyAndTrySetBestMetersRecord(bestMeters, 0);
         }
 
         /// <summary>

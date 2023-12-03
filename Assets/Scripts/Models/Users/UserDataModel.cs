@@ -57,6 +57,7 @@ namespace Assets.Scripts.Models.Users
             }
 
             Money += money;
+            Commit();
         }
 
         /// <inheritdoc/>
@@ -74,6 +75,7 @@ namespace Assets.Scripts.Models.Users
 
             Money -= character.Price;
             CharacterKeys.Add(character.Key);
+            SelectCharacter(character);
 
             return true;
         }
@@ -87,30 +89,32 @@ namespace Assets.Scripts.Models.Users
             }
 
             SelectedCharacterKey = character.Key;
+            Commit();
 
             return true;
         }
 
         /// <inheritdoc/>
-        public bool TrySetBestMetersRecord(int meters)
+        public void EarnMoneyAndTrySetBestMetersRecord(int meters, int money)
         {
+            Money += money;
+
             if (BestMetersRecord < meters)
             {
                 BestMetersRecord = meters;
 #if UNITY_WEBGL
                 SetLeaderboard();
 #endif
-
-                return true;
             }
 
-            return false;
+            Commit();
         }
 
         /// <inheritdoc/>
         public void SetLocalizationCode(string localizationCode)
         {
             LocalizationCode = localizationCode;
+            Commit();
         }
 
         /// <inheritdoc/>
