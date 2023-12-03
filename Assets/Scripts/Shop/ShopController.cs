@@ -160,6 +160,7 @@ namespace Assets.Scripts.Shop
             if (wasOwned)
             {
                 _userDataController.UserDataModel.SelectCharacter(_currentCharacter);
+                _userDataController.UserDataModel.Commit();
                 UpdatePlayButtonUI();
                 UpdateUserDataUI();
             }
@@ -173,7 +174,7 @@ namespace Assets.Scripts.Shop
             bool wasSelected = _userDataController.UserDataModel.SelectCharacter(_currentCharacter);
             if (wasSelected)
             {
-                _userDataController.UserDataModel.SelectCharacter(_currentCharacter);
+                _userDataController.UserDataModel.Commit();
                 UpdatePlayButtonUI();
             }
         }

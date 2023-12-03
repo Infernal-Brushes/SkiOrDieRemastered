@@ -19,6 +19,7 @@ public class GameController : MonoBehaviour
     public void ChangeLocalization(string localizationCode)
     {
         _userDataController.UserDataModel.SetLocalizationCode(localizationCode);
+        _userDataController.UserDataModel.Commit();
         localizationManager.SetLocalization(localizationCode);
 
         var texts = FindObjectsOfType<LocalizedText>(true);

@@ -1009,9 +1009,9 @@ namespace Assets.Scripts.Player
         private IEnumerator CalcScoreAndShowLoseMenu()
         {
             _userDataController.UserDataModel.TrySetBestMetersRecord(_resultMeters);
-
             int moneyForMeters = Mathf.Max(_resultMeters / _userDataController.UserDataModel.MetersScoreDelimeter, 1);
             _userDataController.UserDataModel.EarnMoney(moneyForMeters + _moneyForSpeed + _moneyForRisk);
+            _userDataController.UserDataModel.Commit();
 
             yield return new WaitForSeconds(3);
 
