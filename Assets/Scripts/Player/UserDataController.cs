@@ -39,7 +39,9 @@ namespace Assets.Scripts.Player
         /// </summary>
         public void ResetProgress()
         {
+            var bestMeters = UserDataModel.BestMetersRecord;
             UserDataModel = new UserDataModel();
+            UserDataModel.TrySetBestMetersRecord(bestMeters);
             UserDataModel.Commit();
         }
 
