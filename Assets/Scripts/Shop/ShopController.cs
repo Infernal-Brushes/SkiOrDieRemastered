@@ -66,7 +66,7 @@ namespace Assets.Scripts.Shop
 
         [Tooltip("Кнопка выбора персонажа")]
         [SerializeField]
-        private UnityEngine.UI.Button _selectButton;
+        private UnityEngine.UI.Button _playButton;
 
         [Tooltip("Текст количества денег игрока")]
         [SerializeField]
@@ -228,7 +228,7 @@ namespace Assets.Scripts.Shop
             _nameText.enabled = false;
             _descriptionText.enabled = false;
             _buyButton.gameObject.SetActive(false);
-            _selectButton.gameObject.SetActive(false);
+            //_playButton.gameObject.SetActive(false);
         }
 
         /// <summary>
@@ -275,7 +275,7 @@ namespace Assets.Scripts.Shop
             _buyButtonText.text = _currentCharacter.Price.ToString();
             _buyButton.interactable = _userDataController.UserDataModel.Money >= _currentCharacter.Price;
             _buyButton.gameObject.SetActive(true);
-            _selectButton.gameObject.SetActive(false);
+            //_playButton.gameObject.SetActive(false);
         }
 
         /// <summary>
@@ -283,8 +283,8 @@ namespace Assets.Scripts.Shop
         /// </summary>
         private void UpdateSelectButtonUI()
         {
-            _selectButton.interactable = !_userDataController.UserDataModel.IsCharacterSelected(_currentCharacter);
-            _selectButton.gameObject.SetActive(true);
+            _playButton.interactable = _userDataController.UserDataModel.IsCharacterOwned(_currentCharacter);
+            _playButton.gameObject.SetActive(true);
             _buyButton.gameObject.SetActive(false);
         }
 
