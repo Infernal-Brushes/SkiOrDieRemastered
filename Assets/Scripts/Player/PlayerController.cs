@@ -228,7 +228,7 @@ namespace Assets.Scripts.Player
         /// <see cref="true"/> игрок проиграл
         /// <see cref="false"/> игрок ещё играет
         /// </summary>
-        private bool isLose = false;
+        public bool IsLose { get; private set; }
 
         /// <summary>
         /// Значение точки по X, с которой игрок стартует
@@ -486,7 +486,7 @@ namespace Assets.Scripts.Player
 
         private void Update()
         {
-            if (!isLose && Input.GetKeyDown(KeyCode.Q))
+            if (!IsLose && Input.GetKeyDown(KeyCode.Q))
             {
                 _isDebugEnabled = !_isDebugEnabled;
                 _debugPanel.SetActive(!_debugPanel.activeSelf);
@@ -512,7 +512,7 @@ namespace Assets.Scripts.Player
 
         private void FixedUpdate()
         {
-            if (isLose)
+            if (IsLose)
             {
                 return;
             }
@@ -577,7 +577,7 @@ namespace Assets.Scripts.Player
         /// </summary>
         private void RideForward()
         {
-            if (!isGrounded || isInStrafe || isLose )
+            if (!isGrounded || isInStrafe || IsLose )
             {
                 return;
             }
@@ -774,7 +774,7 @@ namespace Assets.Scripts.Player
 
         public void EarnMoneyForRisk()
         {
-            if (isLose || playerRigidBody.velocity.magnitude < _magnitudeSpeedForRisk)
+            if (IsLose || playerRigidBody.velocity.magnitude < _magnitudeSpeedForRisk)
             {
                 return;
             }
@@ -791,7 +791,7 @@ namespace Assets.Scripts.Player
 
         private void OnCollisionEnter(Collision collision)
         {
-            if (collision.collider.gameObject.TryGetComponent(out Barrier barrier) && !isLose)
+            if (collision.collider.gameObject.TryGetComponent(out Barrier barrier) && !IsLose)
             {
                 Lose(LoseCause.barrier);
             }
@@ -825,7 +825,7 @@ namespace Assets.Scripts.Player
 
         public void Lose(LoseCause cause)
         {
-            if (isLose)
+            if (IsLose)
             {
                 return;
             }
@@ -874,7 +874,7 @@ namespace Assets.Scripts.Player
                 OnBarrierCollision?.Invoke();
             }
 
-            isLose = true;
+            IsLose = true;
             OnLose?.Invoke();
         }
 
@@ -948,7 +948,7 @@ namespace Assets.Scripts.Player
             transform.SetPositionAndRotation(_restartPlayerTransformPosition, _restartPlayerTransformRotation);
             playerRigidBody.angularDrag = 18;
             playerRigidBody.constraints = RigidbodyConstraints.FreezeRotationZ;
-            isLose = false;
+            IsLose = false;
 
             RagdollOff();
 

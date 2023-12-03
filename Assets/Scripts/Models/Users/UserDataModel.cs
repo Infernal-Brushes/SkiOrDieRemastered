@@ -56,7 +56,6 @@ namespace Assets.Scripts.Models.Users
             }
 
             Money += money;
-            Debug.Log("earned");
             Commit();
         }
 

@@ -11,12 +11,6 @@ public class InGameMenu : MonoBehaviour
 
     private bool isPaused = false;
 
-    private void Start()
-    {
-        var player = FindObjectOfType<PlayerController>();
-       
-    }
-
     public void BackToMainMenu()
     {
         Resume();
@@ -27,6 +21,12 @@ public class InGameMenu : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
+            PlayerController player = FindObjectOfType<PlayerController>();
+            if (player.IsLose)
+            {
+                return;
+            }
+
             if (!isPaused)
             {
                 Pause();
