@@ -1,6 +1,5 @@
 ﻿using FMODUnity;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts.Menu
 {
