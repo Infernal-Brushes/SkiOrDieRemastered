@@ -486,7 +486,7 @@ namespace Assets.Scripts.Player
 
         private void Update()
         {
-            if (!IsLose && Input.GetKeyDown(KeyCode.Q))
+            if (!IsLose && Input.GetKeyDown(KeyCode.F9))
             {
                 _isDebugEnabled = !_isDebugEnabled;
                 _debugPanel.SetActive(!_debugPanel.activeSelf);
