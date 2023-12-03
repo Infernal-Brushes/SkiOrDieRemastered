@@ -38,6 +38,22 @@ public class InGameMenu : MonoBehaviour
         }
     }
 
+    private void OnApplicationPause(bool pause)
+    {
+        if (isPaused)
+        {
+            Pause();
+        }
+    }
+
+    private void OnApplicationFocus(bool focus)
+    {
+        if (!focus)
+        {
+            Pause();
+        }
+    }
+
     public void Pause()
     {
         pauseButton.SetActive(false);
