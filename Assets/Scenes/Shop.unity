@@ -437,10 +437,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2720466733712700648, guid: 0018814c8644f4843a46a3b6a31ae3e6, type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 4961344805664971604, guid: 0018814c8644f4843a46a3b6a31ae3e6, type: 3}
       propertyPath: m_Name
       value: ShopCanvas
@@ -529,58 +525,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6917789057534186295, guid: 0018814c8644f4843a46a3b6a31ae3e6, type: 3}
-      propertyPath: m_RootOrder
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 7657988717593276381, guid: 0018814c8644f4843a46a3b6a31ae3e6, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 7657988717593276383, guid: 0018814c8644f4843a46a3b6a31ae3e6, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1286558566}
-    - target: {fileID: 8819069033762788421, guid: 0018814c8644f4843a46a3b6a31ae3e6, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1286558566}
-    - target: {fileID: 8819069034171956835, guid: 0018814c8644f4843a46a3b6a31ae3e6, type: 3}
-      propertyPath: m_RootOrder
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 8819069034171956836, guid: 0018814c8644f4843a46a3b6a31ae3e6, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1286558566}
-    - target: {fileID: 8819069034171956836, guid: 0018814c8644f4843a46a3b6a31ae3e6, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: PlayGame
-      objectReference: {fileID: 0}
-    - target: {fileID: 8819069034171956836, guid: 0018814c8644f4843a46a3b6a31ae3e6, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: Assets.Scripts.Shop.ShopController, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 8819069034737302022, guid: 0018814c8644f4843a46a3b6a31ae3e6, type: 3}
-      propertyPath: m_RootOrder
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8819069034876942999, guid: 0018814c8644f4843a46a3b6a31ae3e6, type: 3}
-      propertyPath: m_text
-      value: "\u041E\u043F\u0438\u0441\u0430\u043D\u0438\u0435"
-      objectReference: {fileID: 0}
-    - target: {fileID: 8819069034876942999, guid: 0018814c8644f4843a46a3b6a31ae3e6, type: 3}
-      propertyPath: m_fontSize
-      value: 33
-      objectReference: {fileID: 0}
-    - target: {fileID: 8819069034876942999, guid: 0018814c8644f4843a46a3b6a31ae3e6, type: 3}
-      propertyPath: m_fontSizeBase
-      value: 33
-      objectReference: {fileID: 0}
-    - target: {fileID: 8819069034876942999, guid: 0018814c8644f4843a46a3b6a31ae3e6, type: 3}
-      propertyPath: m_HorizontalAlignment
-      value: 8
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0018814c8644f4843a46a3b6a31ae3e6, type: 3}
 --- !u!114 &462878104272653341 stripped
