@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Models.Characters;
+﻿using Assets.Scripts.Menu;
+using Assets.Scripts.Models.Characters;
 using Assets.Scripts.Player;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,6 +14,9 @@ namespace Assets.Scripts.Shop
     /// </summary>
     public class ShopController : MonoBehaviour
     {
+        [SerializeField]
+        private ScenesManager _scenesManager;
+
         [Header("Настройки подиума")]
 
         [Tooltip("Главный подиум")]
@@ -172,6 +176,12 @@ namespace Assets.Scripts.Shop
                 _userDataController.UserDataModel.SelectCharacter(_currentCharacter);
                 UpdatePlayButtonUI();
             }
+        }
+
+        public void PlayGame()
+        {
+            SelectCurrentCharacter();
+            _scenesManager.StartFreerideScene();
         }
 
         /// <summary>

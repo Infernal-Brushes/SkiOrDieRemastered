@@ -7,7 +7,10 @@
         public string Name => "Оливия";
 
         /// <inheritdoc/>
-        public string Description => "Типа девчуля";
+        public string Description => "Заразительная энергия внутри маленькой обертки. " +
+            "В ее горнолыжном костюме затаилась не только грация, но и доля шалости. " +
+            "Ее дом - это горнолыжные трассы. " +
+            "У нее всегда найдется смешная шутка или неожиданный трюк на склоне";
 
         /// <inheritdoc/>
         public int Index => 2;
@@ -16,6 +19,6 @@
         public string Key => "12bbeda666a1f262272cc598708033bf";
 
         /// <inheritdoc/>
-        public int Price => 1500;
+        public int Price => 2800;
     }
 }

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.76985586, g: 0.8164296, b: 0.87749946, a: 1}
+  m_IndirectSpecularColor: {r: 0.76977235, g: 0.8151232, b: 0.8755848, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -98,7 +98,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 112000000, guid: 40838bc5c1459f649b9a80f548f1a6e2, type: 2}
-  m_LightingSettings: {fileID: 4890085278179872738, guid: 36ae7a5dec3848d498ef0bb582374ab7, type: 2}
+  m_LightingSettings: {fileID: 4890085278179872738, guid: 485b8a9026b818e42bdfdd9cbbc7727c, type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -772,7 +772,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   localizationManager: {fileID: 801102739}
   key: ui.main_menu.settings
-  text: {fileID: 456770491}
   isColonAfter: 0
 --- !u!222 &456770493
 CanvasRenderer:
@@ -1058,7 +1057,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   localizationManager: {fileID: 801102739}
   key: ui.settings_menu.language
-  text: {fileID: 573979390}
   isColonAfter: 0
 --- !u!222 &573979392
 CanvasRenderer:
@@ -1713,31 +1711,31 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1032767847254984034, guid: eaa1a63c3a191ab43bb6fdc21cc18255, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.44320357
+      value: 0.3009442
       objectReference: {fileID: 0}
     - target: {fileID: 1032767847254984034, guid: eaa1a63c3a191ab43bb6fdc21cc18255, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.24133006
+      value: 0.36788306
       objectReference: {fileID: 0}
     - target: {fileID: 1032767847254984034, guid: eaa1a63c3a191ab43bb6fdc21cc18255, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.8184935
+      value: -0.7904348
       objectReference: {fileID: 0}
     - target: {fileID: 1032767847254984034, guid: eaa1a63c3a191ab43bb6fdc21cc18255, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.2745884
+      value: -0.38640326
       objectReference: {fileID: 0}
     - target: {fileID: 1032767847254984034, guid: eaa1a63c3a191ab43bb6fdc21cc18255, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: -13.626
+      value: -22.919
       objectReference: {fileID: 0}
     - target: {fileID: 1032767847254984034, guid: eaa1a63c3a191ab43bb6fdc21cc18255, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -118.006
+      value: -124.391
       objectReference: {fileID: 0}
     - target: {fileID: 1032767847254984034, guid: eaa1a63c3a191ab43bb6fdc21cc18255, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: -41.067
+      value: -62.12
       objectReference: {fileID: 0}
     - target: {fileID: 1032767847254984035, guid: eaa1a63c3a191ab43bb6fdc21cc18255, type: 3}
       propertyPath: m_Shadows.m_Strength
@@ -1891,7 +1889,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   localizationManager: {fileID: 801102739}
   key: ui.settings_menu.settings
-  text: {fileID: 1024630363}
   isColonAfter: 0
 --- !u!222 &1024630365
 CanvasRenderer:
@@ -2465,7 +2462,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   localizationManager: {fileID: 801102739}
   key: "ui.main_menu.\u0441loakroom"
-  text: {fileID: 1490088255}
   isColonAfter: 0
 --- !u!222 &1490088257
 CanvasRenderer:
@@ -2970,7 +2966,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   localizationManager: {fileID: 801102739}
   key: ui.main_menu.freeride
-  text: {fileID: 1894622159}
   isColonAfter: 0
 --- !u!1 &1931043892
 GameObject:

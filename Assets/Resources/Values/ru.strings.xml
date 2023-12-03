@@ -1,7 +1,13 @@
 <resources>
+  <string name="ui.lose_menu.lose_common">Заезд окончен</string>
+  <string name="ui.lose_menu.meters">Пройдено: {0}м</string>
+  <string name="ui.lose_menu.meters_best">Лучший результат: {0}м</string>
+  <string name="ui.lose_menu.scores">Очки:</string>
+  <string name="ui.lose_menu.for_meters">За расстояние: +{0}</string>
+  <string name="ui.lose_menu.for_speed">За скорость: +{0}</string>
+  <string name="ui.lose_menu.for_risk">За риск: +{0}</string>
   <string name="ui.lose_menu.try_again">Заново</string>
-  <string name="ui.lose_menu.meters">Пройдено метров:</string>
-  <string name="ui.lose_menu.lose_common">Вы проиграли</string>
+  <string name="ui.lose_menu.to_main_menu">Главное меню</string>
 
   <string name="ui.main_menu.tracks">Трассы</string>
   <string name="ui.main_menu.сloakroom">Гардероб</string>
@@ -13,27 +19,4 @@
 
   <string name="ui.settings_menu.settings">Настройки</string>
   <string name="ui.settings_menu.language">Language</string>
-
-  <!--Название частей одежды для покраса-->
-  <string name="wear.color_parts.main">Основа:</string>
-  <!--<string name="wear.color_parts.secondary">Вторичное:</string>-->
-  <string name="wear.color_parts.down">Низ:</string>
-  <string name="wear.color_parts.details">Детали:</string>
-  <string name="wear.color_parts.fur">Мех:</string>
-
-  <!--Ботинки-->
-  <string name="wear.boots.boots1">Ботинки</string>
-
-  <!--Очки-->
-  <string name="wear.glasses.glasses1">Очки</string>
-
-  <!--Шапки-->
-  <string name="wear.hats.hat1">Каска</string>
-  <string name="wear.hats.hat2">Ушанка</string>
-
-  <!--Штаны-->
-  <string name="wear.legs.legs1">Штаны</string>
-
-  <!--Торс-->
-  <string name="wear.torso.torso1">Куртка</string>
 </resources>

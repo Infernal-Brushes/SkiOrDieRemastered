@@ -1040,7 +1040,32 @@ MonoBehaviour:
     unityReference: {fileID: 0}
     rawReference:
       rid: 9158778601057026050
-  joystick: {fileID: 0}
+  _inGameMenu: {fileID: 0}
+  _mapController: {fileID: 0}
+  _fadeTextController: {fileID: 0}
+  _riskTexts:
+  - "\u0420\u0438\u0441\u043A\u043E\u0432\u043E!"
+  - "\u041E\u0433\u043E!"
+  - "\u0423\u0444!"
+  - "\u0423\u0445\u0445!"
+  - "\u0412\u043E\u0442 \u044D\u0442\u043E \u0434\u0430!"
+  - "\u0411\u0430\u043B\u0434\u0451\u0436!"
+  - "\u0416\u0451\u0441\u0442\u043A\u043E!"
+  - "\u041A\u0440\u0443\u0442\u043E!"
+  - "\u0411\u044B\u043B\u043E \u0431\u043B\u0438\u0437\u043A\u043E!"
+  - "\u0425\u043E\u0440\u043E\u0448!"
+  - "\u041E\u041E\u041E\u041C\u0410\u0413\u0410\u0414!"
+  - "\u0421\u0442\u0438\u043B\u044C\u043D\u043E!"
+  - "\u0421\u0438\u043B\u044C\u043D\u043E!"
+  - "\u042D\u043F\u0438\u0447\u043D\u043E!"
+  - "\u041F\u043E\u0447\u0442\u0438 \u0437\u0430\u0434\u0435\u043B!"
+  - "\u0410\u0434\u0440\u0435\u043D\u0430\u043B\u0438\u043D!"
+  - "\u041D\u0435 \u043D\u0430\u043F\u0440\u044F\u0433\u0430\u044F\u0441\u044C!"
+  - "\u0414\u0440\u0430\u0439\u0432!"
+  - "\u042D\u043A\u0441\u0442\u0440\u0438\u043C!"
+  - "\u041A\u0440\u044B\u0448\u0443 \u0441\u043D\u0435\u0441\u043B\u043E!"
+  - "\u041E\u0442\u0432\u0430\u043B \u0431\u0430\u0448\u043D\u0438!"
+  - "\u0416\u0430\u0440\u0430!"
   _debugPanel: {fileID: 0}
   _forwardSpeedText: {fileID: 0}
   _sidewiseSpeedText: {fileID: 0}
@@ -1048,9 +1073,11 @@ MonoBehaviour:
   _velocityForwardText: {fileID: 0}
   _velocitySidewiseText: {fileID: 0}
   _metersText: {fileID: 0}
+  _velocityMagnitudeText: {fileID: 0}
   _animator: {fileID: 6583508927269895893}
   groundPoint: {fileID: 3529645813013513464}
   groundCheckLength: 0.5
+  _moneyPerSecondOnHighSpeed: 4
   _velocityFreeRide: 0.24
   _velocitySidewise: 0.45
   _velocityStrafeCoefficient: 0
@@ -1062,6 +1089,9 @@ MonoBehaviour:
   _deathAlertSpeedX: 75
   _velocityToLoseSki: 32
   speedOfTiltX: 0.3
+  _magnitudeSpeedToEarnMoney: 60
+  _magnitudeSpeedForRisk: 30
+  _magnitudeSpeedDividerForRisk: 10
   speedOfNormalRotationY: 0.68
   speedOfStrafeRotationY: 4.5
   angleOfTurn: 50

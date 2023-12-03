@@ -21,6 +21,11 @@ namespace Assets.Scripts {
         public GameObject loseMenu;
         public TextMeshProUGUI metersText;
         public TextMeshProUGUI metersBestText;
+        public TextMeshProUGUI scoreForMetersText;
+        public TextMeshProUGUI scoreForSpeedText;
+        public TextMeshProUGUI scoreForRiskText;
+        public TextMeshProUGUI totalTitleText;
+        public TextMeshProUGUI totalText;
 
         /// <summary>
         /// Флаг необходимости спавнить преграды
@@ -97,12 +102,21 @@ namespace Assets.Scripts {
             loseMenu.SetActive(false);
         }
 
-        public void ShowLoseMenu(int meters)
+        public void ShowLoseMenu(
+            int meters,
+            int bestMeters,
+            int scoreForMeters,
+            int scoreForSpeed,
+            int scoreForRisk)
         {
-            _userDataController.UserDataModel.Fetch();
-
             metersText.text = string.Format("Пройдено метров: {0}", meters);
-            metersBestText.text = string.Format("Лучший результат: {0}", _userDataController.UserDataModel.BestMetersRecord);
+            metersBestText.text = string.Format("Лучший результат: {0}", bestMeters);
+            scoreForMetersText.text = string.Format("За расстояние: +{0}", scoreForMeters);
+            scoreForSpeedText.text = string.Format("За скорость: +{0}", scoreForSpeed);
+            scoreForRiskText.text = string.Format("За риск: +{0}", scoreForRisk);
+            totalTitleText.text = string.Format("Итого: +{0}", scoreForMeters + scoreForSpeed + scoreForRisk);
+            totalText.text = string.Format("Всего: {0}", _userDataController.UserDataModel.Money);
+
             loseMenu.SetActive(true);
         }
     }
