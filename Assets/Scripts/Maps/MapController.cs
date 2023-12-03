@@ -24,6 +24,8 @@ namespace Assets.Scripts {
         public TextMeshProUGUI scoreForMetersText;
         public TextMeshProUGUI scoreForSpeedText;
         public TextMeshProUGUI scoreForRiskText;
+        public TextMeshProUGUI totalTitleText;
+        public TextMeshProUGUI totalText;
 
         /// <summary>
         /// Флаг необходимости спавнить преграды
@@ -112,6 +114,8 @@ namespace Assets.Scripts {
             scoreForMetersText.text = string.Format("За расстояние: +{0}", scoreForMeters);
             scoreForSpeedText.text = string.Format("За скорость: +{0}", scoreForSpeed);
             scoreForRiskText.text = string.Format("За риск: +{0}", scoreForRisk);
+            totalTitleText.text = string.Format("Итого: +{0}", scoreForMeters + scoreForSpeed + scoreForRisk);
+            totalText.text = string.Format("Всего: {0}", _userDataController.UserDataModel.Money);
 
             loseMenu.SetActive(true);
         }

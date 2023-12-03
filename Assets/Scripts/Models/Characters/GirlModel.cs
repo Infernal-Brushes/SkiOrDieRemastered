@@ -16,6 +16,6 @@
         public string Key => "12bbeda666a1f262272cc598708033bf";
 
         /// <inheritdoc/>
-        public int Price => 1500;
+        public int Price => 2800;
     }
 }

@@ -998,8 +998,8 @@ namespace Assets.Scripts.Player
         {
             _userDataController.UserDataModel.TrySetBestMetersRecord(_resultMeters);
 
-            int moneyForMeters = Mathf.Max(_resultMeters / 12, 1);
-            _userDataController.UserDataModel.EarnMoney(moneyForMeters);
+            int moneyForMeters = Mathf.Max(_resultMeters / _userDataController.UserDataModel.MetersScoreDelimeter, 1);
+            _userDataController.UserDataModel.EarnMoney(moneyForMeters + _moneyForSpeed + _moneyForRisk);
 
             yield return new WaitForSeconds(3);
 

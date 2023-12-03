@@ -20,6 +20,11 @@ namespace Assets.Scripts.Models.Users
         public int BestMetersRecord { get; }
 
         /// <summary>
+        /// Делитель метров для подсчёта очков за расстояние
+        /// </summary>
+        public int MetersScoreDelimeter { get; }
+
+        /// <summary>
         /// Список ключей купленных персонажа
         /// </summary>
         public List<string> CharacterKeys { get; }

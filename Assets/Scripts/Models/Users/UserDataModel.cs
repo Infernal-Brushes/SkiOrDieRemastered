@@ -1,7 +1,6 @@
 ﻿using Assets.Scripts.Models.Characters;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
 using UnityEngine;
 
 namespace Assets.Scripts.Models.Users
@@ -18,6 +17,9 @@ namespace Assets.Scripts.Models.Users
         /// <inheritdoc/>
         [field: SerializeField]
         public int BestMetersRecord { get; private set; }
+
+        /// <inheritdoc/>
+        public int MetersScoreDelimeter => 13 - CharacterKeys.Count;
 
         /// <inheritdoc/>
         [field: SerializeField]
