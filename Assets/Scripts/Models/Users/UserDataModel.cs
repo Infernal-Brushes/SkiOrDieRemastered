@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
+#if UNITY_WEBGL
+using System.Runtime.InteropServices;
+#endif
+
 namespace Assets.Scripts.Models.Users
 {
     /// <inheritdoc/>
@@ -52,6 +56,7 @@ namespace Assets.Scripts.Models.Users
             }
 
             Money += money;
+            Debug.Log("earned");
             Commit();
         }
 
