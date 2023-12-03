@@ -94,6 +94,9 @@ namespace Assets.Scripts.Models.Users
             {
                 BestMetersRecord = meters;
                 Commit();
+#if UNITY_WEBGL
+                SetLeaderboard();
+#endif
 
                 return true;
             }
@@ -150,11 +153,16 @@ namespace Assets.Scripts.Models.Users
             LocalizationCode = newData.LocalizationCode;
         }
 
+#if UNITY_WEBGL
         [DllImport("__Internal")]
         private static extern void CommitToYandex(string data);
 
         [DllImport("__Internal")]
         private static extern void FetchFromYandex();
+
+        [DllImport("__Internal")]
+        private static extern void SetLeaderboard();
+#endif
 
         public void Reset()
         {

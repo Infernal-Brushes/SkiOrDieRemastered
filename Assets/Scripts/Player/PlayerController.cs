@@ -571,7 +571,7 @@ namespace Assets.Scripts.Player
 
             if (_axisX == 0)
             {
-                ReturningToMainRotation(angleY);
+                ReturningToMainRotation();
                 return;
             }
             _animator.ResetTrigger("toDefault");
@@ -592,18 +592,18 @@ namespace Assets.Scripts.Player
             }
         }
 
-        private void ReturningToMainRotation(float angleY)
+        private void ReturningToMainRotation()
         {
             StrafeTurnOff();
             TurningTurnOff();
             _animator.SetTrigger("toDefault");
 
             //восстанавливаем положение лыж
-            if (angleY > 90 + angleOfTurn)
+            if (AngleOfCurrentTurning > angleOfTurn)
             {
                 playerRigidBody.AddTorque(transform.up * -speedOfStrafeRotationY, ForceMode.VelocityChange);
             }
-            else if (angleY < 90 - angleOfTurn)
+            else if (AngleOfCurrentTurning < -angleOfTurn)
             {
                 playerRigidBody.AddTorque(transform.up * speedOfStrafeRotationY, ForceMode.VelocityChange);
             }
@@ -867,9 +867,9 @@ namespace Assets.Scripts.Player
             playerRigidBody.constraints = RigidbodyConstraints.FreezeRotationZ;
             isLose = false;
 
-            ReturnSkiToDefaultPosition();
-
             RagdollOff();
+
+            ReturnSkiToDefaultPosition();
         }
 
         /// <summary>

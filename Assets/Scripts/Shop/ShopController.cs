@@ -66,7 +66,7 @@ namespace Assets.Scripts.Shop
 
         [Tooltip("Кнопка выбора персонажа")]
         [SerializeField]
-        private UnityEngine.UI.Button _selectButton;
+        private UnityEngine.UI.Button _playButton;
 
         [Tooltip("Текст количества денег игрока")]
         [SerializeField]
@@ -156,7 +156,7 @@ namespace Assets.Scripts.Shop
             if (wasOwned)
             {
                 _userDataController.UserDataModel.SelectCharacter(_currentCharacter);
-                UpdateSelectButtonUI();
+                UpdatePlayButtonUI();
                 UpdateUserDataUI();
             }
         }
@@ -170,7 +170,7 @@ namespace Assets.Scripts.Shop
             if (wasSelected)
             {
                 _userDataController.UserDataModel.SelectCharacter(_currentCharacter);
-                UpdateSelectButtonUI();
+                UpdatePlayButtonUI();
             }
         }
 
@@ -228,7 +228,6 @@ namespace Assets.Scripts.Shop
             _nameText.enabled = false;
             _descriptionText.enabled = false;
             _buyButton.gameObject.SetActive(false);
-            _selectButton.gameObject.SetActive(false);
         }
 
         /// <summary>
@@ -257,14 +256,8 @@ namespace Assets.Scripts.Shop
             _descriptionText.text = _currentCharacter.Description;
             _descriptionText.enabled = true;
 
-            if (!_userDataController.UserDataModel.IsCharacterOwned(_currentCharacter))
-            {
-                UpdateBuyButtonUI();
-            }
-            else
-            {
-                UpdateSelectButtonUI();
-            }
+            UpdateBuyButtonUI();
+            UpdatePlayButtonUI();
         }
 
         /// <summary>
@@ -275,17 +268,17 @@ namespace Assets.Scripts.Shop
             _buyButtonText.text = _currentCharacter.Price.ToString();
             _buyButton.interactable = _userDataController.UserDataModel.Money >= _currentCharacter.Price;
             _buyButton.gameObject.SetActive(true);
-            _selectButton.gameObject.SetActive(false);
         }
 
         /// <summary>
         /// Отобразить кнопку выбора персонажа
         /// </summary>
-        private void UpdateSelectButtonUI()
+        private void UpdatePlayButtonUI()
         {
-            _selectButton.interactable = !_userDataController.UserDataModel.IsCharacterSelected(_currentCharacter);
-            _selectButton.gameObject.SetActive(true);
-            _buyButton.gameObject.SetActive(false);
+            bool isCharacterOwned = _userDataController.UserDataModel.IsCharacterOwned(_currentCharacter);
+            _playButton.interactable = isCharacterOwned;
+            _playButton.gameObject.SetActive(true);
+            _buyButton.gameObject.SetActive(!isCharacterOwned);
         }
 
         /// <summary>
