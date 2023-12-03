@@ -1,7 +1,9 @@
 <resources>
   <string name="ui.lose_menu.try_again">Try again</string>
-  <string name="ui.lose_menu.meters">Meters count:</string>
-  <string name="ui.lose_menu.lose_common">You lose</string>
+  <string name="ui.lose_menu.to_main_menu">Main menu</string>
+  <string name="ui.lose_menu.meters">Meters count: {0}m</string>
+  <string name="ui.lose_menu.meters_best">Best: {0}m</string>
+  <string name="ui.lose_menu.lose_common">Ride is over</string>
 
   <string name="ui.main_menu.tracks">Tracks</string>
   <string name="ui.main_menu.сloakroom">Cloakroom</string>

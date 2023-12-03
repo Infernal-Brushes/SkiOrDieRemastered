@@ -27,6 +27,12 @@ namespace Assets.Scripts.Player
         private Quaternion _restartPlayerTransformRotation;
 
         [SerializeField]
+        private InGameMenu _inGameMenu;
+
+        [SerializeField]
+        private MapController _mapController;
+
+        [SerializeField]
         private GameObject _debugPanel;
 
         [SerializeField]
@@ -46,6 +52,9 @@ namespace Assets.Scripts.Player
 
         [SerializeField]
         private TMP_Text _metersText;
+
+        [SerializeField]
+        private TMP_Text _velocityMagnitudeText;
 
         [SerializeField]
         private Animator _animator;
@@ -136,6 +145,24 @@ namespace Assets.Scripts.Player
         /// </summary>
         [Tooltip("Скорость наклона вперёд назад")]
         public float speedOfTiltX = 0.3f;
+
+        [Tooltip("Скорость с которой дают деньги за скорость")]
+        [SerializeField]
+        private float _magnitudeSpeedToEarnMoney = 60f;
+
+        [Tooltip("Денег в секунду на большой скорости")]
+        [SerializeField]
+        private int _moneyPerSecondOnHighSpeed = 2;
+
+        /// <summary>
+        /// Время проведённое на большой скорости с последнего изменения скорости
+        /// </summary>
+        private float _timeInHighSpeed;
+
+        /// <summary>
+        /// Количество заработанных денег за большую скорости
+        /// </summary>
+        private int _moneyForSpeed;
 
         [Header("Повороты")]
 
@@ -445,8 +472,9 @@ namespace Assets.Scripts.Player
             AngleOfCurrentTurning = -(90f - Vector3.Angle(_skiesDirection, Vector3.forward));
 
             PrintText(_velocityForwardText, VelocityForward);
-            PrintText(_velocitySidewiseText, (VelocitySidewise));
+            PrintText(_velocitySidewiseText, VelocitySidewise);
             PrintText(_metersText, $"{_currentMeters} m");
+            PrintText(_velocityMagnitudeText, playerRigidBody.velocity.magnitude);
             if (!isInStrafe)
             {
                 PrintText(_strafeSpeedText, "0");
@@ -474,6 +502,7 @@ namespace Assets.Scripts.Player
             RideForward();
             MoveSidewise();
             RotateBody();
+            EarnMoneyForSpeed();
         }
 
         /// <summary>
@@ -697,6 +726,24 @@ namespace Assets.Scripts.Player
             }
         }
 
+        private void EarnMoneyForSpeed()
+        {
+            if (playerRigidBody.velocity.magnitude > _magnitudeSpeedToEarnMoney)
+            {
+                _timeInHighSpeed += Time.deltaTime;
+                if (_timeInHighSpeed > 1f)
+                {
+                    _moneyForSpeed += _moneyPerSecondOnHighSpeed;
+                    _timeInHighSpeed = 0f;
+                    Debug.Log($"Money for speed: {_moneyForSpeed}");
+                }
+            }
+            else
+            {
+                _timeInHighSpeed = 0f;
+            }
+        }
+
         private void OnCollisionEnter(Collision collision)
         {
             if (collision.collider.gameObject.TryGetComponent(out Barrier barrier) && !isLose)
@@ -740,7 +787,8 @@ namespace Assets.Scripts.Player
 
             _resultMeters = _currentMeters;
             _metersText.gameObject.SetActive(false);
-            CalculateScore();
+
+            StartCoroutine(CalcScoreAndShowLoseMenu());
 
             _rightSkiCollider.layer = 7;
             _leftSkiCollider.layer = 7;
@@ -748,8 +796,7 @@ namespace Assets.Scripts.Player
             //joystick.OnPointerUp(new PointerEventData(null));
             //joystick.gameObject.SetActive(false);
 
-            var ingameMenu = FindObjectOfType<InGameMenu>();
-            ingameMenu.pauseButton.SetActive(false);
+            _inGameMenu.pauseButton.SetActive(false);
 
             SetSkiToFeet();
 
@@ -782,20 +829,8 @@ namespace Assets.Scripts.Player
                 OnBarrierCollision?.Invoke();
             }
 
-            StartCoroutine(ShowLoseMenu());
             isLose = true;
             OnLose?.Invoke();
-        }
-
-        /// <summary>
-        /// Посчитать счёт, заработать денег
-        /// </summary>
-        private void CalculateScore()
-        {
-            _userDataController.UserDataModel.TrySetBestMetersRecord(_resultMeters);
-
-            int money = _resultMeters / 3;
-            _userDataController.UserDataModel.EarnMoney(money);
         }
 
         private void LoseSki()
@@ -858,6 +893,8 @@ namespace Assets.Scripts.Player
 
             _metersText.gameObject.SetActive(true);
             _resultMeters = 0;
+            _moneyForSpeed = 0;
+            _timeInHighSpeed = 0;
 
             //joystick.gameObject.SetActive(true);
             playerRigidBody.velocity = Vector3.zero;
@@ -923,11 +960,26 @@ namespace Assets.Scripts.Player
             }
         }
 
-        private IEnumerator ShowLoseMenu()
+        private IEnumerator CalcScoreAndShowLoseMenu()
         {
+            _userDataController.UserDataModel.TrySetBestMetersRecord(_resultMeters);
+
+            int moneyForMeters = Mathf.Max(_resultMeters / 12, 1);
+            _userDataController.UserDataModel.EarnMoney(moneyForMeters);
+
             yield return new WaitForSeconds(3);
+
             _debugPanel.SetActive(false);
-            FindObjectOfType<MapController>().ShowLoseMenu(_resultMeters);
+
+            _mapController.ShowLoseMenu(
+                meters: _resultMeters,
+                bestMeters: _userDataController.UserDataModel.BestMetersRecord,
+                scoreForMeters: moneyForMeters,
+                scoreForSpeed: _moneyForSpeed,
+                scoreForRisk: 0);
+
+            _moneyForSpeed = 0;
+            _timeInHighSpeed = 0;
         }
 
         /// <summary>

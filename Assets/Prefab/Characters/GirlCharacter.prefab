@@ -1040,7 +1040,8 @@ MonoBehaviour:
     unityReference: {fileID: 0}
     rawReference:
       rid: 9158778601057026050
-  joystick: {fileID: 0}
+  _inGameMenu: {fileID: 0}
+  _mapController: {fileID: 0}
   _debugPanel: {fileID: 0}
   _forwardSpeedText: {fileID: 0}
   _sidewiseSpeedText: {fileID: 0}
@@ -1048,6 +1049,7 @@ MonoBehaviour:
   _velocityForwardText: {fileID: 0}
   _velocitySidewiseText: {fileID: 0}
   _metersText: {fileID: 0}
+  _velocityMagnitudeText: {fileID: 0}
   _animator: {fileID: 6583508927269895893}
   groundPoint: {fileID: 3529645813013513464}
   groundCheckLength: 0.5
@@ -1062,6 +1064,8 @@ MonoBehaviour:
   _deathAlertSpeedX: 75
   _velocityToLoseSki: 32
   speedOfTiltX: 0.3
+  _magnitudeSpeedToEarnMoney: 60
+  _moneyPerSecondOnHighSpeed: 4
   speedOfNormalRotationY: 0.68
   speedOfStrafeRotationY: 4.5
   angleOfTurn: 50
