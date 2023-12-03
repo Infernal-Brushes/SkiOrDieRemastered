@@ -3,6 +3,7 @@ using Assets.Extensions;
 using Assets.Scripts.Models.Characters;
 using System;
 using System.Collections;
+using System.Linq;
 using TMPro;
 using TNRD;
 using UnityEngine;
@@ -31,6 +32,12 @@ namespace Assets.Scripts.Player
 
         [SerializeField]
         private MapController _mapController;
+
+        [SerializeField]
+        private FadeTextController _fadeTextController;
+
+        [SerializeField]
+        private string[] _riskTexts;
 
         [SerializeField]
         private GameObject _debugPanel;
@@ -772,8 +779,13 @@ namespace Assets.Scripts.Player
                 return;
             }
 
-            _moneyForRisk += (int)playerRigidBody.velocity.magnitude / _magnitudeSpeedDividerForRisk;
-            Debug.Log($"Risk: {_moneyForRisk}");
+            int riskScore = (int)playerRigidBody.velocity.magnitude / _magnitudeSpeedDividerForRisk;
+            _moneyForRisk += riskScore;
+
+            string greetText = _riskTexts.ElementAt(UnityEngine.Random.Range(0, _riskTexts.Length - 1));
+            _fadeTextController.Show($"{greetText}{Environment.NewLine}+{riskScore}");
+
+
             OnRisk?.Invoke();
         }
 
