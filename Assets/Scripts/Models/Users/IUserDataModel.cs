@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Models.Characters;
+using System;
 using System.Collections.Generic;
 using UnityEngine.Rendering;
 
@@ -7,7 +8,7 @@ namespace Assets.Scripts.Models.Users
     /// <summary>
     /// Модель данных игрока
     /// </summary>
-    public interface IUserDataModel
+    public interface IUserDataModel : ICloneable
     {
         /// <summary>
         /// Деньги игрока

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using System;
 
 #if UNITY_WEBGL
 using System.Runtime.InteropServices;
@@ -177,6 +178,18 @@ namespace Assets.Scripts.Models.Users
             CharacterKeys = new() { "fb7df1cf4762c4f98935c2b2e6bb8fb3" };
 
             Commit();
+        }
+
+        public object Clone()
+        {
+            return new UserDataModel()
+            {
+                Money = Money,
+                BestMetersRecord = BestMetersRecord,
+                CharacterKeys = CharacterKeys,
+                SelectedCharacterKey = SelectedCharacterKey,
+                LocalizationCode = LocalizationCode,
+            };
         }
     }
 }

@@ -17,21 +17,38 @@ namespace Assets.Scripts.Player
 
         private void Awake()
         {
-            if (_instance == this)
+            //if (_instance == null)
+            //{
+            //    _instance = this;
+            //    UserDataModel = new UserDataModel();
+            //    UserDataModel.Fetch();
+
+            //    DontDestroyOnLoad(gameObject);
+
+            //    return;
+            //}
+
+            //if (_instance.UserDataModel != null)
+            //{
+            //    UserDataModel = (UserDataModel)_instance.UserDataModel.Clone();
+            //    _instance = this;
+
+            //    return;
+            //}
+
+            try
             {
-                return;
+                UserDataModel = (UserDataModel)_instance.UserDataModel.Clone();
+                _instance = this;
             }
-
-            if (_instance != null)
+            catch
             {
-                Destroy(_instance.gameObject);
+                _instance = this;
+                UserDataModel = new UserDataModel();
+                UserDataModel.Fetch();
+
+                DontDestroyOnLoad(gameObject);
             }
-
-            _instance = this;
-            UserDataModel = new UserDataModel();
-            UserDataModel.Fetch();
-
-            DontDestroyOnLoad(gameObject);
         }
 
         /// <summary>
