@@ -502,7 +502,7 @@ namespace Assets.Scripts.Player
 
             PrintText(_velocityForwardText, VelocityForward);
             PrintText(_velocitySidewiseText, VelocitySidewise);
-            PrintText(_metersText, $"{_currentMeters} m");
+            PrintText(_metersText, $"{_currentMeters} м");
             PrintText(_velocityMagnitudeText, playerRigidBody.velocity.magnitude);
             if (!isInStrafe)
             {
