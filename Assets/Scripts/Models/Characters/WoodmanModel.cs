@@ -7,7 +7,9 @@
         public string Name => "Хэнк";
 
         /// <inheritdoc/>
-        public string Description => "Типа узбек";
+        public string Description => "Харизматичный гуру горных вершин. " +
+            "Он может и не молодой, но он точно знает, как покорять горы. " +
+            "Как Чак Норрис, только на лыжах";
 
         /// <inheritdoc/>
         public int Index => 1;

@@ -7,7 +7,7 @@
         public string Name => "Ричард";
 
         /// <inheritdoc/>
-        public string Description => "Типа пацан";
+        public string Description => "Весельчак, который обожает лыжные курорты. Однако он все же предпочитает сноубординг. Но ему выдали лыжи... Сволочи!";
 
         /// <inheritdoc/>
         public int Index => 0;
