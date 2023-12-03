@@ -71,6 +71,17 @@ namespace Assets.Scripts.Player
         [Tooltip("Длина луча для проверки контакта с землёй")]
         public float groundCheckLength = 0.5f;
 
+        [Header("Очки")]
+
+        [Tooltip("Денег в секунду на большой скорости")]
+        [SerializeField]
+        private int _moneyPerSecondOnHighSpeed = 4;
+
+        /// <summary>
+        /// Время проведённое на большой скорости с последнего изменения скорости
+        /// </summary>
+        private float _timeInHighSpeed;
+
         [Header("Скорости")]
 
         /// <summary>
@@ -150,19 +161,13 @@ namespace Assets.Scripts.Player
         [SerializeField]
         private float _magnitudeSpeedToEarnMoney = 60f;
 
-        [Tooltip("Денег в секунду на большой скорости")]
+        [Tooltip("Скорость с которой считается риск")]
         [SerializeField]
-        private int _moneyPerSecondOnHighSpeed = 2;
+        private float _magnitudeSpeedForRisk = 30f;
 
-        /// <summary>
-        /// Время проведённое на большой скорости с последнего изменения скорости
-        /// </summary>
-        private float _timeInHighSpeed;
-
-        /// <summary>
-        /// Количество заработанных денег за большую скорости
-        /// </summary>
-        private int _moneyForSpeed;
+        [Tooltip("Делитель скорости для подсчёта награды за риск")]
+        [SerializeField]
+        private int _magnitudeSpeedDividerForRisk = 10;
 
         [Header("Повороты")]
 
@@ -232,6 +237,16 @@ namespace Assets.Scripts.Player
         /// Расстояние, на котором игрок проиграл
         /// </summary>
         private int _resultMeters;
+
+        /// <summary>
+        /// Количество заработанных денег за большую скорости
+        /// </summary>
+        private int _moneyForSpeed;
+
+        /// <summary>
+        /// Количество заработанных денег за риск
+        /// </summary>
+        private int _moneyForRisk;
 
         /// <summary>
         /// Угол поворота игрока текущий
@@ -409,6 +424,13 @@ namespace Assets.Scripts.Player
         /// Событие перезапуска заезда
         /// </summary>
         public event OnRestartedDelegate OnRestarted;
+
+        public delegate void OnRiskDelegate();
+
+        /// <summary>
+        /// Событие близкого проезда мимо преграды
+        /// </summary>
+        public event OnRiskDelegate OnRisk;
 
         private UserDataController _userDataController;
 
@@ -735,13 +757,24 @@ namespace Assets.Scripts.Player
                 {
                     _moneyForSpeed += _moneyPerSecondOnHighSpeed;
                     _timeInHighSpeed = 0f;
-                    Debug.Log($"Money for speed: {_moneyForSpeed}");
                 }
             }
             else
             {
                 _timeInHighSpeed = 0f;
             }
+        }
+
+        public void EarnMoneyForRisk()
+        {
+            if (isLose || playerRigidBody.velocity.magnitude < _magnitudeSpeedForRisk)
+            {
+                return;
+            }
+
+            _moneyForRisk += (int)playerRigidBody.velocity.magnitude / _magnitudeSpeedDividerForRisk;
+            Debug.Log($"Risk: {_moneyForRisk}");
+            OnRisk?.Invoke();
         }
 
         private void OnCollisionEnter(Collision collision)
@@ -894,6 +927,7 @@ namespace Assets.Scripts.Player
             _metersText.gameObject.SetActive(true);
             _resultMeters = 0;
             _moneyForSpeed = 0;
+            _moneyForRisk = 0;
             _timeInHighSpeed = 0;
 
             //joystick.gameObject.SetActive(true);
@@ -976,10 +1010,11 @@ namespace Assets.Scripts.Player
                 bestMeters: _userDataController.UserDataModel.BestMetersRecord,
                 scoreForMeters: moneyForMeters,
                 scoreForSpeed: _moneyForSpeed,
-                scoreForRisk: 0);
+                scoreForRisk: _moneyForRisk);
 
-            _moneyForSpeed = 0;
             _timeInHighSpeed = 0;
+            _moneyForSpeed = 0;
+            _moneyForRisk = 0;
         }
 
         /// <summary>

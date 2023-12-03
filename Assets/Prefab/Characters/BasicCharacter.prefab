@@ -1509,6 +1509,7 @@ MonoBehaviour:
   _animator: {fileID: 2417677955061811062}
   groundPoint: {fileID: 5006710662087956484}
   groundCheckLength: 0.5
+  _moneyPerSecondOnHighSpeed: 4
   _velocityFreeRide: 0.24
   _velocitySidewise: 0.45
   _velocityStrafeCoefficient: 0
@@ -1521,7 +1522,8 @@ MonoBehaviour:
   _velocityToLoseSki: 32
   speedOfTiltX: 0.3
   _magnitudeSpeedToEarnMoney: 60
-  _moneyPerSecondOnHighSpeed: 4
+  _magnitudeSpeedForRisk: 30
+  _magnitudeSpeedDividerForRisk: 10
   speedOfNormalRotationY: 0.68
   speedOfStrafeRotationY: 4.5
   angleOfTurn: 50

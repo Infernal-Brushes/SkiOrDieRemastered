@@ -109,9 +109,9 @@ namespace Assets.Scripts {
         {
             metersText.text = string.Format("Пройдено метров: {0}", meters);
             metersBestText.text = string.Format("Лучший результат: {0}", bestMeters);
-            scoreForMetersText.text = string.Format("За расстояние: {0}", scoreForMeters);
-            scoreForSpeedText.text = string.Format("За скорость: {0}", scoreForSpeed);
-            scoreForRiskText.text = string.Format("За риск: {0}", scoreForRisk);
+            scoreForMetersText.text = string.Format("За расстояние: +{0}", scoreForMeters);
+            scoreForSpeedText.text = string.Format("За скорость: +{0}", scoreForSpeed);
+            scoreForRiskText.text = string.Format("За риск: +{0}", scoreForRisk);
 
             loseMenu.SetActive(true);
         }
