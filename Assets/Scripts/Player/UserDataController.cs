@@ -35,6 +35,15 @@ namespace Assets.Scripts.Player
         }
 
         /// <summary>
+        /// Сбросить прогресс
+        /// </summary>
+        public void ResetProgress()
+        {
+            UserDataModel = new UserDataModel();
+            UserDataModel.Commit();
+        }
+
+        /// <summary>
         /// Задать данные пользователя из JSON
         /// </summary>
         /// <param name="json">JSON с данными пользователя</param>
