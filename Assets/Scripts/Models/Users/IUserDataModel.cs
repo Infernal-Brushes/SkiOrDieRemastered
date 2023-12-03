@@ -96,7 +96,7 @@ namespace Assets.Scripts.Models.Users
         /// <see cref="true"/> - новый результат - лучший.
         /// <see cref="false"/> - новый результат не самый лучший
         /// </returns>
-        public bool TrySetBestMetersRecord(int meters);
+        public void EarnMoneyAndTrySetBestMetersRecord(int meters, int money);
 
         /// <summary>
         /// Сменить локализацию игры

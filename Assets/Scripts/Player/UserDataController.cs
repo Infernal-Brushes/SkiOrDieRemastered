@@ -17,25 +17,6 @@ namespace Assets.Scripts.Player
 
         private void Awake()
         {
-            //if (_instance == null)
-            //{
-            //    _instance = this;
-            //    UserDataModel = new UserDataModel();
-            //    UserDataModel.Fetch();
-
-            //    DontDestroyOnLoad(gameObject);
-
-            //    return;
-            //}
-
-            //if (_instance.UserDataModel != null)
-            //{
-            //    UserDataModel = (UserDataModel)_instance.UserDataModel.Clone();
-            //    _instance = this;
-
-            //    return;
-            //}
-
             try
             {
                 UserDataModel = (UserDataModel)_instance.UserDataModel.Clone();
@@ -58,14 +39,16 @@ namespace Assets.Scripts.Player
         {
             var bestMeters = UserDataModel.BestMetersRecord;
             UserDataModel = new UserDataModel();
-            UserDataModel.TrySetBestMetersRecord(bestMeters);
-            UserDataModel.Commit();
+            UserDataModel.EarnMoneyAndTrySetBestMetersRecord(bestMeters, 0);
         }
 
         /// <summary>
         /// Задать данные пользователя из JSON
         /// </summary>
         /// <param name="json">JSON с данными пользователя</param>
-        public void SetUserDataFromJson(string json) => UserDataModel.SetDataFromJson(json);
+        public void SetUserDataFromJson(string json)
+        {
+            UserDataModel.SetDataFromJson(json);
+        }
     }
 }

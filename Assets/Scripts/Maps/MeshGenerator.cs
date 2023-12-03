@@ -287,7 +287,7 @@ public class MeshGenerator : MonoBehaviour
                 int x;
                 do
                 {
-                    x = Random.Range(1, 130);
+                    x = Random.Range(1, xSize - 1);
                 }
                 while (xCoordinatesForTrees.Contains(x));
 
