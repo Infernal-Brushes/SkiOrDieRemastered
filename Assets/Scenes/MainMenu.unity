@@ -3477,6 +3477,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -102444237669696217, guid: 94e64e3803c64634188588c126301369, type: 3}
+      propertyPath: PlayEvent
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2980403838829631653, guid: 94e64e3803c64634188588c126301369, type: 3}
       propertyPath: m_Name
       value: MusicMM
