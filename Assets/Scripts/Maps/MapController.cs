@@ -59,10 +59,10 @@ namespace Assets.Scripts {
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                SpawnBarriers = !SpawnBarriers;
-            }
+            //if (Input.GetKeyDown(KeyCode.E))
+            //{
+            //    SpawnBarriers = !SpawnBarriers;
+            //}
 
             if (Input.GetKeyDown(KeyCode.R))
             {
