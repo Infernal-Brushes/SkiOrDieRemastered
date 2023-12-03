@@ -20,8 +20,17 @@ public class MusicRide : MonoBehaviour
          musicInstance.setParameterByName("SpeedMusic",playerController.VelocityForward);
     }
 
+    private void OnApplicationPause(bool pause)
+    {
+        musicInstance.setPaused(pause);
+    }
 
-     void OnDestroy()
+    private void OnApplicationFocus(bool focus)
+    {
+        musicInstance.setPaused(!focus);
+    }
+
+    void OnDestroy()
     {
        musicInstance.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
     }
