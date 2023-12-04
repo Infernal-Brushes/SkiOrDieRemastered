@@ -17,6 +17,16 @@ public class Amb_Sound2d : MonoBehaviour
         ambInstance.start();
     }
 
+    private void OnApplicationPause(bool pause)
+    {
+        ambInstance.setPaused(pause);
+    }
+
+    private void OnApplicationFocus(bool focus)
+    {
+        ambInstance.setPaused(!focus);
+    }
+
     // Update is called once per frame
     void Update()
     {

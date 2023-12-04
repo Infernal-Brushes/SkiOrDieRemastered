@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using System;
 
 #if UNITY_WEBGL
 using System.Runtime.InteropServices;
@@ -56,7 +57,6 @@ namespace Assets.Scripts.Models.Users
             }
 
             Money += money;
-            Debug.Log("earned");
             Commit();
         }
 
@@ -75,7 +75,7 @@ namespace Assets.Scripts.Models.Users
 
             Money -= character.Price;
             CharacterKeys.Add(character.Key);
-            Commit();
+            SelectCharacter(character);
 
             return true;
         }
@@ -95,20 +95,18 @@ namespace Assets.Scripts.Models.Users
         }
 
         /// <inheritdoc/>
-        public bool TrySetBestMetersRecord(int meters)
+        public void EarnMoneyAndTrySetBestMetersRecord(int meters, int money)
         {
             if (BestMetersRecord < meters)
             {
                 BestMetersRecord = meters;
-                Commit();
 #if UNITY_WEBGL
                 SetLeaderboard();
 #endif
-
-                return true;
             }
 
-            return false;
+            Money += money;
+            Commit();
         }
 
         /// <inheritdoc/>
@@ -122,6 +120,7 @@ namespace Assets.Scripts.Models.Users
         public void Commit()
         {
             string json = JsonUtility.ToJson(this);
+            Debug.Log($"{nameof(UserDataModel)}.{nameof(Commit)} call. Json: {json}");
 #if UNITY_WEBGL
             CommitToYandex(json);
 #elif UNITY_STANDALONE_WIN
@@ -133,6 +132,7 @@ namespace Assets.Scripts.Models.Users
         /// <inheritdoc/>
         public void Fetch()
         {
+            Debug.Log($"{nameof(UserDataModel)}.{nameof(Fetch)} call");
 #if UNITY_WEBGL
             FetchFromYandex();
 #elif UNITY_STANDALONE_WIN
@@ -151,6 +151,7 @@ namespace Assets.Scripts.Models.Users
 
         public void SetDataFromJson(string json)
         {
+            Debug.Log($"{nameof(UserDataModel)}.{nameof(SetDataFromJson)} call. Json: {json}");
             UserDataModel newData = JsonUtility.FromJson<UserDataModel>(json);
 
             Money = newData.Money;
@@ -178,6 +179,18 @@ namespace Assets.Scripts.Models.Users
             CharacterKeys = new() { "fb7df1cf4762c4f98935c2b2e6bb8fb3" };
 
             Commit();
+        }
+
+        public object Clone()
+        {
+            return new UserDataModel()
+            {
+                Money = Money,
+                BestMetersRecord = BestMetersRecord,
+                CharacterKeys = CharacterKeys,
+                SelectedCharacterKey = SelectedCharacterKey,
+                LocalizationCode = LocalizationCode,
+            };
         }
     }
 }

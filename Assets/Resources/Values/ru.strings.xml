@@ -12,7 +12,7 @@
   <string name="ui.main_menu.tracks">Трассы</string>
   <string name="ui.main_menu.сloakroom">Гардероб</string>
   <string name="ui.main_menu.settings">Настройки</string>
-  <string name="ui.main_menu.freeride">Фрирайд</string>
+  <string name="ui.main_menu.freeride">Начать заезд</string>
 
   <string name="ui.pause_menu.resume">Возобновить</string>
   <string name="ui.pause_menu.back_to_main_menu">В главное меню</string>

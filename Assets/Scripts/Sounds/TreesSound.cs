@@ -20,4 +20,14 @@ public class TreesSound : MonoBehaviour
     {
          treesInstance.setParameterByName("Speed",playerController.VelocityForward);
     }
+
+    private void OnApplicationPause(bool pause)
+    {
+        treesInstance.setPaused(pause);
+    }
+
+    private void OnApplicationFocus(bool focus)
+    {
+        treesInstance.setPaused(!focus);
+    }
 }

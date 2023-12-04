@@ -256,20 +256,16 @@ public class MeshGenerator : MonoBehaviour
             List<int> xCoordinatesForTrees = new();
 
             //такой шанс что на этой линии будут деревья
-            int chanceToTree = Random.Range(0, 16);
+            int chanceToTree = Random.Range(0, 12);
             if (chanceToTree != 0)
             {
                 continue;
             }
 
             // шансы сколько будет деревьев на линии
-            int countOfTreesForThisLine;
-            int barrierChance = Random.Range(1, 12);
-            if (barrierChance <= 7)
-            {
-                countOfTreesForThisLine = 1;
-            }
-            else if (barrierChance > 7 && barrierChance <= 10)
+            int countOfTreesForThisLine = 1;
+            int barrierChance = Random.Range(1, 16);
+            if (barrierChance > 4 && barrierChance <= 10)
             {
                 countOfTreesForThisLine = 2;
             }
@@ -277,17 +273,13 @@ public class MeshGenerator : MonoBehaviour
             {
                 countOfTreesForThisLine = 3;
             }
-            else
-            {
-                countOfTreesForThisLine = 4;
-            }
 
             for (int i = 0; i < countOfTreesForThisLine; i++)
             {
                 int x;
                 do
                 {
-                    x = Random.Range(1, 130);
+                    x = Random.Range(1, xSize - 1);
                 }
                 while (xCoordinatesForTrees.Contains(x));
 

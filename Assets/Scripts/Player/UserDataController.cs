@@ -17,27 +17,38 @@ namespace Assets.Scripts.Player
 
         private void Awake()
         {
-            if (_instance == this)
+            try
             {
-                return;
+                UserDataModel = (UserDataModel)_instance.UserDataModel.Clone();
+                _instance = this;
             }
-
-            if (_instance != null)
+            catch
             {
-                Destroy(_instance.gameObject);
-            }
+                _instance = this;
+                UserDataModel = new UserDataModel();
+                UserDataModel.Fetch();
 
-            _instance = this;
+                DontDestroyOnLoad(gameObject);
+            }
+        }
+
+        /// <summary>
+        /// Сбросить прогресс
+        /// </summary>
+        public void ResetProgress()
+        {
+            var bestMeters = UserDataModel.BestMetersRecord;
             UserDataModel = new UserDataModel();
-            UserDataModel.Fetch();
-
-            DontDestroyOnLoad(gameObject);
+            UserDataModel.EarnMoneyAndTrySetBestMetersRecord(bestMeters, 0);
         }
 
         /// <summary>
         /// Задать данные пользователя из JSON
         /// </summary>
         /// <param name="json">JSON с данными пользователя</param>
-        public void SetUserDataFromJson(string json) => UserDataModel.SetDataFromJson(json);
+        public void SetUserDataFromJson(string json)
+        {
+            UserDataModel.SetDataFromJson(json);
+        }
     }
 }

@@ -29,6 +29,16 @@ namespace Assets.Scripts.Menu
             _instance = this;
         }
 
+        private void OnApplicationPause(bool pause)
+        {
+            _studioEventEmitter.EventInstance.setPaused(pause);
+        }
+
+        private void OnApplicationFocus(bool focus)
+        {
+            _studioEventEmitter.EventInstance.setPaused(!focus);
+        }
+
         private void StopMusicOnSpecifiedSceneLoad(string sceneName)
         {
             if (sceneName == "Freeride")

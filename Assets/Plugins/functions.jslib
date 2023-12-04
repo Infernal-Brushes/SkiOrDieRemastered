@@ -6,14 +6,20 @@ mergeInto(LibraryManager.library, {
 
     const dataString = UTF8ToString(data);
     const dataObject = JSON.parse(dataString);
-    player.setData(dataObject);
+    player.setData(dataObject, true);
   },
   FetchFromYandex: function () {
     if (!player) {
       return;
     }
 
-    player.getData().then((data) => {
+    player.getData([
+      "<Money>k__BackingField",
+      "<BestMetersRecord>k__BackingField",
+      "<CharacterKeys>k__BackingField",
+      "<SelectedCharacterKey>k__BackingField",
+      "<LocalizationCode>k__BackingField"])
+    .then((data) => {
       const jsonData = JSON.stringify(data);
 
       myGameInstance.SendMessage(

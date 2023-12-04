@@ -26,13 +26,12 @@ namespace Assets.Scripts
 
         private void Awake()
         {
-            if (localizationManager == null)
-            {
-                localizationManager = FindObjectOfType<LocalizationManager>();
-                //Debug.Log("{GameLog} => [] (<color=yellow>Warning</color>) - set link to LocalizationManager before starting scene", this.gameObject);
-            }
+            //if (localizationManager == null)
+            //{
+            //    localizationManager = FindObjectOfType<LocalizationManager>();
+            //    //Debug.Log("{GameLog} => [] (<color=yellow>Warning</color>) - set link to LocalizationManager before starting scene", this.gameObject);
+            //}
 
-            _text = GetComponent<TextMeshProUGUI>();
         }
 
         private void Start()
@@ -45,8 +44,10 @@ namespace Assets.Scripts
         /// </summary>
         public void Refresh()
         {
-            string str = this.localizationManager.GetValue(key);
+            localizationManager = FindObjectOfType<LocalizationManager>();
+            string str = localizationManager.GetValue(key);
 
+            _text = GetComponent<TextMeshProUGUI>();
             _text.text = str + (isColonAfter ? ":" : "");
         }
     }

@@ -44,6 +44,18 @@ public class PlayerSound : MonoBehaviour
        bodyInstance.start();
     }
 
+    private void OnApplicationPause(bool pause)
+    {
+        bodyInstance.setPaused(pause);
+        glideInstance.setPaused(pause);
+    }
+
+    private void OnApplicationFocus(bool focus)
+    {
+        bodyInstance.setPaused(!focus);
+        glideInstance.setPaused(!focus);
+    }
+
     void OnDestroy()
     {
         playerController.OnLose -= StopSoundGlide;
