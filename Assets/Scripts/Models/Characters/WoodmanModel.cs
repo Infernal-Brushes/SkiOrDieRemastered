@@ -1,4 +1,7 @@
-﻿namespace Assets.Scripts.Models.Characters
+﻿using Assets.Scripts.Models.Characters.WearColors;
+using System.Collections.Generic;
+
+namespace Assets.Scripts.Models.Characters
 {
     /// <inheritdoc/>
     public class WoodmanModel : ICharacterModel
@@ -19,5 +22,8 @@
 
         /// <inheritdoc/>
         public int Price => 3200;
+
+        /// <inheritdoc/>
+        public List<IWearColorModel> BodyPartColors => new();
     }
 }

@@ -1,4 +1,7 @@
-﻿namespace Assets.Scripts.Models.Characters
+﻿using Assets.Scripts.Models.Characters.WearColors;
+using System.Collections.Generic;
+
+namespace Assets.Scripts.Models.Characters
 {
     /// <inheritdoc/>
     public class GirlModel : ICharacterModel
@@ -9,7 +12,6 @@
         /// <inheritdoc/>
         public string Description => "Заразительная энергия внутри маленькой обертки. " +
             "В ее горнолыжном костюме затаилась не только грация, но и доля шалости. " +
-            "Ее дом - это горнолыжные трассы. " +
             "У нее всегда найдется смешная шутка или неожиданный трюк на склоне";
 
         /// <inheritdoc/>
@@ -20,5 +22,8 @@
 
         /// <inheritdoc/>
         public int Price => 4700;
+
+        /// <inheritdoc/>
+        public List<IWearColorModel> BodyPartColors => new();
     }
 }

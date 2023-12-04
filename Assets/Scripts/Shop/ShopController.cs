@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts.Menu;
 using Assets.Scripts.Models.Characters;
+using Assets.Scripts.Models.Characters.WearColors;
 using Assets.Scripts.Player;
 using System.Collections;
 using System.Collections.Generic;
@@ -162,6 +163,34 @@ namespace Assets.Scripts.Shop
                 _userDataController.UserDataModel.SelectCharacter(_currentCharacter);
                 UpdatePlayButtonUI();
                 UpdateUserDataUI();
+            }
+        }
+
+        public void BuyColor(string colorKey)
+        {
+            if (!_userDataController.UserDataModel.IsCharacterOwned(_currentCharacter))
+            {
+                return;
+            }
+
+            IWearColorModel wearColor = _currentCharacter.BodyPartColors
+                .SingleOrDefault(wearColor => wearColor.Key == colorKey);
+
+            if (wearColor is null)
+            {
+                return;
+            }
+
+            if (_userDataController.UserDataModel.BuyColor(wearColor))
+            {
+                // TODO: снять замочек
+                UpdateCurrentCharacterMenuUI();
+            }
+
+            if (_userDataController.UserDataModel.IsColorOwned(wearColor))
+            {
+                _userDataController.UserDataModel.SelectColor(wearColor, _currentCharacter);
+                _charactersToSale[_currentCharacterIndex].ColorPart(wearColor);
             }
         }
 

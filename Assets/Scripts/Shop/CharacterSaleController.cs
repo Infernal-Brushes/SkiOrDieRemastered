@@ -1,5 +1,6 @@
-﻿using Assets.Extensions;
-using Assets.Scripts.Models.Characters;
+﻿using Assets.Scripts.Models.Characters;
+using Assets.Scripts.Models.Characters.WearColors;
+using FMOD;
 using TNRD;
 using UnityEngine;
 
@@ -22,14 +23,23 @@ namespace Assets.Scripts.Shop
         /// </summary>
         private Transform cameraTransform;
 
-        private void Start()
+        private SkinnedMeshRenderer _skinnedMeshRenderer;
+
+        private void Awake()
         {
+            _skinnedMeshRenderer = GetComponentInChildren<SkinnedMeshRenderer>();
+
             cameraTransform = Camera.main.transform;
         }
 
         private void Update()
         {
             FaceCamera();
+        }
+
+        public void ColorPart(IWearColorModel wearColor)
+        {
+            _skinnedMeshRenderer.materials[wearColor.MaterialIndex].color = wearColor.Color;
         }
 
         /// <summary>
