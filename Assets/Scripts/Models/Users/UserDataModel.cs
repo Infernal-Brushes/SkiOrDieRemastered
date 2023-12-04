@@ -37,11 +37,11 @@ namespace Assets.Scripts.Models.Users
         public string SelectedCharacterKey { get; private set; } = DefaultCharacterKey;
 
         /// <inheritdoc/>
-        [field: SerializeField]
+        //[field: SerializeField]
         public List<string> WearColorKeysOwned { get; private set; } = new();
 
         /// <inheritdoc/>
-        [field: SerializeField]
+        //[field: SerializeField]
         public List<string> WearColorKeysSelected { get; private set; } = new();
 
         /// <inheritdoc/>
