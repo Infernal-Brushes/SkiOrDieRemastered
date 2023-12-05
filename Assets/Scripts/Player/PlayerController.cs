@@ -849,14 +849,10 @@ namespace Assets.Scripts.Player
             playerRigidBody.constraints = RigidbodyConstraints.None;
             if (cause == LoseCause.fallX)
             {
-                Debug.Log("Проигрыш! Большая скорость прямо");
-
                 StartCoroutine(Fall(-transform.right));
             }
             else if (cause == LoseCause.fallZ)
             {
-                Debug.Log("Проигрыш! Большая скорость стрейфа");
-
                 LoseSki();
 
                 // TODO: разобраться с векторами падений
@@ -867,7 +863,6 @@ namespace Assets.Scripts.Player
             }
             else if (cause == LoseCause.barrier)
             {
-                Debug.Log("Проигрыш! столкновение");
                 LoseSki();
 
                 RagdollOn();

@@ -162,7 +162,6 @@ namespace Assets.Scripts.Models.Users
         public void Commit()
         {
             string json = JsonUtility.ToJson(this);
-            Debug.Log($"{nameof(UserDataModel)}.{nameof(Commit)} call. Json: {json}");
 #if UNITY_WEBGL
             CommitToYandex(json);
 #elif UNITY_STANDALONE_WIN
@@ -174,7 +173,6 @@ namespace Assets.Scripts.Models.Users
         /// <inheritdoc/>
         public void Fetch()
         {
-            Debug.Log($"{nameof(UserDataModel)}.{nameof(Fetch)} call");
 #if UNITY_WEBGL
             FetchFromYandex();
 #elif UNITY_STANDALONE_WIN
