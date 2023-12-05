@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="ParameterPreset" id="{18cf8503-b7d1-4017-b693-1b066448c464}">
+		<property name="name">
+			<value>SpeedAmb</value>
+		</property>
+		<relationship name="folder">
+			<destination>{fa2cb377-6a79-40bf-8317-c4f53d08ec3c}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{824d57ab-17af-465a-a3a8-99913206fc07}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{824d57ab-17af-465a-a3a8-99913206fc07}">
+		<property name="maximum">
+			<value>100</value>
+		</property>
+		<property name="initialValue">
+			<value>0</value>
+		</property>
+		<property name="seekSpeed">
+			<value>14</value>
+		</property>
+	</object>
+</objects>

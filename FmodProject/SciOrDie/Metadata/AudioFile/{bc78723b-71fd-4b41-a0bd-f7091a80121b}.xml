@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="AudioFile" id="{bc78723b-71fd-4b41-a0bd-f7091a80121b}">
+		<property name="assetPath">
+			<value>Лыжи/Лыжи Glide-001.wav</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>31.054331065759637</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{94d3a7df-1f6f-4505-8ba9-a4ce7e0932eb}</destination>
+		</relationship>
+	</object>
+</objects>

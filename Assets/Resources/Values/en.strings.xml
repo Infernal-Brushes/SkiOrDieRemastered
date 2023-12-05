@@ -1,0 +1,18 @@
+<resources>
+  <string name="ui.lose_menu.try_again">Try again</string>
+  <string name="ui.lose_menu.to_main_menu">Main menu</string>
+  <string name="ui.lose_menu.meters">Meters count: {0}m</string>
+  <string name="ui.lose_menu.meters_best">Best: {0}m</string>
+  <string name="ui.lose_menu.lose_common">Ride is over</string>
+
+  <string name="ui.main_menu.tracks">Tracks</string>
+  <string name="ui.main_menu.сloakroom">Cloakroom</string>
+  <string name="ui.main_menu.settings">Settings</string>
+  <string name="ui.main_menu.freeride">Freeride</string>
+
+  <string name="ui.pause_menu.resume">Resume</string>
+  <string name="ui.pause_menu.back_to_main_menu">To main menu</string>
+
+  <string name="ui.settings_menu.settings">Settings</string>
+  <string name="ui.settings_menu.language">Language</string>
+</resources>

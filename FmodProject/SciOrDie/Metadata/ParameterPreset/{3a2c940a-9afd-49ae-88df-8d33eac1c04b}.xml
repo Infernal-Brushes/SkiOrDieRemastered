@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.02.00">
+	<object class="ParameterPreset" id="{3a2c940a-9afd-49ae-88df-8d33eac1c04b}">
+		<property name="name">
+			<value>AngleDrift</value>
+		</property>
+		<relationship name="folder">
+			<destination>{fa2cb377-6a79-40bf-8317-c4f53d08ec3c}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{3d17b23c-a5a4-4e0f-90ab-8da992d7ace6}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{3d17b23c-a5a4-4e0f-90ab-8da992d7ace6}">
+		<property name="minimum">
+			<value>-90</value>
+		</property>
+		<property name="maximum">
+			<value>90</value>
+		</property>
+		<property name="initialValue">
+			<value>0</value>
+		</property>
+	</object>
+</objects>

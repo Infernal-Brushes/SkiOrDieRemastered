@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6578917082343188768
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7590602216545538976}
+  - component: {fileID: 7991803372010042284}
+  m_Layer: 0
+  m_Name: Ushanka
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7590602216545538976
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6578917082343188768}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4.786, y: 1.573, z: -72}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7991803372010042284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6578917082343188768}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08ddfee36e47d524d9b0445c1c33d3b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 919132149155446097, guid: a6b1807c011d6a142b6fa8e51b5283c9, type: 3}
+  titleKey: wear.hats.hat2
+  targetSlot: 4
+  slotRestricts: 
+  materialPresets:
+  - coloringPartTitleKey: wear.color_parts.main
+    materirials:
+    - {fileID: 2100000, guid: 73ff61bd37307f34cb7e42e14aaa845d, type: 2}
+    - {fileID: 2100000, guid: 6ab053be7fde4d44ba7f9e841f53be94, type: 2}
+    - {fileID: 2100000, guid: fa212b4f22189864280848d8bb190b44, type: 2}
+  - coloringPartTitleKey: wear.color_parts.fur
+    materirials:
+    - {fileID: 2100000, guid: 2ffaddae93ceaf14ebc7dca15f638064, type: 2}
+    - {fileID: 2100000, guid: a94c205ffcb77824abc12ae119ab09bf, type: 2}
