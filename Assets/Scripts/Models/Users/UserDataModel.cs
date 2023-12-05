@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using System;
+using Assets.Scripts.Models.Characters.WearColors;
+using System.Linq;
 
 #if UNITY_WEBGL
 using System.Runtime.InteropServices;
@@ -35,6 +37,14 @@ namespace Assets.Scripts.Models.Users
         public string SelectedCharacterKey { get; private set; } = DefaultCharacterKey;
 
         /// <inheritdoc/>
+        //[field: SerializeField]
+        public List<string> WearColorKeysOwned { get; private set; } = new();
+
+        /// <inheritdoc/>
+        //[field: SerializeField]
+        public List<string> WearColorKeysSelected { get; private set; } = new();
+
+        /// <inheritdoc/>
         [field: SerializeField]
         public string LocalizationCode { get; private set; } = "ru-RU";
 
@@ -47,6 +57,9 @@ namespace Assets.Scripts.Models.Users
 
         /// <inheritdoc/>
         public bool IsCharacterOwned(ICharacterModel character) => CharacterKeys.Contains(character.Key);
+
+        /// <inheritdoc/>
+        public bool IsColorOwned(IWearColorModel wearColor) => WearColorKeysOwned.Contains(wearColor.Key);
 
         /// <inheritdoc/>
         public void EarnMoney(int money)
@@ -78,6 +91,35 @@ namespace Assets.Scripts.Models.Users
             SelectCharacter(character);
 
             return true;
+        }
+
+        /// <inheritdoc/>
+        public bool BuyColor(IWearColorModel wearColor)
+        {
+            if (WearColorKeysOwned.Contains(wearColor.Key))
+            {
+                return false;
+            }
+
+            if (Money <  wearColor.Price)
+            {
+                return false;
+            }
+
+            Money -= wearColor.Price;
+            WearColorKeysOwned.Add(wearColor.Key);
+
+            return true;
+        }
+
+        public void SelectColor(IWearColorModel wearColor, ICharacterModel character)
+        {
+            var characterColorsForSamePart = character.BodyPartColors.Where(characterColor => characterColor.MaterialIndex == wearColor.MaterialIndex);
+            var wearColorsToUnselect = characterColorsForSamePart.Select(color => color.Key);
+            WearColorKeysSelected.RemoveAll(color => wearColorsToUnselect.Contains(color));
+            WearColorKeysSelected.Add(wearColor.Key);
+
+            Commit();
         }
 
         /// <inheritdoc/>

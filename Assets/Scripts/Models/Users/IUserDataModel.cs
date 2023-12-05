@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Models.Characters;
+using Assets.Scripts.Models.Characters.WearColors;
 using System;
 using System.Collections.Generic;
 using UnityEngine.Rendering;
@@ -36,6 +37,16 @@ namespace Assets.Scripts.Models.Users
         public string SelectedCharacterKey { get; }
 
         /// <summary>
+        /// Список ключей купленных цветов
+        /// </summary>
+        public List<string> WearColorKeysOwned { get; }
+
+        /// <summary>
+        /// Список ключей выбранных цветов
+        /// </summary>
+        public List<string> WearColorKeysSelected { get; }
+
+        /// <summary>
         /// Код локализации
         /// </summary>
         public string LocalizationCode { get; }
@@ -67,6 +78,16 @@ namespace Assets.Scripts.Models.Users
         public bool IsCharacterOwned(ICharacterModel character);
 
         /// <summary>
+        /// Признак того что цвет куплен
+        /// </summary>
+        /// <param name="wearColor">Цвет</param>
+        /// <returns>
+        /// <see cref="true"/> - этот цвет куплен
+        /// <see cref="false"/> - этот цвет не куплен
+        /// </returns>
+        public bool IsColorOwned(IWearColorModel wearColor);
+
+        /// <summary>
         /// Заработать денег
         /// </summary>
         /// <param name="money">Поступившие деньги</param>
@@ -87,6 +108,23 @@ namespace Assets.Scripts.Models.Users
         /// </summary>
         /// <param name="character">Персонаж для выбора</param>
         public bool SelectCharacter(ICharacterModel character);
+
+        /// <summary>
+        /// Приобрести цвет для части 3д модели персонажа
+        /// </summary>
+        /// <param name="wearColor">Цвет для приобретения</param>
+        /// <returns>
+        /// <see cref="true"/> - цвет преобретён.
+        /// <see cref="false"/> - цвет не преобретён
+        /// </returns>
+        public bool BuyColor(IWearColorModel wearColor);
+
+        /// <summary>
+        /// Выбрать цвет персонажа
+        /// </summary>
+        /// <param name="wearColor">Модель цвета</param>
+        /// <param name="character">Модель персонажа</param>
+        void SelectColor(IWearColorModel wearColor, ICharacterModel character);
 
         /// <summary>
         /// Задать новый лучший рекорд спуска в метрах, если предыдущий был меньше

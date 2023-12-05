@@ -1,4 +1,7 @@
-﻿namespace Assets.Scripts.Models.Characters
+﻿using Assets.Scripts.Models.Characters.WearColors;
+using System.Collections.Generic;
+
+namespace Assets.Scripts.Models.Characters
 {
     /// <inheritdoc/>
     internal class YoungManModel : ICharacterModel
@@ -17,5 +20,10 @@
 
         /// <inheritdoc/>
         public int Price => 0;
+
+        /// <inheritdoc/>
+        public List<IWearColorModel> BodyPartColors => new() {
+            new YoungManBlueJacketModel()
+        };
     }
 }
