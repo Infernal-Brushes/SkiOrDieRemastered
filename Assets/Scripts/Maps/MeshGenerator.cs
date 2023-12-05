@@ -54,7 +54,8 @@ namespace Assets.Scripts.Maps
         [SerializeField]
         private PoolManager _stumpPoolManager;
 
-        private List<GameObject> _barriers = new();
+        private List<GameObject> _trees = new();
+        private List<GameObject> _stumps = new();
 
         /// <summary>
         /// Линия искревлений по X
@@ -247,8 +248,7 @@ namespace Assets.Scripts.Maps
         /// <param name="isFirstMesh"></param>
         private void SpawnBarriers(bool isFirstMesh = false)
         {
-            _barriers.ForEach(barrier => barrier.SetActive(false));
-            _barriers.Clear();
+            FreeBarriers();
 
             //кроме ближней линии стыка
             int z = 1;
@@ -271,8 +271,8 @@ namespace Assets.Scripts.Maps
 
                 // шансы сколько будет деревьев на линии
                 int countOfTreesForThisLine = 1;
-                int barrierChance = Random.Range(1, 16);
-                if (barrierChance > 4 && barrierChance <= 10)
+                int barrierChance = Random.Range(1, 24);
+                if (barrierChance > 4 && barrierChance <= 8)
                 {
                     countOfTreesForThisLine = 2;
                 }
@@ -299,21 +299,23 @@ namespace Assets.Scripts.Maps
                     }
 
                     //чтобы деревья слишком рядом не спавнились
-                    for (int positionX = x - 4; positionX < 9; positionX++)
-                    {
-                        xCoordinatesForTrees.Add(positionX);
-                    }
+                    //for (int positionX = x - 4; positionX < 9; positionX++)
+                    //{
+                    //    xCoordinatesForTrees.Add(positionX);
+                    //}
 
                     barrierChance = Random.Range(0, 5);
                     GameObject barrier;
                     if (barrierChance == 0)
                     {
                         barrier = _stumpPoolManager.GetFromPool();
+                        _stumps.Add(barrier);
                         y -= 0.1f;
                     }
                     else
                     {
                         barrier = _treePoolManager.GetFromPool();
+                        _trees.Add(barrier);
                         y += 1.6f;
                     }
                     barrier.transform.SetParent(barriersParent.transform);
@@ -326,9 +328,16 @@ namespace Assets.Scripts.Maps
                         new Vector3(x, y, z),
                         Quaternion.Euler(rotationX, rotationY, rotationZ));
 
-                    _barriers.Add(barrier);
                 }
             }
+        }
+
+        public void FreeBarriers()
+        {
+            _trees.ForEach(tree => _treePoolManager.ReturnObject(tree));
+            _trees.Clear();
+            _stumps.ForEach(stump => _stumpPoolManager.ReturnObject(stump));
+            _stumps.Clear();
         }
 
         /// <summary>

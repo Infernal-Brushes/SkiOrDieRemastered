@@ -1682,7 +1682,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _prefab: {fileID: 6608005100472440891, guid: 8a54a7b56ca9cde4db88127c69a881a4, type: 3}
   _isPrefabOnScene: 0
-  _poolInitialSize: 15
+  _poolInitialSize: 18
   _maxInstancesCount: 0
 --- !u!1 &586389042712063282
 GameObject:
@@ -3251,7 +3251,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _prefab: {fileID: 4474760645833983544, guid: c2c2a69c4a233f74ba17e73ccf2817eb, type: 3}
   _isPrefabOnScene: 0
-  _poolInitialSize: 15
+  _poolInitialSize: 28
   _maxInstancesCount: 0
 --- !u!23 &4082042146811960757
 MeshRenderer:

@@ -112,6 +112,7 @@ namespace Assets.Scripts.Maps {
 
             FindObjectOfType<InGameMenu>().pauseButton.SetActive(true);
 
+            FindObjectsOfType<MeshGenerator>().ToList().ForEach(meshGenerator => meshGenerator.FreeBarriers());
             MeshPoolManager.ReturnAllObjects();
             _treePoolManager.ReturnAllObjects();
             _stumpPoolManager.ReturnAllObjects();
