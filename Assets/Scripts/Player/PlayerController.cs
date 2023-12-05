@@ -1,5 +1,6 @@
 ﻿using Assets.Enums;
 using Assets.Extensions;
+using Assets.Scripts.Maps;
 using Assets.Scripts.Models.Characters;
 using System;
 using System.Collections;

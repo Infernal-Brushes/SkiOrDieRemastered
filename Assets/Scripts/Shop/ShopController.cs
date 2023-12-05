@@ -281,7 +281,7 @@ namespace Assets.Scripts.Shop
         private void UpdateUserDataUI()
         {
             // TODO: вместо текста подписи сделать иконку
-            _moneyText.text = $"Денег: {_userDataController.UserDataModel.Money}";
+            _moneyText.text = $"{_userDataController.UserDataModel.Money}";
         }
 
         /// <summary>

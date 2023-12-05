@@ -372,6 +372,8 @@ Transform:
   - {fileID: 2167741839453831483}
   - {fileID: 1451911799991893021}
   - {fileID: 7042729950680738165}
+  - {fileID: 579725305074172244}
+  - {fileID: 7838296737442932183}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 30, y: 90, z: 0}
@@ -389,12 +391,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   triggerForGenerator: {fileID: 5035677333588171811, guid: 53bb5747161814e42b302ac7aaaeeb14, type: 3}
   barriersParent: {fileID: 1451911799991893022}
-  treePrefab: {fileID: 4474760645833983544, guid: c2c2a69c4a233f74ba17e73ccf2817eb, type: 3}
-  stumpPrefab: {fileID: 6608005100472440891, guid: 8a54a7b56ca9cde4db88127c69a881a4, type: 3}
   xSize: 180
   zSize: 180
   surfaceCurve: 0.09
   startZLineToGenerateTrees: 42
+  _treePoolManager: {fileID: 1422967331937574920}
+  _stumpPoolManager: {fileID: 3300070583669163398}
 --- !u!33 &929480829330488220
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -1094,6 +1096,52 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &2369259032906378628
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7838296737442932183}
+  - component: {fileID: 3300070583669163398}
+  m_Layer: 3
+  m_Name: StumpPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7838296737442932183
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2369259032906378628}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 929480829330488223}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3300070583669163398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2369259032906378628}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62a15ced97cd5234d8b50625c364e277, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 6608005100472440891, guid: 8a54a7b56ca9cde4db88127c69a881a4, type: 3}
+  poolSize: 20
 --- !u!1 &2524965048640455622
 GameObject:
   m_ObjectHideFlags: 0
@@ -1178,6 +1226,52 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &2615069039898031596
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 579725305074172244}
+  - component: {fileID: 1422967331937574920}
+  m_Layer: 3
+  m_Name: TreePool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &579725305074172244
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2615069039898031596}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 929480829330488223}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1422967331937574920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2615069039898031596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62a15ced97cd5234d8b50625c364e277, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 4474760645833983544, guid: c2c2a69c4a233f74ba17e73ccf2817eb, type: 3}
+  poolSize: 20
 --- !u!1 &2893176780712418233
 GameObject:
   m_ObjectHideFlags: 0
