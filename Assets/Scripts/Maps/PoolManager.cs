@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 
 namespace Assets.Scripts.Maps
@@ -9,6 +8,10 @@ namespace Assets.Scripts.Maps
     {
         [SerializeField]
         private GameObject _prefab;
+
+        [Tooltip("True если префаб лежит на сцене и первый можно не инстанциировать")]
+        [SerializeField]
+        private bool _isPrefabOnScene = false;
 
         [Min(2)]
         [SerializeField]
@@ -36,8 +39,7 @@ namespace Assets.Scripts.Maps
         private void Awake()
         {
             int index = 0;
-            PrefabAssetType prefabType = PrefabUtility.GetPrefabAssetType(_prefab);
-            if (prefabType == PrefabAssetType.NotAPrefab)
+            if (_isPrefabOnScene)
             {
                 index = 1;
                 _prefab.SetActive(false);
