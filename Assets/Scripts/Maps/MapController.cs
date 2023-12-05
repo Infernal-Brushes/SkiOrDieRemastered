@@ -1,9 +1,10 @@
 ﻿using Assets.Scripts.Models.Users;
 using Assets.Scripts.Player;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
-namespace Assets.Scripts {
+namespace Assets.Scripts.Maps {
     public class MapController : MonoBehaviour
     {
         [SerializeField]
@@ -13,10 +14,7 @@ namespace Assets.Scripts {
         [SerializeField]
         private PlayerController[] _characterGameObjects;
 
-        public MeshGenerator meshGeneratorPrefab;
-
         private Transform startPositionCamera;
-        private Transform startPositionMeshGeneratror;
 
         public GameObject loseMenu;
         public TextMeshProUGUI metersText;
@@ -26,6 +24,17 @@ namespace Assets.Scripts {
         public TextMeshProUGUI scoreForRiskText;
         public TextMeshProUGUI totalTitleText;
         public TextMeshProUGUI totalText;
+
+        [field: SerializeField]
+        public PoolManager MeshPoolManager { get; private set; }
+
+        [SerializeField]
+        private PoolManager _treePoolManager;
+
+        [SerializeField]
+        private PoolManager _stumpPoolManager;
+
+        private MeshGenerator _lastMeshGenerator;
 
         /// <summary>
         /// Флаг необходимости спавнить преграды
@@ -39,6 +48,7 @@ namespace Assets.Scripts {
         private void Start()
         {
             _userDataController = FindObjectOfType<UserDataController>();
+
             foreach (PlayerController character in _characterGameObjects)
             {
                 if (_userDataController.UserDataModel.SelectedCharacterKey == character.CharacterModel.Value.Key)
@@ -53,8 +63,8 @@ namespace Assets.Scripts {
 
             loseMenu.SetActive(false);
             startPositionCamera = FindObjectOfType<Camera>().transform;
-            startPositionMeshGeneratror = meshGeneratorPrefab.transform;
-            CreateFirstShape();
+            //startPositionMeshGeneratror = meshGeneratorPrefab.transform;
+            GenerateFirstShape();
         }
 
         private void Update()
@@ -70,34 +80,48 @@ namespace Assets.Scripts {
             }
         }
 
-        private void CreateFirstShape()
+        private void GenerateFirstShape()
         {
-            var meshGenerator = Instantiate(meshGeneratorPrefab, startPositionMeshGeneratror.position, startPositionMeshGeneratror.rotation);
-            meshGenerator.CreateShape(spawnBarriers: SpawnBarriers);
+            GameObject meshGeneratorGO = MeshPoolManager.GetFromPool();
+            meshGeneratorGO.transform.position = transform.position;
+
+            _lastMeshGenerator = meshGeneratorGO.GetComponent<MeshGenerator>();
+            _lastMeshGenerator.CreateShape(spawnBarriers: SpawnBarriers);
+        }
+
+        /// <summary>
+        /// Создать следующую поверхность
+        /// </summary>
+        public void GenerateNextShape(float zSize, Vector3[] vertices, int[] triangles)
+        {
+            Vector3 originalPosition = _lastMeshGenerator.transform.position;
+            Vector3 direction = _lastMeshGenerator.transform.rotation * Vector3.forward;
+            // Немного меньше чтобы спрятать шов
+            Vector3 displacement = direction * (zSize - 0.082f);
+            Vector3 newPosition = originalPosition + displacement;
+
+            _lastMeshGenerator = MeshPoolManager.GetFromPool().GetComponent<MeshGenerator>();
+            _lastMeshGenerator.transform.SetPositionAndRotation(newPosition, _lastMeshGenerator.transform.rotation);
+            _lastMeshGenerator.CreateShape(SpawnBarriers, vertices, triangles);
         }
 
         public void Restart()
         {
-            FindObjectOfType<PlayerController>().StopAllCoroutines();
+            PlayerController player = FindObjectOfType<PlayerController>();
+            player.StopAllCoroutines();
 
             FindObjectOfType<InGameMenu>().pauseButton.SetActive(true);
 
-            var meshes = FindObjectsOfType<MeshGenerator>();
-            for (int i = 0; i < meshes.Length; i++)
-            {
-                Destroy(meshes[i].gameObject);
-            }
+            FindObjectsOfType<MeshGenerator>().ToList().ForEach(meshGenerator => meshGenerator.FreeBarriers());
+            MeshPoolManager.ReturnAllObjects();
+            _treePoolManager.ReturnAllObjects();
+            _stumpPoolManager.ReturnAllObjects();
+            GenerateFirstShape();
 
-            CreateFirstShape();
-
-
-            FindObjectOfType<PlayerController>().RestartToDefaultPosition();
+            player.RestartToDefaultPosition();
 
             Camera camera = FindObjectOfType<Camera>();
-            camera.transform.position = startPositionCamera.position;
-            camera.transform.rotation = startPositionCamera.rotation;
-
-
+            camera.transform.SetPositionAndRotation(startPositionCamera.position, startPositionCamera.rotation);
 
             loseMenu.SetActive(false);
         }
