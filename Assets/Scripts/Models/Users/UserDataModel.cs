@@ -114,7 +114,10 @@ namespace Assets.Scripts.Models.Users
 
         public void SelectColor(IWearColorModel wearColor, ICharacterModel character)
         {
-            var characterColorsForSamePart = character.BodyPartColors.Where(characterColor => characterColor.MaterialIndex == wearColor.MaterialIndex);
+            var characterColorsForSamePart = character.BodyPartColors
+                .Where(characterColor => characterColor.MaterialColors
+                .Any(characterMaterialColor => wearColor.MaterialColors
+                    .Any(wearMaterialColor => wearMaterialColor.MaterialIndex == characterMaterialColor.MaterialIndex)));
             var wearColorsToUnselect = characterColorsForSamePart.Select(color => color.Key);
             WearColorKeysSelected.RemoveAll(color => wearColorsToUnselect.Contains(color));
             WearColorKeysSelected.Add(wearColor.Key);

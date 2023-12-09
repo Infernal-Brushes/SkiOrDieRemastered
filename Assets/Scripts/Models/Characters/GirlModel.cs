@@ -25,5 +25,10 @@ namespace Assets.Scripts.Models.Characters
 
         /// <inheritdoc/>
         public List<IWearColorModel> BodyPartColors => new();
+
+        /// <inheritdoc/>
+        public List<IWearColorModel> SkiColors => new()
+        {
+        };
     }
 }

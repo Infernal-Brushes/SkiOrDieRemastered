@@ -1,26 +1,26 @@
 ﻿using Assets.Helpers;
-using UnityEngine;
+using System.Collections.Generic;
 
 namespace Assets.Scripts.Models.Characters.WearColors
 {
     /// <inheritdoc/>
-    internal class YoungManBlueJacketModel : IWearColorModel
+    internal class YoungManHatRedModel : IWearColorModel
     {
         /// <inheritdoc/>
-        public string Key => "285b74257287e725376d2785ad2411ec";
+        public string Key => "28823d57f6637b2ff975bcfbdb77fb5e";
 
         /// <inheritdoc/>
-        public int MaterialIndex => 4;
-
-        /// <inheritdoc/>
-        public Color Color => ColorHelper.FromHex("#1883FE");
+        public List<MaterialColor> MaterialColors => new()
+        {
+            new MaterialColor(materialIndex: 6, color: ColorHelper.FromHex("#8E1816"))
+        };
 
         /// <inheritdoc/>
         public int Price => 600;
 
         public override bool Equals(object obj)
         {
-            if (obj is not YoungManBlueJacketModel comparingObj)
+            if (obj is not YoungManJacketBlueModel comparingObj)
             {
                 return false;
             }

@@ -3,7 +3,27 @@ guid: 050a2ae404643c5418f7e8e5d8f478c1
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Simple_Ski_Surface
+    second: {fileID: 2100000, guid: 30371d12df7db954f853b43c75398564, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Simple_Ski_SurfaceAccent
+    second: {fileID: 2100000, guid: 1b671812c6897bc4984f4de9ad95c593, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Simple_Ski_Wood
+    second: {fileID: 2100000, guid: e5137d28ef061c543881c2a928a88af2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Simple_Sti_Strap
+    second: {fileID: 2100000, guid: 6ddd409f27c1ca24c9575b33da479c9a, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

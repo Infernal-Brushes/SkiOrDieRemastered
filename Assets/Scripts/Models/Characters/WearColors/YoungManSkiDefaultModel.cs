@@ -1,28 +1,26 @@
 ﻿using Assets.Helpers;
-using UnityEngine;
+using System.Collections.Generic;
 
 namespace Assets.Scripts.Models.Characters.WearColors
 {
-    /// <summary>
-    /// Базовый цвет куртки пацана
-    /// </summary>
-    internal class YoungManDefaultJacketModel : IWearColorModel
+    internal class YoungManSkiDefaultModel : IWearColorModel
     {
         /// <inheritdoc/>
-        public string Key => "c07afa99ac8b2c6455464b03e3c8c251";
+        public string Key => "4c086a04587341b6872f749abeebbc81";
 
         /// <inheritdoc/>
-        public int MaterialIndex => 4;
-
-        /// <inheritdoc/>
-        public Color Color => ColorHelper.FromHex("#FE6517");
+        public List<MaterialColor> MaterialColors => new()
+        {
+            new MaterialColor(materialIndex: 1, color: ColorHelper.FromHex("#1B2E2E")),
+            new MaterialColor(materialIndex: 2, color: ColorHelper.FromHex("#3B6766"))
+        };
 
         /// <inheritdoc/>
         public int Price => 0;
 
         public override bool Equals(object obj)
         {
-            if (obj is not YoungManBlueJacketModel comparingObj)
+            if (obj is not YoungManJacketBlueModel comparingObj)
             {
                 return false;
             }

@@ -25,13 +25,22 @@ namespace Assets.Scripts.Models.Characters
 
         /// <inheritdoc/>
         public List<IWearColorModel> BodyPartColors => new() {
-            new YoungManDefaultJacketModel(),
-            new YoungManBlueJacketModel(),
-            new YoungManAcidJackedModel(),
+            new YoungManJacketDefaultModel(),
+            new YoungManJacketBlueModel(),
+            new YoungManJacketAcidModel(),
 
-            new YoungManDefaultHatModel(),
-            new YoungManRedHatModel(),
-            new YoungManCyanHatModel(),
+            new YoungManHatDefaultModel(),
+            new YoungManHatRedModel(),
+            new YoungManHatCyanModel(),
+        };
+
+        /// <inheritdoc/>
+        public List<IWearColorModel> SkiColors => new()
+        {
+            new YoungManSkiDefaultModel(),
+            new YoungManSkiWhiteRedModel(),
+            new YoungManSkiMintModel(),
+            new YoungManSkiLimeModel(),
         };
     }
 }

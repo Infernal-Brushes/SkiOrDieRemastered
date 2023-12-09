@@ -20,9 +20,9 @@ namespace Assets.Scripts.Shop
         [SerializeField]
         private SerializableInterface<IWearColorModel> _wearColorModel;
 
-        [Tooltip("Иконка цвета")]
+        [Tooltip("Иконки цвета")]
         [SerializeField]
-        private Image _colorImage;
+        private Image[] _colorImages;
 
         [Tooltip("Иконка блокировки")]
         [SerializeField]
@@ -42,7 +42,10 @@ namespace Assets.Scripts.Shop
         private void Start()
         {
             _userDataController = FindObjectOfType<UserDataController>();
-            _colorImage.color = _wearColorModel.Value.Color;
+            for(int index = 0; index < _colorImages.Length; index++)
+            {
+                _colorImages[index].color = _wearColorModel.Value.MaterialColors[index].Color;
+            }
 
             UpdateLock();
         }
@@ -62,8 +65,14 @@ namespace Assets.Scripts.Shop
 
             if (wearColor is null)
             {
-                Debug.LogWarning("Цвет не добавлен персонажу в список возможных (в его модели ICharacterModel.BodyPartColors)");
-                return;
+                wearColor = _shopController.CurrentCharacter.SkiColors
+                    .SingleOrDefault(wearColor => wearColor.Key == _wearColorModel.Value.Key);
+
+                if (wearColor is null)
+                {
+                    Debug.LogWarning("Цвет не добавлен персонажу в список возможных (в его модели ICharacterModel.BodyPartColors)");
+                    return;
+                }
             }
 
             if (_userDataController.UserDataModel.BuyColor(wearColor))
