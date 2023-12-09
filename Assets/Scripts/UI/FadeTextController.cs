@@ -47,10 +47,10 @@ public class FadeTextController : MonoBehaviour {
     private IEnumerator MoveAndDisappear()
     {
         _startPosition = new Vector3(_endPosition.x, _endPosition.y - _yOffset, _endPosition.z);
-        _textMeshProUGUI.rectTransform.anchoredPosition3D = _startPosition;
+        _textMeshProUGUI.transform.localPosition = _startPosition;
         while (_currentMoveTime < _moveTime)
         {
-            _textMeshProUGUI.rectTransform.anchoredPosition3D = Vector3.Lerp(_startPosition, _endPosition, _currentMoveValue);
+            _textMeshProUGUI.transform.localPosition = Vector3.Lerp(_startPosition, _endPosition, _currentMoveValue);
             _currentMoveValue += Time.deltaTime / _moveTime;
             _currentMoveTime += Time.deltaTime;
             yield return null;

@@ -78,6 +78,18 @@ namespace Assets.Scripts.Shop
         [SerializeField]
         private TextMeshProUGUI _moneyText;
 
+        [Tooltip("Фэйд текст траты денег")]
+        [field: SerializeField]
+        public FadeTextController MoneySpendFadeTextController { get; private set; }
+
+        [Tooltip("Значение зума при покупки игрока")]
+        [SerializeField]
+        private float _characterBuyZoomOffset = -12f;
+
+        [Tooltip("Время зума при покупки игрока")]
+        [SerializeField]
+        private float _characterBuyZoomTime = 0.8f;
+
         /// <summary>
         /// Текст кнопки покупки персонажа
         /// </summary>
@@ -174,6 +186,8 @@ namespace Assets.Scripts.Shop
             bool wasOwned = _userDataController.UserDataModel.BuyCharacter(CurrentCharacter);
             if (wasOwned)
             {
+                StartCoroutine(ZoomCamera(_characterBuyZoomOffset, _characterBuyZoomTime));
+                MoneySpendFadeTextController.Show($"-{CurrentCharacter.Price}");
                 _userDataController.UserDataModel.SelectCharacter(CurrentCharacter);
                 UpdatePlayButtonUI();
                 UpdateUserDataUI();
@@ -352,6 +366,31 @@ namespace Assets.Scripts.Shop
 
             _isRotating = false;
             UpdateCurrentCharacterMenuUI();
+        }
+
+        private IEnumerator ZoomCamera(float sizeOffset, float zoomTime)
+        {
+            float initialSize = Camera.main.fieldOfView;
+            float targetSize = Camera.main.fieldOfView + sizeOffset;
+            float elapsedTime = 0f;
+
+            while (elapsedTime < zoomTime)
+            {
+                Camera.main.fieldOfView = Mathf.Lerp(initialSize, targetSize, elapsedTime / zoomTime);
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+
+            Camera.main.fieldOfView = targetSize;
+            elapsedTime = 0;
+
+            while (elapsedTime < zoomTime)
+            {
+                Camera.main.fieldOfView = Mathf.Lerp(targetSize, initialSize, elapsedTime / zoomTime);
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+            Camera.main.fieldOfView = initialSize;
         }
     }
 }

@@ -32,7 +32,5 @@ namespace Assets.Scripts.Models.Characters.WearColors
         {
             return Key.GetHashCode();
         }
-        //1: 3AE0D9
-        //2: 5A76A4
     }
 }

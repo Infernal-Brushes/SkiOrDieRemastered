@@ -77,6 +77,11 @@ namespace Assets.Scripts.Shop
 
             if (_userDataController.UserDataModel.BuyColor(wearColor))
             {
+                if (wearColor.Price > 0)
+                {
+                    _shopController.MoneySpendFadeTextController.Show($"-{wearColor.Price}");
+                }
+
                 UpdateLock();
                 HideTooltip();
                 _shopController.UpdateCurrentCharacterMenuUI();
