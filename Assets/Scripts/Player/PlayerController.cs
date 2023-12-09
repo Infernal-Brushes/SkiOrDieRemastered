@@ -1,22 +1,17 @@
 ﻿using Assets.Enums;
 using Assets.Extensions;
 using Assets.Scripts.Maps;
-using Assets.Scripts.Models.Characters;
 using System;
 using System.Collections;
 using System.Linq;
 using TMPro;
-using TNRD;
 using UnityEngine;
 
 namespace Assets.Scripts.Player
 {
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : PlayerAppearance
     {
         const string GroundLayerMaskName = "Ground";
-
-        [field: SerializeField]
-        public SerializableInterface<ICharacterModel> CharacterModel { get; private set; }
 
         //public Joystick joystick;
 
@@ -456,10 +451,9 @@ namespace Assets.Scripts.Player
         /// </summary>
         public event OnRiskDelegate OnRisk;
 
-        private UserDataController _userDataController;
-
         private void Awake()
         {
+            OnAwake();
             playerRigidBody = GetComponent<Rigidbody>();
 
             bonesDefaultMass = new float[bonesTransforms.Length];
@@ -494,11 +488,6 @@ namespace Assets.Scripts.Player
 
             _leftSkiRigidBody = forLeftSki.gameObject.GetComponent<Rigidbody>();
             _rightSkiRigidBody = forRightSki.gameObject.GetComponent<Rigidbody>();
-        }
-
-        private void Start()
-        {
-            _userDataController = FindObjectOfType<UserDataController>();
         }
 
         private void Update()

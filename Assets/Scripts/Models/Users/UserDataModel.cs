@@ -37,11 +37,11 @@ namespace Assets.Scripts.Models.Users
         public string SelectedCharacterKey { get; private set; } = DefaultCharacterKey;
 
         /// <inheritdoc/>
-        //[field: SerializeField]
+        [field: SerializeField]
         public List<string> WearColorKeysOwned { get; private set; } = new();
 
         /// <inheritdoc/>
-        //[field: SerializeField]
+        [field: SerializeField]
         public List<string> WearColorKeysSelected { get; private set; } = new();
 
         /// <inheritdoc/>
@@ -59,7 +59,7 @@ namespace Assets.Scripts.Models.Users
         public bool IsCharacterOwned(ICharacterModel character) => CharacterKeys.Contains(character.Key);
 
         /// <inheritdoc/>
-        public bool IsColorOwned(IWearColorModel wearColor) => WearColorKeysOwned.Contains(wearColor.Key);
+        public bool IsColorOwned(string colorKey) => WearColorKeysOwned.Contains(colorKey);
 
         /// <inheritdoc/>
         public void EarnMoney(int money)
@@ -199,6 +199,8 @@ namespace Assets.Scripts.Models.Users
             CharacterKeys = newData.CharacterKeys;
             SelectedCharacterKey = newData.SelectedCharacterKey;
             LocalizationCode = newData.LocalizationCode;
+            WearColorKeysOwned = newData.WearColorKeysOwned;
+            WearColorKeysSelected = newData.WearColorKeysSelected;
         }
 
 #if UNITY_WEBGL
@@ -230,6 +232,8 @@ namespace Assets.Scripts.Models.Users
                 CharacterKeys = CharacterKeys,
                 SelectedCharacterKey = SelectedCharacterKey,
                 LocalizationCode = LocalizationCode,
+                WearColorKeysOwned = WearColorKeysOwned,
+                WearColorKeysSelected = WearColorKeysSelected,
             };
         }
     }

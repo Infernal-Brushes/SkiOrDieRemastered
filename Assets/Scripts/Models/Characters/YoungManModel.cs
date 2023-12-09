@@ -3,7 +3,9 @@ using System.Collections.Generic;
 
 namespace Assets.Scripts.Models.Characters
 {
-    /// <inheritdoc/>
+    /// <summary>
+    /// Модель пацана
+    /// </summary>
     internal class YoungManModel : ICharacterModel
     {
         /// <inheritdoc/>
@@ -23,6 +25,7 @@ namespace Assets.Scripts.Models.Characters
 
         /// <inheritdoc/>
         public List<IWearColorModel> BodyPartColors => new() {
+            new YoungManDefaultJacketModel(),
             new YoungManBlueJacketModel()
         };
     }

@@ -1,6 +1,5 @@
 ﻿using Assets.Scripts.Menu;
 using Assets.Scripts.Models.Characters;
-using Assets.Scripts.Models.Characters.WearColors;
 using Assets.Scripts.Player;
 using System.Collections;
 using System.Collections.Generic;
@@ -63,11 +62,13 @@ namespace Assets.Scripts.Shop
         [SerializeField]
         private TextMeshProUGUI _descriptionText;
 
+        [Tooltip("Контроллеры позиций цветов одежды персожаней")]
+        [SerializeField]
+        private CharacterWearColorsController[] _charactersWearColors;
+
         [Tooltip("Кнопка покупки персонажа")]
         [SerializeField]
         private UnityEngine.UI.Button _buyButton;
-
-        private TextMeshProUGUI _buyButtonText;
 
         [Tooltip("Кнопка выбора персонажа")]
         [SerializeField]
@@ -76,6 +77,11 @@ namespace Assets.Scripts.Shop
         [Tooltip("Текст количества денег игрока")]
         [SerializeField]
         private TextMeshProUGUI _moneyText;
+
+        /// <summary>
+        /// Текст кнопки покупки персонажа
+        /// </summary>
+        private TextMeshProUGUI _buyButtonText;
 
         /// <summary>
         /// Угол между соседними персонажами
@@ -103,7 +109,15 @@ namespace Assets.Scripts.Shop
 
         private UserDataController _userDataController;
 
-        private ICharacterModel _currentCharacter => _charactersToSale[_currentCharacterIndex].CharacterModel.Value;
+        /// <summary>
+        /// Текущий выбрранный персонаж
+        /// </summary>
+        public ICharacterModel CurrentCharacter => _charactersToSale[_currentCharacterIndex].CharacterModel.Value;
+
+        /// <summary>
+        /// Контроллер представления персонажа для продажи
+        /// </summary>
+        public CharacterSaleController CurrentCharacterSaleController => _charactersToSale[_currentCharacterIndex];
 
         private void Start()
         {
@@ -157,40 +171,12 @@ namespace Assets.Scripts.Shop
         /// </summary>
         public void BuyCurrentCharacter()
         {
-            bool wasOwned = _userDataController.UserDataModel.BuyCharacter(_currentCharacter);
+            bool wasOwned = _userDataController.UserDataModel.BuyCharacter(CurrentCharacter);
             if (wasOwned)
             {
-                _userDataController.UserDataModel.SelectCharacter(_currentCharacter);
+                _userDataController.UserDataModel.SelectCharacter(CurrentCharacter);
                 UpdatePlayButtonUI();
                 UpdateUserDataUI();
-            }
-        }
-
-        public void BuyColor(string colorKey)
-        {
-            if (!_userDataController.UserDataModel.IsCharacterOwned(_currentCharacter))
-            {
-                return;
-            }
-
-            IWearColorModel wearColor = _currentCharacter.BodyPartColors
-                .SingleOrDefault(wearColor => wearColor.Key == colorKey);
-
-            if (wearColor is null)
-            {
-                return;
-            }
-
-            if (_userDataController.UserDataModel.BuyColor(wearColor))
-            {
-                // TODO: снять замочек
-                UpdateCurrentCharacterMenuUI();
-            }
-
-            if (_userDataController.UserDataModel.IsColorOwned(wearColor))
-            {
-                _userDataController.UserDataModel.SelectColor(wearColor, _currentCharacter);
-                _charactersToSale[_currentCharacterIndex].ColorPart(wearColor);
             }
         }
 
@@ -199,10 +185,10 @@ namespace Assets.Scripts.Shop
         /// </summary>
         public void SelectCurrentCharacter()
         {
-            bool wasSelected = _userDataController.UserDataModel.SelectCharacter(_currentCharacter);
+            bool wasSelected = _userDataController.UserDataModel.SelectCharacter(CurrentCharacter);
             if (wasSelected)
             {
-                _userDataController.UserDataModel.SelectCharacter(_currentCharacter);
+                _userDataController.UserDataModel.SelectCharacter(CurrentCharacter);
                 UpdatePlayButtonUI();
             }
         }
@@ -243,7 +229,7 @@ namespace Assets.Scripts.Shop
                 _charactersOnPodiums[i].transform.SetPositionAndRotation(new Vector3(x, y, z), Quaternion.identity);
             }
 
-            if (_userDataController.UserDataModel.SelectedCharacterKey != _currentCharacter.Key)
+            if (_userDataController.UserDataModel.SelectedCharacterKey != CurrentCharacter.Key)
             {
                 ClearCharacterMenuUI();
 
@@ -267,6 +253,13 @@ namespace Assets.Scripts.Shop
             _nameText.enabled = false;
             _descriptionText.enabled = false;
             _buyButton.gameObject.SetActive(false);
+
+            CharacterWearColorsController characterWearColorsController = _charactersWearColors
+                .FirstOrDefault(controller => controller.CharacterKey == CurrentCharacter.Key);
+            if (characterWearColorsController != null)
+            {
+                characterWearColorsController.gameObject.SetActive(false);
+            }
         }
 
         /// <summary>
@@ -280,20 +273,27 @@ namespace Assets.Scripts.Shop
 
         private void UpdateUserDataUI()
         {
-            // TODO: вместо текста подписи сделать иконку
+            // TODO: Анимацию текста сделать, и FadeText сколько отнялось
             _moneyText.text = $"{_userDataController.UserDataModel.Money}";
         }
 
         /// <summary>
         /// Обновить UI меню персонажа информацией о текущем персонаже
         /// </summary>
-        private void UpdateCurrentCharacterMenuUI()
+        public void UpdateCurrentCharacterMenuUI()
         {
-            _nameText.text = _currentCharacter.Name;
+            _nameText.text = CurrentCharacter.Name;
             _nameText.enabled = true;
 
-            _descriptionText.text = _currentCharacter.Description;
+            _descriptionText.text = CurrentCharacter.Description;
             _descriptionText.enabled = true;
+
+            CharacterWearColorsController characterWearColorsController = _charactersWearColors
+                .FirstOrDefault(controller => controller.CharacterKey == CurrentCharacter.Key);
+            if (characterWearColorsController != null)
+            {
+                characterWearColorsController.gameObject.SetActive(true);
+            }
 
             UpdateBuyButtonUI();
             UpdatePlayButtonUI();
@@ -304,8 +304,8 @@ namespace Assets.Scripts.Shop
         /// </summary>
         private void UpdateBuyButtonUI()
         {
-            _buyButtonText.text = _currentCharacter.Price.ToString();
-            _buyButton.interactable = _userDataController.UserDataModel.Money >= _currentCharacter.Price;
+            _buyButtonText.text = CurrentCharacter.Price.ToString();
+            _buyButton.interactable = _userDataController.UserDataModel.Money >= CurrentCharacter.Price;
             _buyButton.gameObject.SetActive(true);
         }
 
@@ -314,7 +314,7 @@ namespace Assets.Scripts.Shop
         /// </summary>
         private void UpdatePlayButtonUI()
         {
-            bool isCharacterOwned = _userDataController.UserDataModel.IsCharacterOwned(_currentCharacter);
+            bool isCharacterOwned = _userDataController.UserDataModel.IsCharacterOwned(CurrentCharacter);
             _playButton.interactable = isCharacterOwned;
             _playButton.gameObject.SetActive(true);
             _buyButton.gameObject.SetActive(!isCharacterOwned);

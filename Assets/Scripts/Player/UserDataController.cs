@@ -19,7 +19,11 @@ namespace Assets.Scripts.Player
         {
             try
             {
+#if UNITY_EDITOR_WIN
+                UserDataModel.Fetch();
+#else
                 UserDataModel = (UserDataModel)_instance.UserDataModel.Clone();
+#endif
                 _instance = this;
             }
             catch
