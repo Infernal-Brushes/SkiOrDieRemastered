@@ -609,7 +609,7 @@ namespace Assets.Scripts.Player
 
             Vector3 normal = needToFlatLeft ? hitLeft.normal : hitRight.normal;
             int turningCoefficient = needToFlatLeft ? -1 : 1;
-            playerRigidBody.AddTorque(_speedOfTiltForward * turningCoefficient * Vector3.Cross(transform.right, normal), ForceMode.Force);
+            playerRigidBody.AddTorque(_speedOfTiltSidewise * turningCoefficient * Vector3.Cross(transform.right, normal), ForceMode.Force);
         }
 
         private void AddGravityForce()
