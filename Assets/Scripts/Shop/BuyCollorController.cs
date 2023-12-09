@@ -1,14 +1,29 @@
 ﻿using Assets.Scripts.Models.Characters.WearColors;
 using Assets.Scripts.Player;
+using Assets.Scripts.UI;
 using System.Linq;
+using TMPro;
 using TNRD;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Assets.Scripts.Shop
 {
-    public class BuyCollorController : MonoBehaviour
+    public class BuyCollorController : TooltipController
     {
+        [Tooltip("Текст стоимости в тултипе")]
+        [SerializeField]
+        private TextMeshProUGUI _priceText;
+
+        [Tooltip("Смещение тултипа по X")]
+        [SerializeField]
+        private float _tooltipOffsetX;
+
+        [Tooltip("Смещение тултипа по Y")]
+        [SerializeField]
+        private float _tooltipOffsetY;
+
         [Tooltip("Модель цвета")]
         [SerializeField]
         private SerializableInterface<IWearColorModel> _wearColorModel;
@@ -36,6 +51,15 @@ namespace Assets.Scripts.Shop
         {
             _userDataController = FindObjectOfType<UserDataController>();
             _colorImage.color = _wearColorModel.Value.Color;
+
+            if (_tooltip != null)
+            {
+                Vector3 newPosition = transform.position;
+                newPosition.x += _tooltipOffsetX;
+                newPosition.y -= _tooltipOffsetY;
+                _tooltip.transform.position = newPosition;
+            }
+
             UpdateLock();
         }
 
@@ -61,6 +85,7 @@ namespace Assets.Scripts.Shop
             if (_userDataController.UserDataModel.BuyColor(wearColor))
             {
                 UpdateLock();
+                HideTooltip();
                 _shopController.UpdateCurrentCharacterMenuUI();
             }
 
@@ -69,6 +94,18 @@ namespace Assets.Scripts.Shop
                 _userDataController.UserDataModel.SelectColor(wearColor, _shopController.CurrentCharacter);
                 _shopController.CurrentCharacterSaleController.ColorPart(wearColor);
             }
+        }
+
+        public override void OnPointerEnter(PointerEventData eventData)
+        {
+            if (IsColorOwned || _wearColorModel.Value.Price == 0)
+            {
+                return;
+            }
+
+            _priceText.text = _wearColorModel.Value.Price.ToString();
+
+            base.OnPointerEnter(eventData);
         }
 
         /// <summary>
