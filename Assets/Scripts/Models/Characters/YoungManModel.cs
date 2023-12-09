@@ -26,7 +26,8 @@ namespace Assets.Scripts.Models.Characters
         /// <inheritdoc/>
         public List<IWearColorModel> BodyPartColors => new() {
             new YoungManDefaultJacketModel(),
-            new YoungManBlueJacketModel()
+            new YoungManBlueJacketModel(),
+            new YoungManAcidJackedModel(),
         };
     }
 }
