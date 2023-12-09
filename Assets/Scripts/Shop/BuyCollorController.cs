@@ -16,14 +16,6 @@ namespace Assets.Scripts.Shop
         [SerializeField]
         private TextMeshProUGUI _priceText;
 
-        [Tooltip("Смещение тултипа по X")]
-        [SerializeField]
-        private float _tooltipOffsetX;
-
-        [Tooltip("Смещение тултипа по Y")]
-        [SerializeField]
-        private float _tooltipOffsetY;
-
         [Tooltip("Модель цвета")]
         [SerializeField]
         private SerializableInterface<IWearColorModel> _wearColorModel;
@@ -51,14 +43,6 @@ namespace Assets.Scripts.Shop
         {
             _userDataController = FindObjectOfType<UserDataController>();
             _colorImage.color = _wearColorModel.Value.Color;
-
-            if (_tooltip != null)
-            {
-                Vector3 newPosition = transform.position;
-                newPosition.x += _tooltipOffsetX;
-                newPosition.y -= _tooltipOffsetY;
-                _tooltip.transform.position = newPosition;
-            }
 
             UpdateLock();
         }

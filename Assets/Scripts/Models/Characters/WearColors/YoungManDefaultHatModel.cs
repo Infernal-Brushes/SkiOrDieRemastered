@@ -3,20 +3,19 @@ using UnityEngine;
 
 namespace Assets.Scripts.Models.Characters.WearColors
 {
-    /// <inheritdoc/>
-    internal class YoungManBlueJacketModel : IWearColorModel
+    internal class YoungManDefaultHatModel : IWearColorModel
     {
         /// <inheritdoc/>
-        public string Key => "285b74257287e725376d2785ad2411ec";
+        public string Key => "8165d9eb8e53faf9e5baa100be37c09a";
 
         /// <inheritdoc/>
-        public int MaterialIndex => 4;
+        public int MaterialIndex => 6;
 
         /// <inheritdoc/>
-        public Color Color => ColorHelper.FromHex("#1883FE");
+        public Color Color => ColorHelper.FromHex("#58C529");
 
         /// <inheritdoc/>
-        public int Price => 600;
+        public int Price => 0;
 
         public override bool Equals(object obj)
         {

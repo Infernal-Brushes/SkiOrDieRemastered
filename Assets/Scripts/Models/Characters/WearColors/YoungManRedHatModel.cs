@@ -4,16 +4,16 @@ using UnityEngine;
 namespace Assets.Scripts.Models.Characters.WearColors
 {
     /// <inheritdoc/>
-    internal class YoungManBlueJacketModel : IWearColorModel
+    internal class YoungManRedHatModel : IWearColorModel
     {
         /// <inheritdoc/>
-        public string Key => "285b74257287e725376d2785ad2411ec";
+        public string Key => "28823d57f6637b2ff975bcfbdb77fb5e";
 
         /// <inheritdoc/>
-        public int MaterialIndex => 4;
+        public int MaterialIndex => 6;
 
         /// <inheritdoc/>
-        public Color Color => ColorHelper.FromHex("#1883FE");
+        public Color Color => ColorHelper.FromHex("#8E1816");
 
         /// <inheritdoc/>
         public int Price => 600;

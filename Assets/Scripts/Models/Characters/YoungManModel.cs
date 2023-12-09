@@ -28,6 +28,10 @@ namespace Assets.Scripts.Models.Characters
             new YoungManDefaultJacketModel(),
             new YoungManBlueJacketModel(),
             new YoungManAcidJackedModel(),
+
+            new YoungManDefaultHatModel(),
+            new YoungManRedHatModel(),
+            new YoungManCyanHatModel(),
         };
     }
 }

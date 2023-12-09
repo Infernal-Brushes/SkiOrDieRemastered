@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Models.Characters.WearColors
 {
+    /// <inheritdoc/>
     internal class YoungManAcidJackedModel : IWearColorModel
     {
         /// <inheritdoc/>
@@ -15,7 +16,7 @@ namespace Assets.Scripts.Models.Characters.WearColors
         public Color Color => ColorHelper.FromHex("#90DE25");
 
         /// <inheritdoc/>
-        public int Price => 200;
+        public int Price => 600;
 
         public override bool Equals(object obj)
         {
