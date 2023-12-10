@@ -167,6 +167,8 @@ namespace Assets.Scripts.Shop
             _buyCharacterButtonText = _buyCharacterButton.GetComponentInChildren<TextMeshProUGUI>();
             _buyColorButtonText = _buyColorButton.GetComponentInChildren<TextMeshProUGUI>();
 
+            _charactersWearColors.ToList().ForEach(x => x.gameObject.SetActive(false));
+
             InitPoduim();
             UpdateUI(isMoneyAnimated: false);
         }

@@ -158,5 +158,10 @@ namespace Assets.Scripts.Shop
 
             _lockIcon.SetActive(!IsColorOwned);
         }
+
+        private void OnDisable()
+        {
+            HideTooltip();
+        }
     }
 }
