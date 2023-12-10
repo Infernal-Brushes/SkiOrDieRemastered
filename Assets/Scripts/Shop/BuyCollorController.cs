@@ -127,7 +127,7 @@ namespace Assets.Scripts.Shop
 
         private void SelectColor()
         {
-            if (_userDataController.UserDataModel.IsColorOwned(WearColorModel.Key))
+            if (_userDataController.UserDataModel.IsColorOwned(WearColorModel.Key) || WearColorModel.Price == 0)
             {
                 _userDataController.UserDataModel.SelectColor(WearColorModel, _shopController.CurrentCharacter);
             }
