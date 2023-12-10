@@ -52,6 +52,10 @@ namespace Assets.Scripts.Shop
         [SerializeField]
         private float _firstSelectionRotationSpeed = 2.8f;
 
+        [Tooltip("Партиклы которые активируются при покупке персонажа")]
+        [SerializeField]
+        private ParticleSystem _butCharacterParticles;
+
         [Header("UI")]
 
         [Tooltip("Текст имени персонажа")]
@@ -89,6 +93,14 @@ namespace Assets.Scripts.Shop
         [Tooltip("Время зума при покупки игрока")]
         [SerializeField]
         private float _characterBuyZoomTime = 0.8f;
+
+        [Tooltip("Значение зума при покупки игрока")]
+        [SerializeField]
+        private float _characterBuyRotationOffset = -12f;
+
+        [Tooltip("Время зума при покупки игрока")]
+        [SerializeField]
+        private float _characterBuyRotationTime = 0.8f;
 
         /// <summary>
         /// Текст кнопки покупки персонажа
@@ -187,8 +199,12 @@ namespace Assets.Scripts.Shop
             if (wasOwned)
             {
                 StartCoroutine(ZoomCamera(_characterBuyZoomOffset, _characterBuyZoomTime));
+                _butCharacterParticles.Play();
+
                 MoneySpendFadeTextController.Show($"-{CurrentCharacter.Price}");
+
                 _userDataController.UserDataModel.SelectCharacter(CurrentCharacter);
+
                 UpdatePlayButtonUI();
                 UpdateUserDataUI();
             }
@@ -382,7 +398,7 @@ namespace Assets.Scripts.Shop
             }
 
             Camera.main.fieldOfView = targetSize;
-            elapsedTime = 0;
+            elapsedTime = 0f;
 
             while (elapsedTime < zoomTime)
             {
