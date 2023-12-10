@@ -26,19 +26,37 @@ namespace Assets.Scripts.Models.Characters
         /// <inheritdoc/>
         public List<IWearColorModel> BodyPartColorsDefault => new()
         {
+            new WoodmanJacketDefaultModel(),
+            new WoodmanShirtDefaultModel(),
+            new WoodmanPantsDefaultModel(),
+            new WoodmanPantsDefaultModel(),
         };
 
         /// <inheritdoc/>
         public List<IWearColorModel> SkiColorsDefault => new()
         {
+            new WoodmanSkiDefaultModel(),
         };
 
         /// <inheritdoc/>
-        public List<IWearColorModel> BodyPartColors => new();
+        public List<IWearColorModel> BodyPartColors => new()
+        {
+            new WoodmanJacketDefaultModel(),
+            new WoodmanJacketLightModel(),
+            new WoodmanJacketBlackModel(),
+            new WoodmanShirtDefaultModel(),
+            new WoodmanShirtBlueModel(),
+            new WoodmanShirtWhiteMode(),
+            new WoodmanPantsDefaultModel(),
+            new WoodmanPantsBrownModel(),
+        };
 
         /// <inheritdoc/>
         public List<IWearColorModel> SkiColors => new()
         {
+            new WoodmanSkiDefaultModel(),
+            new WoodmanSkiBlueModel(),
+            new WoodmanSkiBlackGoldModel(),
         };
     }
 }

@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Models.Characters.WearColors;
+﻿using Assets.Helpers;
+using Assets.Scripts.Models.Characters.WearColors;
 using Assets.Scripts.Player;
 using Assets.Scripts.UI;
 using System.Linq;
@@ -37,15 +38,18 @@ namespace Assets.Scripts.Shop
         [SerializeField]
         private ShopController _shopController;
 
+        private Image _buttonImage;
+
         private UserDataController _userDataController;
 
         /// <summary>
         /// Владеет ли игрок этим цветом
         /// </summary>
-        private bool IsColorOwned => _userDataController.UserDataModel.IsColorOwned(_wearColorModel.Value.Key);
+        public bool IsColorOwned => _userDataController.UserDataModel.IsColorOwned(_wearColorModel.Value.Key);
 
         private void Start()
         {
+            _buttonImage = GetComponentInChildren<Button>().GetComponent<Image>();
             _userDataController = FindObjectOfType<UserDataController>();
             for(int index = 0; index < _colorImages.Length; index++)
             {
@@ -80,17 +84,26 @@ namespace Assets.Scripts.Shop
                 }
             }
 
-            _shopController.CurrentCharacterSaleController.ColorPart(WearColorModel);
-
             if (WearColorModel.Price > 0 && !IsColorOwned)
             {
                 _shopController.ShowColorBuyButton(this);
             }
             else
             {
+                _shopController.CurrentCharacterSaleController.ColorPart(WearColorModel);
                 _shopController.HideColorBuyButton();
                 SelectColor();
             }
+        }
+
+        public void ColorButtonAsSelected()
+        {
+            _buttonImage.color = ColorHelper.FromHex("#70F6FF");
+        }
+
+        public void ColorButtonAsNonSelected()
+        {
+            _buttonImage.color = ColorHelper.FromHex("#FFFFFF");
         }
 
         public void BuyColor()

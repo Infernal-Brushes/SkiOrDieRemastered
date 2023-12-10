@@ -148,6 +148,8 @@ namespace Assets.Scripts.Shop
         /// </summary>
         public ICharacterModel CurrentCharacter => _charactersToSale[_currentCharacterIndex].CharacterModel;
 
+        private bool IsCurrentCharacterOwned => _userDataController.UserDataModel.IsCharacterOwned(CurrentCharacter);
+
         /// <summary>
         /// Контроллер покупки цвета в предпросмотре для покупки
         /// </summary>
@@ -237,7 +239,7 @@ namespace Assets.Scripts.Shop
                 _userDataController.UserDataModel.SelectCharacter(CurrentCharacter);
 
                 UpdatePlayButtonUI();
-                UpdateUserMoneyUI();
+                UpdateUI();
             }
         }
 
@@ -260,10 +262,18 @@ namespace Assets.Scripts.Shop
         /// <param name="buyCollorController">Выбранный цвет</param>
         public void ShowColorBuyButton(BuyCollorController buyCollorController)
         {
+            HideColorBuyButton();
+            buyCollorController.ColorButtonAsSelected();
+
+            if (_previewBuyColorController != null && !_previewBuyColorController.IsColorOwned)
+            {
+                CurrentCharacterSaleController.ResetColors();
+            }
+
             _previewBuyColorController = buyCollorController;
+            CurrentCharacterSaleController.ColorPart(buyCollorController.WearColorModel);
 
             _buyColorButtonText.text = buyCollorController.WearColorModel.Price.ToString();
-            
             _buyColorButton.gameObject.SetActive(true);
         }
 
@@ -272,8 +282,14 @@ namespace Assets.Scripts.Shop
         /// </summary>
         public void HideColorBuyButton()
         {
-            _previewBuyColorController = null;
-            _buyColorButton.gameObject.SetActive(false);        }
+            if (_previewBuyColorController != null)
+            {
+                _previewBuyColorController.ColorButtonAsNonSelected();
+                _previewBuyColorController = null;
+            }
+
+            _buyColorButton.gameObject.SetActive(false);
+        }
 
         /// <summary>
         /// Приобрести выбранный цвет
@@ -392,11 +408,14 @@ namespace Assets.Scripts.Shop
             _descriptionText.text = CurrentCharacter.Description;
             _descriptionText.enabled = true;
 
-            CharacterWearColorsController characterWearColorsController = _charactersWearColors
-                .FirstOrDefault(controller => controller.CharacterKey == CurrentCharacter.Key);
-            if (characterWearColorsController != null)
+            if (IsCurrentCharacterOwned)
             {
-                characterWearColorsController.gameObject.SetActive(true);
+                CharacterWearColorsController characterWearColorsController = _charactersWearColors
+                    .FirstOrDefault(controller => controller.CharacterKey == CurrentCharacter.Key);
+                if (characterWearColorsController != null)
+                {
+                    characterWearColorsController.gameObject.SetActive(true);
+                }
             }
 
             UpdateBuyButtonUI();
@@ -419,10 +438,9 @@ namespace Assets.Scripts.Shop
         /// </summary>
         private void UpdatePlayButtonUI()
         {
-            bool isCharacterOwned = _userDataController.UserDataModel.IsCharacterOwned(CurrentCharacter);
-            _playButton.interactable = isCharacterOwned;
+            _playButton.interactable = IsCurrentCharacterOwned;
             _playButton.gameObject.SetActive(true);
-            _buyCharacterButton.gameObject.SetActive(!isCharacterOwned);
+            _buyCharacterButton.gameObject.SetActive(!IsCurrentCharacterOwned);
         }
 
         /// <summary>
@@ -474,7 +492,7 @@ namespace Assets.Scripts.Shop
                 yield return null;
             }
 
-            _moneyText.text = target.ToString();
+            _moneyText.text = $"{_userDataController.UserDataModel.Money}";
         }
 
         private IEnumerator ZoomCamera(float sizeOffset, float zoomTime)
