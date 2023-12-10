@@ -24,6 +24,19 @@ namespace Assets.Scripts.Models.Characters
         public int Price => 0;
 
         /// <inheritdoc/>
+        public List<IWearColorModel> BodyPartColorsDefault => new()
+        {
+            new YoungManJacketDefaultModel(),
+            new YoungManHatDefaultModel(),
+        };
+
+        /// <inheritdoc/>
+        public List<IWearColorModel> SkiColorsDefault => new()
+        {
+            new YoungManSkiDefaultModel(),
+        };
+
+        /// <inheritdoc/>
         public List<IWearColorModel> BodyPartColors => new() {
             new YoungManJacketDefaultModel(),
             new YoungManJacketBlueModel(),

@@ -1,6 +1,7 @@
 ﻿using Assets.Scripts.Menu;
 using Assets.Scripts.Models.Characters;
 using Assets.Scripts.Player;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,7 +55,11 @@ namespace Assets.Scripts.Shop
 
         [Tooltip("Партиклы которые активируются при покупке персонажа")]
         [SerializeField]
-        private ParticleSystem _butCharacterParticles;
+        private ParticleSystem _buyCharacterParticles;
+
+        [Tooltip("Партиклы которые активируются при покупке цвета")]
+        [field: SerializeField]
+        public ParticleSystem BuyColorParticles { get; private set; }
 
         [Header("UI")]
 
@@ -72,7 +77,11 @@ namespace Assets.Scripts.Shop
 
         [Tooltip("Кнопка покупки персонажа")]
         [SerializeField]
-        private UnityEngine.UI.Button _buyButton;
+        private UnityEngine.UI.Button _buyCharacterButton;
+
+        [Tooltip("Кнопка покупки цвета")]
+        [SerializeField]
+        private UnityEngine.UI.Button _buyColorButton;
 
         [Tooltip("Кнопка выбора персонажа")]
         [SerializeField]
@@ -94,18 +103,15 @@ namespace Assets.Scripts.Shop
         [SerializeField]
         private float _characterBuyZoomTime = 0.8f;
 
-        [Tooltip("Значение зума при покупки игрока")]
-        [SerializeField]
-        private float _characterBuyRotationOffset = -12f;
-
-        [Tooltip("Время зума при покупки игрока")]
-        [SerializeField]
-        private float _characterBuyRotationTime = 0.8f;
-
         /// <summary>
         /// Текст кнопки покупки персонажа
         /// </summary>
-        private TextMeshProUGUI _buyButtonText;
+        private TextMeshProUGUI _buyCharacterButtonText;
+
+        /// <summary>
+        /// Текст кнопки покупки цвета
+        /// </summary>
+        private TextMeshProUGUI _buyColorButtonText;
 
         /// <summary>
         /// Угол между соседними персонажами
@@ -136,7 +142,12 @@ namespace Assets.Scripts.Shop
         /// <summary>
         /// Текущий выбрранный персонаж
         /// </summary>
-        public ICharacterModel CurrentCharacter => _charactersToSale[_currentCharacterIndex].CharacterModel.Value;
+        public ICharacterModel CurrentCharacter => _charactersToSale[_currentCharacterIndex].CharacterModel;
+
+        /// <summary>
+        /// Контроллер покупки цвета в предпросмотре для покупки
+        /// </summary>
+        private BuyCollorController _previewBuyColorController;
 
         /// <summary>
         /// Контроллер представления персонажа для продажи
@@ -147,7 +158,8 @@ namespace Assets.Scripts.Shop
         {
             _userDataController = FindObjectOfType<UserDataController>();
 
-            _buyButtonText = _buyButton.GetComponentInChildren<TextMeshProUGUI>();
+            _buyCharacterButtonText = _buyCharacterButton.GetComponentInChildren<TextMeshProUGUI>();
+            _buyColorButtonText = _buyColorButton.GetComponentInChildren<TextMeshProUGUI>();
 
             InitPoduim();
             UpdateUI();
@@ -163,6 +175,8 @@ namespace Assets.Scripts.Shop
             if (Input.GetKeyDown(KeyCode.A))
             {
                 ClearCharacterMenuUI();
+                ResetPreviewColors();
+
                 if (_currentCharacterIndex > 0)
                 {
                     _currentCharacterIndex--;
@@ -177,6 +191,8 @@ namespace Assets.Scripts.Shop
             else if (Input.GetKeyDown(KeyCode.D))
             {
                 ClearCharacterMenuUI();
+                ResetPreviewColors();
+
                 if (_currentCharacterIndex < _charactersOnPodiums.Length - 1)
                 {
                     _currentCharacterIndex++;
@@ -191,6 +207,17 @@ namespace Assets.Scripts.Shop
         }
 
         /// <summary>
+        /// Очистить превьюшные цвета
+        /// </summary>
+        private void ResetPreviewColors()
+        {
+            if (_previewBuyColorController != null)
+            {
+                CurrentCharacterSaleController.ResetColors();
+            }
+        }
+
+        /// <summary>
         /// Купить текущего персонажа
         /// </summary>
         public void BuyCurrentCharacter()
@@ -199,14 +226,14 @@ namespace Assets.Scripts.Shop
             if (wasOwned)
             {
                 StartCoroutine(ZoomCamera(_characterBuyZoomOffset, _characterBuyZoomTime));
-                _butCharacterParticles.Play();
+                _buyCharacterParticles.Play();
 
                 MoneySpendFadeTextController.Show($"-{CurrentCharacter.Price}");
 
                 _userDataController.UserDataModel.SelectCharacter(CurrentCharacter);
 
                 UpdatePlayButtonUI();
-                UpdateUserDataUI();
+                UpdateUserMoneyUI();
             }
         }
 
@@ -223,6 +250,39 @@ namespace Assets.Scripts.Shop
             }
         }
 
+        /// <summary>
+        /// Отобразить кнопку покупки выбранного цвета
+        /// </summary>
+        /// <param name="buyCollorController">Выбранный цвет</param>
+        public void ShowColorBuyButton(BuyCollorController buyCollorController)
+        {
+            _previewBuyColorController = buyCollorController;
+
+            _buyColorButtonText.text = buyCollorController.WearColorModel.Price.ToString();
+            
+            _buyColorButton.gameObject.SetActive(true);
+        }
+
+        /// <summary>
+        /// Скрыть кнопку покупки цвета
+        /// </summary>
+        public void HideColorBuyButton()
+        {
+            _previewBuyColorController = null;
+            _buyColorButton.gameObject.SetActive(false);        }
+
+        /// <summary>
+        /// Приобрести выбранный цвет
+        /// </summary>
+        public void BuySelectedColor()
+        {
+            _previewBuyColorController.BuyColor();
+            HideColorBuyButton();
+        }
+
+        /// <summary>
+        /// Запустить заезд с текущим выбранным персонажем
+        /// </summary>
         public void PlayGame()
         {
             SelectCurrentCharacter();
@@ -246,7 +306,7 @@ namespace Assets.Scripts.Shop
                     var character = characterGO.GetComponentInChildren<CharacterSaleController>();
                     _charactersToSale.Add(character);
 
-                    return character.CharacterModel.Value.Index;
+                    return character.CharacterModel.Index;
                 })
                 .ToArray();
 
@@ -264,7 +324,7 @@ namespace Assets.Scripts.Shop
                 ClearCharacterMenuUI();
 
                 _currentCharacterIndex = _charactersToSale
-                    .Select(characterGO => characterGO.CharacterModel.Value)
+                    .Select(characterGO => characterGO.CharacterModel)
                     .Where(character => character.Key == _userDataController.UserDataModel.SelectedCharacterKey)
                     .Select(character => character.Index)
                     .Single();
@@ -282,7 +342,7 @@ namespace Assets.Scripts.Shop
         {
             _nameText.enabled = false;
             _descriptionText.enabled = false;
-            _buyButton.gameObject.SetActive(false);
+            _buyCharacterButton.gameObject.SetActive(false);
 
             CharacterWearColorsController characterWearColorsController = _charactersWearColors
                 .FirstOrDefault(controller => controller.CharacterKey == CurrentCharacter.Key);
@@ -295,15 +355,17 @@ namespace Assets.Scripts.Shop
         /// <summary>
         /// Обновить UI сцены
         /// </summary>
-        private void UpdateUI()
+        public void UpdateUI()
         {
-            UpdateUserDataUI();
+            UpdateUserMoneyUI();
             UpdateCurrentCharacterMenuUI();
         }
 
-        private void UpdateUserDataUI()
+        /// <summary>
+        /// Обновить информацию о деньгах пользователя
+        /// </summary>
+        public void UpdateUserMoneyUI()
         {
-            // TODO: Анимацию текста сделать, и FadeText сколько отнялось
             _moneyText.text = $"{_userDataController.UserDataModel.Money}";
         }
 
@@ -326,6 +388,7 @@ namespace Assets.Scripts.Shop
             }
 
             UpdateBuyButtonUI();
+            _buyColorButton.gameObject.SetActive(false);
             UpdatePlayButtonUI();
         }
 
@@ -334,9 +397,9 @@ namespace Assets.Scripts.Shop
         /// </summary>
         private void UpdateBuyButtonUI()
         {
-            _buyButtonText.text = CurrentCharacter.Price.ToString();
-            _buyButton.interactable = _userDataController.UserDataModel.Money >= CurrentCharacter.Price;
-            _buyButton.gameObject.SetActive(true);
+            _buyCharacterButtonText.text = CurrentCharacter.Price.ToString();
+            _buyCharacterButton.interactable = _userDataController.UserDataModel.Money >= CurrentCharacter.Price;
+            _buyCharacterButton.gameObject.SetActive(true);
         }
 
         /// <summary>
@@ -347,7 +410,7 @@ namespace Assets.Scripts.Shop
             bool isCharacterOwned = _userDataController.UserDataModel.IsCharacterOwned(CurrentCharacter);
             _playButton.interactable = isCharacterOwned;
             _playButton.gameObject.SetActive(true);
-            _buyButton.gameObject.SetActive(!isCharacterOwned);
+            _buyCharacterButton.gameObject.SetActive(!isCharacterOwned);
         }
 
         /// <summary>

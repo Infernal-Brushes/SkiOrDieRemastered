@@ -20,6 +20,11 @@ namespace Assets.Scripts.Shop
         [SerializeField]
         private SerializableInterface<IWearColorModel> _wearColorModel;
 
+        /// <summary>
+        /// Модель цвета
+        /// </summary>
+        public IWearColorModel WearColorModel => _wearColorModel.Value;
+
         [Tooltip("Иконки цвета")]
         [SerializeField]
         private Image[] _colorImages;
@@ -75,11 +80,28 @@ namespace Assets.Scripts.Shop
                 }
             }
 
-            if (_userDataController.UserDataModel.BuyColor(wearColor))
+            _shopController.CurrentCharacterSaleController.ColorPart(WearColorModel);
+
+            if (WearColorModel.Price > 0 && !IsColorOwned)
             {
-                if (wearColor.Price > 0)
+                _shopController.ShowColorBuyButton(this);
+            }
+            else
+            {
+                _shopController.HideColorBuyButton();
+                SelectColor();
+            }
+        }
+
+        public void BuyColor()
+        {
+            if (_userDataController.UserDataModel.BuyColor(WearColorModel))
+            {
+                if (WearColorModel.Price > 0)
                 {
-                    _shopController.MoneySpendFadeTextController.Show($"-{wearColor.Price}");
+                    _shopController.MoneySpendFadeTextController.Show($"-{WearColorModel.Price}");
+                    _shopController.BuyColorParticles.Play();
+                    _shopController.UpdateUserMoneyUI();
                 }
 
                 UpdateLock();
@@ -87,10 +109,14 @@ namespace Assets.Scripts.Shop
                 _shopController.UpdateCurrentCharacterMenuUI();
             }
 
-            if (_userDataController.UserDataModel.IsColorOwned(wearColor.Key))
+            SelectColor();
+        }
+
+        private void SelectColor()
+        {
+            if (_userDataController.UserDataModel.IsColorOwned(WearColorModel.Key))
             {
-                _userDataController.UserDataModel.SelectColor(wearColor, _shopController.CurrentCharacter);
-                _shopController.CurrentCharacterSaleController.ColorPart(wearColor);
+                _userDataController.UserDataModel.SelectColor(WearColorModel, _shopController.CurrentCharacter);
             }
         }
 

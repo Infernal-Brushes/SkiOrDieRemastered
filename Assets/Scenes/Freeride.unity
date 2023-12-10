@@ -1603,6 +1603,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7900397059861401558}
     - target: {fileID: 5006710662610347949, guid: 33648f42c1e2606469ba8094c77d9c3e, type: 3}
+      propertyPath: _characterModel.mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5006710662610347949, guid: 33648f42c1e2606469ba8094c77d9c3e, type: 3}
       propertyPath: _leftSkiMeshRenderer
       value: 
       objectReference: {fileID: 5200657539253587334}
@@ -1622,9 +1626,17 @@ PrefabInstance:
       propertyPath: _velocityMagnitudeText
       value: 
       objectReference: {fileID: 6342507288536309300}
+    - target: {fileID: 5006710662610347949, guid: 33648f42c1e2606469ba8094c77d9c3e, type: 3}
+      propertyPath: _characterModel.rawReference
+      value: 490411006985764878
+      objectReference: {fileID: 0}
+    - target: {fileID: 5006710662610347949, guid: 33648f42c1e2606469ba8094c77d9c3e, type: 3}
+      propertyPath: managedReferences[490411006985764878]
+      value: Assembly-CSharp Assets.Scripts.Models.Characters.YoungManModel
+      objectReference: {fileID: 0}
     - target: {fileID: 5006710662610347951, guid: 33648f42c1e2606469ba8094c77d9c3e, type: 3}
       propertyPath: m_Name
-      value: BasicCharacter
+      value: YoungMan
       objectReference: {fileID: 0}
     - target: {fileID: 5006710662610347951, guid: 33648f42c1e2606469ba8094c77d9c3e, type: 3}
       propertyPath: m_IsActive
@@ -1960,9 +1972,21 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7900397059861401558}
     - target: {fileID: 3529645813397966889, guid: 0d62b5c0cb349c04baeed80cb57417b5, type: 3}
+      propertyPath: _characterModel.mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3529645813397966889, guid: 0d62b5c0cb349c04baeed80cb57417b5, type: 3}
+      propertyPath: _leftSkiMeshRenderer
+      value: 
+      objectReference: {fileID: 7192604133147450842}
+    - target: {fileID: 3529645813397966889, guid: 0d62b5c0cb349c04baeed80cb57417b5, type: 3}
       propertyPath: _velocityForwardText
       value: 
       objectReference: {fileID: 5301580875409681317}
+    - target: {fileID: 3529645813397966889, guid: 0d62b5c0cb349c04baeed80cb57417b5, type: 3}
+      propertyPath: _rightSkiMeshRenderer
+      value: 
+      objectReference: {fileID: 7192604133147450841}
     - target: {fileID: 3529645813397966889, guid: 0d62b5c0cb349c04baeed80cb57417b5, type: 3}
       propertyPath: _velocitySidewiseText
       value: 
@@ -1971,6 +1995,14 @@ PrefabInstance:
       propertyPath: _velocityMagnitudeText
       value: 
       objectReference: {fileID: 6342507288536309300}
+    - target: {fileID: 3529645813397966889, guid: 0d62b5c0cb349c04baeed80cb57417b5, type: 3}
+      propertyPath: _characterModel.rawReference
+      value: 490411006985764877
+      objectReference: {fileID: 0}
+    - target: {fileID: 3529645813397966889, guid: 0d62b5c0cb349c04baeed80cb57417b5, type: 3}
+      propertyPath: managedReferences[490411006985764877]
+      value: Assembly-CSharp Assets.Scripts.Models.Characters.GirlModel
+      objectReference: {fileID: 0}
     - target: {fileID: 3529645813397970902, guid: 0d62b5c0cb349c04baeed80cb57417b5, type: 3}
       propertyPath: m_RootOrder
       value: 14
@@ -2025,6 +2057,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0d62b5c0cb349c04baeed80cb57417b5, type: 3}
+--- !u!23 &7192604133147450841 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 7429579398813326350, guid: 0d62b5c0cb349c04baeed80cb57417b5, type: 3}
+  m_PrefabInstance: {fileID: 7192604133147450840}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &7192604133147450842 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5491992108059917466, guid: 0d62b5c0cb349c04baeed80cb57417b5, type: 3}
+  m_PrefabInstance: {fileID: 7192604133147450840}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7618443296263478552
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2125,9 +2167,21 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7900397059861401558}
     - target: {fileID: 71337086890703823, guid: c6c79098801dcbf419de3c41c8c30d2c, type: 3}
+      propertyPath: _characterModel.mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 71337086890703823, guid: c6c79098801dcbf419de3c41c8c30d2c, type: 3}
+      propertyPath: _leftSkiMeshRenderer
+      value: 
+      objectReference: {fileID: 7618443296263478554}
+    - target: {fileID: 71337086890703823, guid: c6c79098801dcbf419de3c41c8c30d2c, type: 3}
       propertyPath: _velocityForwardText
       value: 
       objectReference: {fileID: 5301580875409681317}
+    - target: {fileID: 71337086890703823, guid: c6c79098801dcbf419de3c41c8c30d2c, type: 3}
+      propertyPath: _rightSkiMeshRenderer
+      value: 
+      objectReference: {fileID: 7618443296263478553}
     - target: {fileID: 71337086890703823, guid: c6c79098801dcbf419de3c41c8c30d2c, type: 3}
       propertyPath: _velocitySidewiseText
       value: 
@@ -2136,8 +2190,26 @@ PrefabInstance:
       propertyPath: _velocityMagnitudeText
       value: 
       objectReference: {fileID: 6342507288536309300}
+    - target: {fileID: 71337086890703823, guid: c6c79098801dcbf419de3c41c8c30d2c, type: 3}
+      propertyPath: _characterModel.rawReference
+      value: 490411006985764879
+      objectReference: {fileID: 0}
+    - target: {fileID: 71337086890703823, guid: c6c79098801dcbf419de3c41c8c30d2c, type: 3}
+      propertyPath: managedReferences[490411006985764879]
+      value: Assembly-CSharp Assets.Scripts.Models.Characters.WoodmanModel
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c6c79098801dcbf419de3c41c8c30d2c, type: 3}
+--- !u!23 &7618443296263478553 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5576049111321879178, guid: c6c79098801dcbf419de3c41c8c30d2c, type: 3}
+  m_PrefabInstance: {fileID: 7618443296263478552}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &7618443296263478554 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 5576049112467696704, guid: c6c79098801dcbf419de3c41c8c30d2c, type: 3}
+  m_PrefabInstance: {fileID: 7618443296263478552}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &7900397059861401558 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4098026483280508984, guid: d4074442d641d034c8f44be398254c7f, type: 3}

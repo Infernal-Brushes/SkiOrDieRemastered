@@ -34,9 +34,19 @@ namespace Assets.Scripts.Models.Characters
         public int Price { get; }
 
         /// <summary>
+        /// Базовые цвета тела на индексы материалов 3д модели
+        /// </summary>
+        public List<IWearColorModel> BodyPartColorsDefault { get; }
+
+        /// <summary>
         /// Возможные цвета тела на индексы материалов 3д модели
         /// </summary>
         public List<IWearColorModel> BodyPartColors { get; }
+
+        /// <summary>
+        /// Базовые цвета лыж на индексы материалов 3д модели
+        /// </summary>
+        public List<IWearColorModel> SkiColorsDefault { get; }
 
         /// <summary>
         /// Возможные цвета лыж на индексы материалов 3д модели
