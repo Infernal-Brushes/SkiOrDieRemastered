@@ -95,6 +95,10 @@ namespace Assets.Scripts.Shop
         [field: SerializeField]
         public FadeTextController MoneySpendFadeTextController { get; private set; }
 
+        [Tooltip("Сколько времени длится анимация траты денег")]
+        [SerializeField ]
+        private float _moneySpendAnimationTime = 1f;
+
         [Tooltip("Значение зума при покупки игрока")]
         [SerializeField]
         private float _characterBuyZoomOffset = -12f;
@@ -162,7 +166,7 @@ namespace Assets.Scripts.Shop
             _buyColorButtonText = _buyColorButton.GetComponentInChildren<TextMeshProUGUI>();
 
             InitPoduim();
-            UpdateUI();
+            UpdateUI(isMoneyAnimated: false);
         }
 
         private void Update()
@@ -355,18 +359,26 @@ namespace Assets.Scripts.Shop
         /// <summary>
         /// Обновить UI сцены
         /// </summary>
-        public void UpdateUI()
+        /// <param name="isMoneyAnimated"><see cref="true"/> - анимировать изменение денег</param>
+        public void UpdateUI(bool isMoneyAnimated = true)
         {
-            UpdateUserMoneyUI();
+            UpdateUserMoneyUI(isMoneyAnimated);
             UpdateCurrentCharacterMenuUI();
         }
 
         /// <summary>
-        /// Обновить информацию о деньгах пользователя
+        ///  Обновить информацию о деньгах пользователя
         /// </summary>
-        public void UpdateUserMoneyUI()
+        /// <param name="isAnimated"><see cref="true"/> - анимировать изменение денег</param>
+        public void UpdateUserMoneyUI(bool isAnimated = true)
         {
-            _moneyText.text = $"{_userDataController.UserDataModel.Money}";
+            if (isAnimated)
+            {
+                StartCoroutine(AnimateMoneySpending());
+                return;
+            }
+
+            _moneyText.text = _userDataController.UserDataModel.Money.ToString();
         }
 
         /// <summary>
@@ -445,6 +457,24 @@ namespace Assets.Scripts.Shop
 
             _isRotating = false;
             UpdateCurrentCharacterMenuUI();
+        }
+
+        private IEnumerator AnimateMoneySpending()
+        {
+            float target = _userDataController.UserDataModel.Money;
+            float current = Convert.ToSingle(_moneyText.text);
+
+            float elapsedTime = 0f;
+            while (elapsedTime < _moneySpendAnimationTime)
+            {
+                elapsedTime += Time.deltaTime;
+                float time = Mathf.Clamp01(elapsedTime / _moneySpendAnimationTime);
+                int newNumber = Mathf.RoundToInt(Mathf.Lerp(current, target, time));
+                _moneyText.text = newNumber.ToString();
+                yield return null;
+            }
+
+            _moneyText.text = target.ToString();
         }
 
         private IEnumerator ZoomCamera(float sizeOffset, float zoomTime)
