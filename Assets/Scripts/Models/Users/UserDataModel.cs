@@ -114,17 +114,21 @@ namespace Assets.Scripts.Models.Users
 
         public void SelectColor(IWearColorModel wearColor, ICharacterModel character)
         {
-            var characterColorsForSameBodyPart = character.BodyPartColors
+            IEnumerable<IWearColorModel> characterColorsForSameBodyPart = character.BodyPartColors
                 .Where(characterColor => characterColor.MaterialColors
-                .Any(characterMaterialColor => wearColor.MaterialColors
-                    .Any(wearMaterialColor => wearMaterialColor.MaterialIndex == characterMaterialColor.MaterialIndex)));
-            var characterColorsForSkiPart = character.SkiColors
-                .Where(characterColor => characterColor.MaterialColors
-                .Any(characterMaterialColor => wearColor.MaterialColors
-                    .Any(wearMaterialColor => wearMaterialColor.MaterialIndex == characterMaterialColor.MaterialIndex)));
+                    .All(characterMaterialColor => wearColor.MaterialColors
+                        .Any(wearMaterialColor => wearMaterialColor.MaterialIndex == characterMaterialColor.MaterialIndex)));
 
-            var wearColorsToUnselect = characterColorsForSameBodyPart
-                .Union(characterColorsForSkiPart)
+            IEnumerable<IWearColorModel> characterColorsForSameSkiPart = character.SkiColors
+               .Where(characterColor => characterColor.MaterialColors
+                    .All(characterMaterialColor => wearColor.MaterialColors
+                        .Any(wearMaterialColor => wearMaterialColor.MaterialIndex == characterMaterialColor.MaterialIndex)));
+
+            var t1 = characterColorsForSameBodyPart.ToList();
+            var t2 = characterColorsForSameSkiPart.ToList();
+
+            IEnumerable<string> wearColorsToUnselect = characterColorsForSameBodyPart
+                .Union(characterColorsForSameSkiPart)
                 .Select(color => color.Key);
             WearColorKeysSelected.RemoveAll(color => wearColorsToUnselect.Contains(color));
             WearColorKeysSelected.Add(wearColor.Key);

@@ -262,13 +262,13 @@ namespace Assets.Scripts.Shop
         /// <param name="buyCollorController">Выбранный цвет</param>
         public void ShowColorBuyButton(BuyCollorController buyCollorController)
         {
-            HideColorBuyButton();
             buyCollorController.ColorButtonAsSelected();
 
             if (_previewBuyColorController != null && !_previewBuyColorController.IsColorOwned)
             {
                 CurrentCharacterSaleController.ResetColors();
             }
+            HideColorBuyButton();
 
             _previewBuyColorController = buyCollorController;
             CurrentCharacterSaleController.ColorPart(buyCollorController.WearColorModel);
