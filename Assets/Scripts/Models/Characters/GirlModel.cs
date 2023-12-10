@@ -26,19 +26,43 @@ namespace Assets.Scripts.Models.Characters
         /// <inheritdoc/>
         public List<IWearColorModel> BodyPartColorsDefault => new()
         {
+            new GirlBodySuitDefaultModel(),
+            new GirlHairDefaultModel(),
+            new GirlMaskDefaultModel(),
         };
 
         /// <inheritdoc/>
         public List<IWearColorModel> SkiColorsDefault => new()
         {
+            new GirlSkiDefaultModel(),
         };
 
         /// <inheritdoc/>
-        public List<IWearColorModel> BodyPartColors => new();
+        public List<IWearColorModel> BodyPartColors => new()
+        {
+            new GirlMaskDefaultModel(),
+            new GirlMaskCyanModel(),
+            new GirlMaskPurpleModel(),
+
+            new GirlHairDefaultModel(),
+            new GirlHairDefaultModel(),
+            new GirlHairBrownModel(),
+            new GirlHairGingerModel(),
+            new GirlHairBlueModel(),
+
+            new GirlBodySuitDefaultModel(),
+            new GirlBodySuitDarkBlueModel(),
+            new GirlBodySuitPinkModel(),
+            new GirlBodySuitKillBillModel(),
+        };
 
         /// <inheritdoc/>
         public List<IWearColorModel> SkiColors => new()
         {
+            new GirlSkiDefaultModel(),
+            new GirlSkiIcyModel(),
+            new GirlSkiPurpleModel(),
+            new GirlSkiBlackGoldModel(),
         };
     }
 }

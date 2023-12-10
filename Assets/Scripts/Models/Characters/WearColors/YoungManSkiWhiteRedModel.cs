@@ -20,7 +20,7 @@ namespace Assets.Scripts.Models.Characters.WearColors
 
         public override bool Equals(object obj)
         {
-            if (obj is not YoungManJacketBlueModel comparingObj)
+            if (obj is not IWearColorModel comparingObj)
             {
                 return false;
             }
