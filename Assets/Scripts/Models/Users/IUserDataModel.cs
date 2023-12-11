@@ -80,12 +80,12 @@ namespace Assets.Scripts.Models.Users
         /// <summary>
         /// Признак того что цвет куплен
         /// </summary>
-        /// <param name="wearColor">Цвет</param>
+        /// <param name="colorKey">Ключ цвета</param>
         /// <returns>
         /// <see cref="true"/> - этот цвет куплен
         /// <see cref="false"/> - этот цвет не куплен
         /// </returns>
-        public bool IsColorOwned(IWearColorModel wearColor);
+        public bool IsColorOwned(string colorKey);
 
         /// <summary>
         /// Заработать денег

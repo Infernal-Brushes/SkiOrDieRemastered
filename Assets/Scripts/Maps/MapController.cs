@@ -51,7 +51,7 @@ namespace Assets.Scripts.Maps {
 
             foreach (PlayerController character in _characterGameObjects)
             {
-                if (_userDataController.UserDataModel.SelectedCharacterKey == character.CharacterModel.Value.Key)
+                if (_userDataController.UserDataModel.SelectedCharacterKey == character.CharacterModel.Key)
                 {
                     character.gameObject.SetActive(true);
                     _followingCamera.SetObjectToFollow(character.ObjectForCameraFollowing);

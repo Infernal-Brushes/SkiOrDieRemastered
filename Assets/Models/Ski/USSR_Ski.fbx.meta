@@ -3,7 +3,27 @@ guid: 9be670be09138ff4b9a35e15b829a02d
 ModelImporter:
   serializedVersion: 21300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: USSR_Ski_AccentColor
+    second: {fileID: 2100000, guid: e902204550f6c5043a95452b6a2ba2e5, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: USSR_Ski_Metal
+    second: {fileID: 2100000, guid: 384171cf6d95c514bbb469a489c643ce, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: USSR_Ski_PolishedWood
+    second: {fileID: 2100000, guid: 7b6bcd62e09d00e458649304746369e6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: USSR_Ski_Wood
+    second: {fileID: 2100000, guid: f3759886730d5f34c99750a7f0086565, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

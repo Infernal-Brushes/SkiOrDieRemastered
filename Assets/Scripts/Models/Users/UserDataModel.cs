@@ -37,11 +37,11 @@ namespace Assets.Scripts.Models.Users
         public string SelectedCharacterKey { get; private set; } = DefaultCharacterKey;
 
         /// <inheritdoc/>
-        //[field: SerializeField]
+        [field: SerializeField]
         public List<string> WearColorKeysOwned { get; private set; } = new();
 
         /// <inheritdoc/>
-        //[field: SerializeField]
+        [field: SerializeField]
         public List<string> WearColorKeysSelected { get; private set; } = new();
 
         /// <inheritdoc/>
@@ -59,7 +59,7 @@ namespace Assets.Scripts.Models.Users
         public bool IsCharacterOwned(ICharacterModel character) => CharacterKeys.Contains(character.Key);
 
         /// <inheritdoc/>
-        public bool IsColorOwned(IWearColorModel wearColor) => WearColorKeysOwned.Contains(wearColor.Key);
+        public bool IsColorOwned(string colorKey) => WearColorKeysOwned.Contains(colorKey);
 
         /// <inheritdoc/>
         public void EarnMoney(int money)
@@ -114,8 +114,22 @@ namespace Assets.Scripts.Models.Users
 
         public void SelectColor(IWearColorModel wearColor, ICharacterModel character)
         {
-            var characterColorsForSamePart = character.BodyPartColors.Where(characterColor => characterColor.MaterialIndex == wearColor.MaterialIndex);
-            var wearColorsToUnselect = characterColorsForSamePart.Select(color => color.Key);
+            IEnumerable<IWearColorModel> characterColorsForSameBodyPart = character.BodyPartColors
+                .Where(characterColor => characterColor.MaterialColors
+                    .All(characterMaterialColor => wearColor.MaterialColors
+                        .Any(wearMaterialColor => wearMaterialColor.MaterialIndex == characterMaterialColor.MaterialIndex)));
+
+            IEnumerable<IWearColorModel> characterColorsForSameSkiPart = character.SkiColors
+               .Where(characterColor => characterColor.MaterialColors
+                    .All(characterMaterialColor => wearColor.MaterialColors
+                        .Any(wearMaterialColor => wearMaterialColor.MaterialIndex == characterMaterialColor.MaterialIndex)));
+
+            var t1 = characterColorsForSameBodyPart.ToList();
+            var t2 = characterColorsForSameSkiPart.ToList();
+
+            IEnumerable<string> wearColorsToUnselect = characterColorsForSameBodyPart
+                .Union(characterColorsForSameSkiPart)
+                .Select(color => color.Key);
             WearColorKeysSelected.RemoveAll(color => wearColorsToUnselect.Contains(color));
             WearColorKeysSelected.Add(wearColor.Key);
 
@@ -199,6 +213,8 @@ namespace Assets.Scripts.Models.Users
             CharacterKeys = newData.CharacterKeys;
             SelectedCharacterKey = newData.SelectedCharacterKey;
             LocalizationCode = newData.LocalizationCode;
+            WearColorKeysOwned = newData.WearColorKeysOwned;
+            WearColorKeysSelected = newData.WearColorKeysSelected;
         }
 
 #if UNITY_WEBGL
@@ -230,6 +246,8 @@ namespace Assets.Scripts.Models.Users
                 CharacterKeys = CharacterKeys,
                 SelectedCharacterKey = SelectedCharacterKey,
                 LocalizationCode = LocalizationCode,
+                WearColorKeysOwned = WearColorKeysOwned,
+                WearColorKeysSelected = WearColorKeysSelected,
             };
         }
     }

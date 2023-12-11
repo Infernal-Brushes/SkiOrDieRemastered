@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Threading;
+using UnityEngine;
 
 namespace Assets.Scripts.Models.Characters.WearColors
 {
@@ -13,6 +15,28 @@ namespace Assets.Scripts.Models.Characters.WearColors
         public string Key { get; }
 
         /// <summary>
+        /// Цена за цвет элемента одежды
+        /// </summary>
+        public int Price { get; }
+
+        /// <summary>
+        /// Цвета материалов
+        /// </summary>
+        public List<MaterialColor> MaterialColors { get; }
+    }
+
+    /// <summary>
+    /// Цвет материала
+    /// </summary>
+    public readonly struct MaterialColor
+    {
+        public MaterialColor(int materialIndex, Color color)
+        {
+            MaterialIndex = materialIndex;
+            Color = color;
+        }
+
+        /// <summary>
         /// Индекс материала, для которого цвет
         /// </summary>
         public int MaterialIndex { get; }
@@ -21,10 +45,5 @@ namespace Assets.Scripts.Models.Characters.WearColors
         /// Цвет элемента одежды
         /// </summary>
         public Color Color { get; }
-
-        /// <summary>
-        /// Цена за цвет элемента одежды
-        /// </summary>
-        public int Price { get; }
     }
 }
