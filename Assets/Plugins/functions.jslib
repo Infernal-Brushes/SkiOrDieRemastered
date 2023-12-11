@@ -1,4 +1,15 @@
 mergeInto(LibraryManager.library, {
+  OnGameReady: function () {
+    if (!ysdk) {
+      return;
+    }
+
+    if (!ysdk.features.LoadingAPI) {
+      return;
+    }
+
+    ysdk.features.LoadingAPI.ready();
+  },
   CommitToYandex: function (data) {
     if (!player) {
       return;
@@ -13,13 +24,7 @@ mergeInto(LibraryManager.library, {
       return;
     }
 
-    player.getData([
-      "<Money>k__BackingField",
-      "<BestMetersRecord>k__BackingField",
-      "<CharacterKeys>k__BackingField",
-      "<SelectedCharacterKey>k__BackingField",
-      "<LocalizationCode>k__BackingField"])
-    .then((data) => {
+    player.getData().then((data) => {
       const jsonData = JSON.stringify(data);
 
       myGameInstance.SendMessage(

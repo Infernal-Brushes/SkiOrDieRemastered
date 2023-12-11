@@ -1,7 +1,7 @@
 ﻿using Assets.Scripts.Menu;
 using Assets.Scripts.Models.Characters;
-using Assets.Scripts.Models.Characters.WearColors;
 using Assets.Scripts.Player;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -53,6 +53,14 @@ namespace Assets.Scripts.Shop
         [SerializeField]
         private float _firstSelectionRotationSpeed = 2.8f;
 
+        [Tooltip("Партиклы которые активируются при покупке персонажа")]
+        [SerializeField]
+        private ParticleSystem _buyCharacterParticles;
+
+        [Tooltip("Партиклы которые активируются при покупке цвета")]
+        [field: SerializeField]
+        public ParticleSystem BuyColorParticles { get; private set; }
+
         [Header("UI")]
 
         [Tooltip("Текст имени персонажа")]
@@ -63,11 +71,17 @@ namespace Assets.Scripts.Shop
         [SerializeField]
         private TextMeshProUGUI _descriptionText;
 
+        [Tooltip("Контроллеры позиций цветов одежды персожаней")]
+        [SerializeField]
+        private CharacterWearColorsController[] _charactersWearColors;
+
         [Tooltip("Кнопка покупки персонажа")]
         [SerializeField]
-        private UnityEngine.UI.Button _buyButton;
+        private UnityEngine.UI.Button _buyCharacterButton;
 
-        private TextMeshProUGUI _buyButtonText;
+        [Tooltip("Кнопка покупки цвета")]
+        [SerializeField]
+        private UnityEngine.UI.Button _buyColorButton;
 
         [Tooltip("Кнопка выбора персонажа")]
         [SerializeField]
@@ -76,6 +90,32 @@ namespace Assets.Scripts.Shop
         [Tooltip("Текст количества денег игрока")]
         [SerializeField]
         private TextMeshProUGUI _moneyText;
+
+        [Tooltip("Фэйд текст траты денег")]
+        [field: SerializeField]
+        public FadeTextController MoneySpendFadeTextController { get; private set; }
+
+        [Tooltip("Сколько времени длится анимация траты денег")]
+        [SerializeField ]
+        private float _moneySpendAnimationTime = 1f;
+
+        [Tooltip("Значение зума при покупки игрока")]
+        [SerializeField]
+        private float _characterBuyZoomOffset = -12f;
+
+        [Tooltip("Время зума при покупки игрока")]
+        [SerializeField]
+        private float _characterBuyZoomTime = 0.8f;
+
+        /// <summary>
+        /// Текст кнопки покупки персонажа
+        /// </summary>
+        private TextMeshProUGUI _buyCharacterButtonText;
+
+        /// <summary>
+        /// Текст кнопки покупки цвета
+        /// </summary>
+        private TextMeshProUGUI _buyColorButtonText;
 
         /// <summary>
         /// Угол между соседними персонажами
@@ -103,16 +143,34 @@ namespace Assets.Scripts.Shop
 
         private UserDataController _userDataController;
 
-        private ICharacterModel _currentCharacter => _charactersToSale[_currentCharacterIndex].CharacterModel.Value;
+        /// <summary>
+        /// Текущий выбрранный персонаж
+        /// </summary>
+        public ICharacterModel CurrentCharacter => _charactersToSale[_currentCharacterIndex].CharacterModel;
+
+        private bool IsCurrentCharacterOwned => _userDataController.UserDataModel.IsCharacterOwned(CurrentCharacter);
+
+        /// <summary>
+        /// Контроллер покупки цвета в предпросмотре для покупки
+        /// </summary>
+        private BuyCollorController _previewBuyColorController;
+
+        /// <summary>
+        /// Контроллер представления персонажа для продажи
+        /// </summary>
+        public CharacterSaleController CurrentCharacterSaleController => _charactersToSale[_currentCharacterIndex];
 
         private void Start()
         {
             _userDataController = FindObjectOfType<UserDataController>();
 
-            _buyButtonText = _buyButton.GetComponentInChildren<TextMeshProUGUI>();
+            _buyCharacterButtonText = _buyCharacterButton.GetComponentInChildren<TextMeshProUGUI>();
+            _buyColorButtonText = _buyColorButton.GetComponentInChildren<TextMeshProUGUI>();
+
+            _charactersWearColors.ToList().ForEach(x => x.gameObject.SetActive(false));
 
             InitPoduim();
-            UpdateUI();
+            UpdateUI(isMoneyAnimated: false);
         }
 
         private void Update()
@@ -125,6 +183,8 @@ namespace Assets.Scripts.Shop
             if (Input.GetKeyDown(KeyCode.A))
             {
                 ClearCharacterMenuUI();
+                ResetPreviewColors();
+
                 if (_currentCharacterIndex > 0)
                 {
                     _currentCharacterIndex--;
@@ -139,6 +199,8 @@ namespace Assets.Scripts.Shop
             else if (Input.GetKeyDown(KeyCode.D))
             {
                 ClearCharacterMenuUI();
+                ResetPreviewColors();
+
                 if (_currentCharacterIndex < _charactersOnPodiums.Length - 1)
                 {
                     _currentCharacterIndex++;
@@ -153,44 +215,33 @@ namespace Assets.Scripts.Shop
         }
 
         /// <summary>
+        /// Очистить превьюшные цвета
+        /// </summary>
+        private void ResetPreviewColors()
+        {
+            if (_previewBuyColorController != null)
+            {
+                CurrentCharacterSaleController.ResetColors();
+            }
+        }
+
+        /// <summary>
         /// Купить текущего персонажа
         /// </summary>
         public void BuyCurrentCharacter()
         {
-            bool wasOwned = _userDataController.UserDataModel.BuyCharacter(_currentCharacter);
+            bool wasOwned = _userDataController.UserDataModel.BuyCharacter(CurrentCharacter);
             if (wasOwned)
             {
-                _userDataController.UserDataModel.SelectCharacter(_currentCharacter);
+                StartCoroutine(ZoomCamera(_characterBuyZoomOffset, _characterBuyZoomTime));
+                _buyCharacterParticles.Play();
+
+                MoneySpendFadeTextController.Show($"-{CurrentCharacter.Price}");
+
+                _userDataController.UserDataModel.SelectCharacter(CurrentCharacter);
+
                 UpdatePlayButtonUI();
-                UpdateUserDataUI();
-            }
-        }
-
-        public void BuyColor(string colorKey)
-        {
-            if (!_userDataController.UserDataModel.IsCharacterOwned(_currentCharacter))
-            {
-                return;
-            }
-
-            IWearColorModel wearColor = _currentCharacter.BodyPartColors
-                .SingleOrDefault(wearColor => wearColor.Key == colorKey);
-
-            if (wearColor is null)
-            {
-                return;
-            }
-
-            if (_userDataController.UserDataModel.BuyColor(wearColor))
-            {
-                // TODO: снять замочек
-                UpdateCurrentCharacterMenuUI();
-            }
-
-            if (_userDataController.UserDataModel.IsColorOwned(wearColor))
-            {
-                _userDataController.UserDataModel.SelectColor(wearColor, _currentCharacter);
-                _charactersToSale[_currentCharacterIndex].ColorPart(wearColor);
+                UpdateUI();
             }
         }
 
@@ -199,14 +250,61 @@ namespace Assets.Scripts.Shop
         /// </summary>
         public void SelectCurrentCharacter()
         {
-            bool wasSelected = _userDataController.UserDataModel.SelectCharacter(_currentCharacter);
+            bool wasSelected = _userDataController.UserDataModel.SelectCharacter(CurrentCharacter);
             if (wasSelected)
             {
-                _userDataController.UserDataModel.SelectCharacter(_currentCharacter);
+                _userDataController.UserDataModel.SelectCharacter(CurrentCharacter);
                 UpdatePlayButtonUI();
             }
         }
 
+        /// <summary>
+        /// Отобразить кнопку покупки выбранного цвета
+        /// </summary>
+        /// <param name="buyCollorController">Выбранный цвет</param>
+        public void ShowColorBuyButton(BuyCollorController buyCollorController)
+        {
+            buyCollorController.ColorButtonAsSelected();
+
+            if (_previewBuyColorController != null && !_previewBuyColorController.IsColorOwned)
+            {
+                CurrentCharacterSaleController.ResetColors();
+            }
+            HideColorBuyButton();
+
+            _previewBuyColorController = buyCollorController;
+            CurrentCharacterSaleController.ColorPart(buyCollorController.WearColorModel);
+
+            _buyColorButtonText.text = buyCollorController.WearColorModel.Price.ToString();
+            _buyColorButton.gameObject.SetActive(true);
+        }
+
+        /// <summary>
+        /// Скрыть кнопку покупки цвета
+        /// </summary>
+        public void HideColorBuyButton()
+        {
+            if (_previewBuyColorController != null)
+            {
+                _previewBuyColorController.ColorButtonAsNonSelected();
+                _previewBuyColorController = null;
+            }
+
+            _buyColorButton.gameObject.SetActive(false);
+        }
+
+        /// <summary>
+        /// Приобрести выбранный цвет
+        /// </summary>
+        public void BuySelectedColor()
+        {
+            _previewBuyColorController.BuyColor();
+            HideColorBuyButton();
+        }
+
+        /// <summary>
+        /// Запустить заезд с текущим выбранным персонажем
+        /// </summary>
         public void PlayGame()
         {
             SelectCurrentCharacter();
@@ -230,7 +328,7 @@ namespace Assets.Scripts.Shop
                     var character = characterGO.GetComponentInChildren<CharacterSaleController>();
                     _charactersToSale.Add(character);
 
-                    return character.CharacterModel.Value.Index;
+                    return character.CharacterModel.Index;
                 })
                 .ToArray();
 
@@ -243,12 +341,12 @@ namespace Assets.Scripts.Shop
                 _charactersOnPodiums[i].transform.SetPositionAndRotation(new Vector3(x, y, z), Quaternion.identity);
             }
 
-            if (_userDataController.UserDataModel.SelectedCharacterKey != _currentCharacter.Key)
+            if (_userDataController.UserDataModel.SelectedCharacterKey != CurrentCharacter.Key)
             {
                 ClearCharacterMenuUI();
 
                 _currentCharacterIndex = _charactersToSale
-                    .Select(characterGO => characterGO.CharacterModel.Value)
+                    .Select(characterGO => characterGO.CharacterModel)
                     .Where(character => character.Key == _userDataController.UserDataModel.SelectedCharacterKey)
                     .Select(character => character.Index)
                     .Single();
@@ -266,36 +364,64 @@ namespace Assets.Scripts.Shop
         {
             _nameText.enabled = false;
             _descriptionText.enabled = false;
-            _buyButton.gameObject.SetActive(false);
+            _buyCharacterButton.gameObject.SetActive(false);
+
+            CharacterWearColorsController characterWearColorsController = _charactersWearColors
+                .FirstOrDefault(controller => controller.CharacterKey == CurrentCharacter.Key);
+            if (characterWearColorsController != null)
+            {
+                characterWearColorsController.gameObject.SetActive(false);
+            }
         }
 
         /// <summary>
         /// Обновить UI сцены
         /// </summary>
-        private void UpdateUI()
+        /// <param name="isMoneyAnimated"><see cref="true"/> - анимировать изменение денег</param>
+        public void UpdateUI(bool isMoneyAnimated = true)
         {
-            UpdateUserDataUI();
+            UpdateUserMoneyUI(isMoneyAnimated);
             UpdateCurrentCharacterMenuUI();
         }
 
-        private void UpdateUserDataUI()
+        /// <summary>
+        ///  Обновить информацию о деньгах пользователя
+        /// </summary>
+        /// <param name="isAnimated"><see cref="true"/> - анимировать изменение денег</param>
+        public void UpdateUserMoneyUI(bool isAnimated = true)
         {
-            // TODO: вместо текста подписи сделать иконку
-            _moneyText.text = $"Денег: {_userDataController.UserDataModel.Money}";
+            if (isAnimated)
+            {
+                StartCoroutine(AnimateMoneySpending());
+                return;
+            }
+
+            _moneyText.text = _userDataController.UserDataModel.Money.ToString();
         }
 
         /// <summary>
         /// Обновить UI меню персонажа информацией о текущем персонаже
         /// </summary>
-        private void UpdateCurrentCharacterMenuUI()
+        public void UpdateCurrentCharacterMenuUI()
         {
-            _nameText.text = _currentCharacter.Name;
+            _nameText.text = CurrentCharacter.Name;
             _nameText.enabled = true;
 
-            _descriptionText.text = _currentCharacter.Description;
+            _descriptionText.text = CurrentCharacter.Description;
             _descriptionText.enabled = true;
 
+            if (IsCurrentCharacterOwned)
+            {
+                CharacterWearColorsController characterWearColorsController = _charactersWearColors
+                    .FirstOrDefault(controller => controller.CharacterKey == CurrentCharacter.Key);
+                if (characterWearColorsController != null)
+                {
+                    characterWearColorsController.gameObject.SetActive(true);
+                }
+            }
+
             UpdateBuyButtonUI();
+            _buyColorButton.gameObject.SetActive(false);
             UpdatePlayButtonUI();
         }
 
@@ -304,9 +430,9 @@ namespace Assets.Scripts.Shop
         /// </summary>
         private void UpdateBuyButtonUI()
         {
-            _buyButtonText.text = _currentCharacter.Price.ToString();
-            _buyButton.interactable = _userDataController.UserDataModel.Money >= _currentCharacter.Price;
-            _buyButton.gameObject.SetActive(true);
+            _buyCharacterButtonText.text = CurrentCharacter.Price.ToString();
+            _buyCharacterButton.interactable = _userDataController.UserDataModel.Money >= CurrentCharacter.Price;
+            _buyCharacterButton.gameObject.SetActive(true);
         }
 
         /// <summary>
@@ -314,10 +440,9 @@ namespace Assets.Scripts.Shop
         /// </summary>
         private void UpdatePlayButtonUI()
         {
-            bool isCharacterOwned = _userDataController.UserDataModel.IsCharacterOwned(_currentCharacter);
-            _playButton.interactable = isCharacterOwned;
+            _playButton.interactable = IsCurrentCharacterOwned;
             _playButton.gameObject.SetActive(true);
-            _buyButton.gameObject.SetActive(!isCharacterOwned);
+            _buyCharacterButton.gameObject.SetActive(!IsCurrentCharacterOwned);
         }
 
         /// <summary>
@@ -352,6 +477,49 @@ namespace Assets.Scripts.Shop
 
             _isRotating = false;
             UpdateCurrentCharacterMenuUI();
+        }
+
+        private IEnumerator AnimateMoneySpending()
+        {
+            float target = _userDataController.UserDataModel.Money;
+            float current = Convert.ToSingle(_moneyText.text);
+
+            float elapsedTime = 0f;
+            while (elapsedTime < _moneySpendAnimationTime)
+            {
+                elapsedTime += Time.deltaTime;
+                float time = Mathf.Clamp01(elapsedTime / _moneySpendAnimationTime);
+                int newNumber = Mathf.RoundToInt(Mathf.Lerp(current, target, time));
+                _moneyText.text = newNumber.ToString();
+                yield return null;
+            }
+
+            _moneyText.text = $"{_userDataController.UserDataModel.Money}";
+        }
+
+        private IEnumerator ZoomCamera(float sizeOffset, float zoomTime)
+        {
+            float initialSize = Camera.main.fieldOfView;
+            float targetSize = Camera.main.fieldOfView + sizeOffset;
+            float elapsedTime = 0f;
+
+            while (elapsedTime < zoomTime)
+            {
+                Camera.main.fieldOfView = Mathf.Lerp(initialSize, targetSize, elapsedTime / zoomTime);
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+
+            Camera.main.fieldOfView = targetSize;
+            elapsedTime = 0f;
+
+            while (elapsedTime < zoomTime)
+            {
+                Camera.main.fieldOfView = Mathf.Lerp(targetSize, initialSize, elapsedTime / zoomTime);
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+            Camera.main.fieldOfView = initialSize;
         }
     }
 }

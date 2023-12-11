@@ -1,4 +1,5 @@
 using Assets.Scripts;
+using Assets.Scripts.Maps;
 using Assets.Scripts.Player;
 using System.Collections;
 using UnityEngine;
@@ -19,7 +20,7 @@ public class InGameMenu : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             PlayerController player = FindObjectOfType<PlayerController>();
             if (player.IsLose)
@@ -40,6 +41,13 @@ public class InGameMenu : MonoBehaviour
 
     private void OnApplicationPause(bool pause)
     {
+        PlayerController player = FindObjectOfType<PlayerController>();
+        if (player != null && player.IsLose)
+        {
+            Time.timeScale = pause ? 0 : 1;
+            return;
+        }
+
         if (isPaused)
         {
             Pause();
@@ -48,6 +56,13 @@ public class InGameMenu : MonoBehaviour
 
     private void OnApplicationFocus(bool focus)
     {
+        PlayerController player = FindObjectOfType<PlayerController>();
+        if (player != null && player.IsLose)
+        {
+            Time.timeScale = focus ? 1 : 0;
+            return;
+        }
+
         if (!focus)
         {
             Pause();
