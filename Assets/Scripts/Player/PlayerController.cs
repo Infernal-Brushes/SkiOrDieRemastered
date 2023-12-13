@@ -304,12 +304,12 @@ namespace Assets.Scripts.Player
         /// <summary>
         /// Скорость стрейфа вбок
         /// </summary>
-        private float _velocityStrafe => VelocityForward * _velocityStrafeCoefficient;
+        private float _velocityStrafe => VelocityMagnitude * _velocityStrafeCoefficient;
 
         /// <summary>
         /// Скорость стрейфа торможения (назад)
         /// </summary>
-        private float _velocityStrafeStopper => VelocityForward * _strafeStopperCoefficient;
+        private float _velocityStrafeStopper => VelocityMagnitude * _strafeStopperCoefficient;
 
         /// <summary>
         /// Направление лыж
@@ -325,6 +325,8 @@ namespace Assets.Scripts.Player
         /// Скорость боковая
         /// </summary>
         public float VelocitySidewise => -PlayerRigidBody.velocity.z;
+
+        public float VelocityMagnitude => PlayerRigidBody.velocity.magnitude;
 
         public Rigidbody[] ragdollRigidbody;
         public Transform[] bonesTransforms;
@@ -521,7 +523,7 @@ namespace Assets.Scripts.Player
             PrintText(_velocityForwardText, VelocityForward);
             PrintText(_velocitySidewiseText, VelocitySidewise);
             PrintText(_metersText, $"{_currentMeters} м");
-            PrintText(_velocityMagnitudeText, PlayerRigidBody.velocity.magnitude);
+            PrintText(_velocityMagnitudeText, VelocityMagnitude);
             if (!isInStrafe)
             {
                 PrintText(_strafeSpeedText, "0");
@@ -732,7 +734,7 @@ namespace Assets.Scripts.Player
                     PlayerRigidBody.AddTorque(_axisX * speedOfNormalRotationY * transform.up, ForceMode.VelocityChange);
 
                     // центробежная скорость
-                    float impulse = VelocityForward * _centrifugalForceCoefficient;
+                    float impulse = VelocityMagnitude * _centrifugalForceCoefficient;
                     PlayerRigidBody.AddForce(impulse * -transform.right, ForceMode.Impulse);
                     return;
                 }
@@ -745,7 +747,7 @@ namespace Assets.Scripts.Player
                     PlayerRigidBody.AddTorque(_axisX * speedOfStrafeRotationY * transform.up, ForceMode.VelocityChange);
                 }
 
-                if (PlayerRigidBody.velocity.magnitude > _strafeSpeedLimit)
+                if (VelocityMagnitude > _strafeSpeedLimit)
                 {
                     //сила назад
                     PlayerRigidBody.AddForce(Vector3.left * _velocityStrafeStopper, ForceMode.Impulse);
@@ -772,7 +774,7 @@ namespace Assets.Scripts.Player
                     PlayerRigidBody.AddTorque(_axisX * speedOfNormalRotationY * transform.up, ForceMode.VelocityChange);
 
                     // центробежная скорость
-                    float impulse = VelocityForward * _centrifugalForceCoefficient;
+                    float impulse = VelocityMagnitude * _centrifugalForceCoefficient;
                     PlayerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
                     return;
                 }
@@ -786,7 +788,7 @@ namespace Assets.Scripts.Player
                     PlayerRigidBody.AddTorque(_axisX * speedOfStrafeRotationY * transform.up, ForceMode.VelocityChange);
                 }
 
-                if (PlayerRigidBody.velocity.magnitude > _strafeSpeedLimit)
+                if (VelocityMagnitude > _strafeSpeedLimit)
                 {
                     //сила назад
                     PlayerRigidBody.AddForce(Vector3.left * _velocityStrafeStopper, ForceMode.Impulse);
@@ -805,7 +807,7 @@ namespace Assets.Scripts.Player
 
         private void EarnMoneyForSpeed()
         {
-            if (PlayerRigidBody.velocity.magnitude > _magnitudeSpeedToEarnMoney)
+            if (VelocityMagnitude > _magnitudeSpeedToEarnMoney)
             {
                 _timeInHighSpeed += Time.deltaTime;
                 if (_timeInHighSpeed > 1f)
@@ -822,12 +824,12 @@ namespace Assets.Scripts.Player
 
         public void EarnMoneyForRisk()
         {
-            if (IsLose || PlayerRigidBody.velocity.magnitude < _magnitudeSpeedForRisk)
+            if (IsLose || VelocityMagnitude < _magnitudeSpeedForRisk)
             {
                 return;
             }
 
-            int riskScore = (int)PlayerRigidBody.velocity.magnitude / _magnitudeSpeedDividerForRisk;
+            int riskScore = (int)VelocityMagnitude / _magnitudeSpeedDividerForRisk;
             _moneyForRisk += riskScore;
 
             string greetText = _riskTexts.ElementAt(UnityEngine.Random.Range(0, _riskTexts.Length - 1));
