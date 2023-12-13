@@ -54,7 +54,6 @@ namespace Assets.Scripts.Maps {
                 if (_userDataController.UserDataModel.SelectedCharacterKey == character.CharacterModel.Key)
                 {
                     character.gameObject.SetActive(true);
-                    _followingCamera.SetObjectToFollow(character.ObjectForCameraFollowing);
                     continue;
                 }
 
@@ -63,7 +62,6 @@ namespace Assets.Scripts.Maps {
 
             loseMenu.SetActive(false);
             startPositionCamera = FindObjectOfType<Camera>().transform;
-            //startPositionMeshGeneratror = meshGeneratorPrefab.transform;
             GenerateFirstShape();
         }
 

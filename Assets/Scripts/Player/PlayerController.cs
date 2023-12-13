@@ -25,6 +25,15 @@ namespace Assets.Scripts.Player
         /// </summary>
         private Quaternion _restartPlayerTransformRotation;
 
+        [field: SerializeField]
+        public Rigidbody PlayerRigidBody { get; private set; }
+
+        [SerializeField]
+        private FollowingCamera _followingCamera;
+
+        [SerializeField]
+        private PhysicMaterial _bodyMaterial;
+
         [SerializeField]
         private InGameMenu _inGameMenu;
 
@@ -307,25 +316,26 @@ namespace Assets.Scripts.Player
         /// </summary>
         Vector3 _skiesDirection => Vector3.ProjectOnPlane(transform.forward, Vector2.zero).normalized;
 
-        [HideInInspector]
-        public Rigidbody playerRigidBody;
-
         /// <summary>
         /// Скорость прямо по склонку
         /// </summary>
-        public float VelocityForward => playerRigidBody.velocity.x;
+        public float VelocityForward => PlayerRigidBody.velocity.x;
 
         /// <summary>
         /// Скорость боковая
         /// </summary>
-        public float VelocitySidewise => -playerRigidBody.velocity.z;
+        public float VelocitySidewise => -PlayerRigidBody.velocity.z;
 
         public Rigidbody[] ragdollRigidbody;
         public Transform[] bonesTransforms;
 
         [Tooltip("Объект для следования камеры")]
+        [SerializeField]
+        private GameObject _objectForCameraFollowing;
+
+        [Tooltip("Объект для следования камеры во время проигрыша")]
         [field: SerializeField]
-        public GameObject ObjectForCameraFollowing { get; private set; }
+        public GameObject ObjectForDeathCameraFollowing { get; private set; }
 
         [HideInInspector]
         public Vector3[] defaultBonesPositions;
@@ -454,7 +464,7 @@ namespace Assets.Scripts.Player
         private void Awake()
         {
             OnAwake();
-            playerRigidBody = GetComponent<Rigidbody>();
+            PlayerRigidBody = GetComponent<Rigidbody>();
 
             bonesDefaultMass = new float[bonesTransforms.Length];
             for (int i = 0; i < ragdollRigidbody.Length; i++)
@@ -488,6 +498,8 @@ namespace Assets.Scripts.Player
 
             _leftSkiRigidBody = forLeftSki.gameObject.GetComponent<Rigidbody>();
             _rightSkiRigidBody = forRightSki.gameObject.GetComponent<Rigidbody>();
+
+            _followingCamera.SetObjectToFollow(_objectForCameraFollowing);
         }
 
         private void Update()
@@ -509,7 +521,7 @@ namespace Assets.Scripts.Player
             PrintText(_velocityForwardText, VelocityForward);
             PrintText(_velocitySidewiseText, VelocitySidewise);
             PrintText(_metersText, $"{_currentMeters} м");
-            PrintText(_velocityMagnitudeText, playerRigidBody.velocity.magnitude);
+            PrintText(_velocityMagnitudeText, PlayerRigidBody.velocity.magnitude);
             if (!isInStrafe)
             {
                 PrintText(_strafeSpeedText, "0");
@@ -548,6 +560,7 @@ namespace Assets.Scripts.Player
         private void FlatToGroundByForward()
         {
             Ray ray = new(_groundForwardPoint.transform.position, -transform.up);
+            Debug.DrawRay(_groundForwardPoint.transform.position, -transform.up * _groundCheckForwardLength, Color.red);
 
             // если игрок касается земли
             if (Physics.Raycast(ray, out RaycastHit hit, _groundCheckForwardLength, LayerMask.GetMask(GroundLayerMaskName)))
@@ -565,7 +578,7 @@ namespace Assets.Scripts.Player
                         turningCoefficient = -1;
                     }
                     // задаём крутящий момент по ортогонали между нормальню и вектором Y у игрока (вокруг оси X вращение)
-                    playerRigidBody.AddTorque(_speedOfTiltForward * turningCoefficient * Vector3.Cross(transform.forward, hit.normal), ForceMode.Force);
+                    PlayerRigidBody.AddTorque(_speedOfTiltForward * turningCoefficient * Vector3.Cross(transform.forward, hit.normal), ForceMode.Force);
                 }
                 return;
             }
@@ -598,13 +611,13 @@ namespace Assets.Scripts.Player
 
             Vector3 normal = needToFlatLeft ? hitLeft.normal : hitRight.normal;
             int turningCoefficient = needToFlatLeft ? -1 : 1;
-            playerRigidBody.AddTorque(_speedOfTiltSidewise * turningCoefficient * Vector3.Cross(transform.right, normal), ForceMode.Force);
+            PlayerRigidBody.AddTorque(_speedOfTiltSidewise * turningCoefficient * Vector3.Cross(transform.right, normal), ForceMode.Force);
         }
 
         private void AddGravityForce()
         {
             // для улучшения гравитациии
-            playerRigidBody.AddForce(Vector3.down * _gravityBoost, ForceMode.Force);
+            PlayerRigidBody.AddForce(Vector3.down * _gravityBoost, ForceMode.Force);
         }
 
         /// <summary>
@@ -619,7 +632,7 @@ namespace Assets.Scripts.Player
 
             // Катить по направлению лыж
             float impulse = _angleCoeficientReversed * _velocityFreeRide;
-            playerRigidBody.AddForce(impulse * _skiesDirection, ForceMode.Impulse);
+            PlayerRigidBody.AddForce(impulse * _skiesDirection, ForceMode.Impulse);
             if (VelocityForward > _deathAlertSpeedX)
             {
                 _animator.SetBool("isGoingFast", true);
@@ -643,7 +656,7 @@ namespace Assets.Scripts.Player
             }
 
             float impulse = _angleCoeficient * _velocitySidewise;
-            playerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
+            PlayerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
 
             PrintText(_sidewiseSpeedText, impulse);
         }
@@ -677,11 +690,11 @@ namespace Assets.Scripts.Player
             // повороты в воздухе
             if (_axisX < 0 && angleY > 90 - angleOfStrafe)
             {
-                playerRigidBody.AddTorque(transform.up * speedOfStrafeRotationY * 0.33f * _axisX, ForceMode.VelocityChange);
+                PlayerRigidBody.AddTorque(transform.up * speedOfStrafeRotationY * 0.33f * _axisX, ForceMode.VelocityChange);
             }
             else if (_axisX > 0 && angleY < 90 + angleOfStrafe)
             {
-                playerRigidBody.AddTorque(transform.up * speedOfStrafeRotationY * 0.33f * _axisX, ForceMode.VelocityChange);
+                PlayerRigidBody.AddTorque(transform.up * speedOfStrafeRotationY * 0.33f * _axisX, ForceMode.VelocityChange);
             }
         }
 
@@ -694,11 +707,11 @@ namespace Assets.Scripts.Player
             //восстанавливаем положение лыж
             if (AngleOfCurrentTurning > angleOfTurn)
             {
-                playerRigidBody.AddTorque(transform.up * -speedOfStrafeRotationY, ForceMode.VelocityChange);
+                PlayerRigidBody.AddTorque(transform.up * -speedOfStrafeRotationY, ForceMode.VelocityChange);
             }
             else if (AngleOfCurrentTurning < -angleOfTurn)
             {
-                playerRigidBody.AddTorque(transform.up * speedOfStrafeRotationY, ForceMode.VelocityChange);
+                PlayerRigidBody.AddTorque(transform.up * speedOfStrafeRotationY, ForceMode.VelocityChange);
             }
         }
 
@@ -716,11 +729,11 @@ namespace Assets.Scripts.Player
                     StrafeTurnOff();
                     TurningTurnOn(Sides.Left);
                     // поворот
-                    playerRigidBody.AddTorque(_axisX * speedOfNormalRotationY * transform.up, ForceMode.VelocityChange);
+                    PlayerRigidBody.AddTorque(_axisX * speedOfNormalRotationY * transform.up, ForceMode.VelocityChange);
 
                     // центробежная скорость
                     float impulse = VelocityForward * _centrifugalForceCoefficient;
-                    playerRigidBody.AddForce(impulse * -transform.right, ForceMode.Impulse);
+                    PlayerRigidBody.AddForce(impulse * -transform.right, ForceMode.Impulse);
                     return;
                 }
 
@@ -729,22 +742,22 @@ namespace Assets.Scripts.Player
                 TurningTurnOff();
                 if (AngleOfCurrentTurning > -angleOfStrafe)
                 {
-                    playerRigidBody.AddTorque(_axisX * speedOfStrafeRotationY * transform.up, ForceMode.VelocityChange);
+                    PlayerRigidBody.AddTorque(_axisX * speedOfStrafeRotationY * transform.up, ForceMode.VelocityChange);
                 }
 
-                if (playerRigidBody.velocity.magnitude > _strafeSpeedLimit)
+                if (PlayerRigidBody.velocity.magnitude > _strafeSpeedLimit)
                 {
                     //сила назад
-                    playerRigidBody.AddForce(Vector3.left * _velocityStrafeStopper, ForceMode.Impulse);
+                    PlayerRigidBody.AddForce(Vector3.left * _velocityStrafeStopper, ForceMode.Impulse);
                     //сила в бок
                     float impulse = _axisX * _velocityStrafe;
-                    playerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
+                    PlayerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
 
                     PrintText(_strafeSpeedText, impulse);
                 }
                 else
                 {
-                    playerRigidBody.velocity = Vector3.zero;
+                    PlayerRigidBody.velocity = Vector3.zero;
                 }
             }
             //направо повернуть корпус
@@ -756,11 +769,11 @@ namespace Assets.Scripts.Player
                     StrafeTurnOff();
                     TurningTurnOn(Sides.Right);
                     // поворот
-                    playerRigidBody.AddTorque(_axisX * speedOfNormalRotationY * transform.up, ForceMode.VelocityChange);
+                    PlayerRigidBody.AddTorque(_axisX * speedOfNormalRotationY * transform.up, ForceMode.VelocityChange);
 
                     // центробежная скорость
                     float impulse = VelocityForward * _centrifugalForceCoefficient;
-                    playerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
+                    PlayerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
                     return;
                 }
 
@@ -770,29 +783,29 @@ namespace Assets.Scripts.Player
                 TurningTurnOff();
                 if (AngleOfCurrentTurning < angleOfStrafe)
                 {
-                    playerRigidBody.AddTorque(_axisX * speedOfStrafeRotationY * transform.up, ForceMode.VelocityChange);
+                    PlayerRigidBody.AddTorque(_axisX * speedOfStrafeRotationY * transform.up, ForceMode.VelocityChange);
                 }
 
-                if (playerRigidBody.velocity.magnitude > _strafeSpeedLimit)
+                if (PlayerRigidBody.velocity.magnitude > _strafeSpeedLimit)
                 {
                     //сила назад
-                    playerRigidBody.AddForce(Vector3.left * _velocityStrafeStopper, ForceMode.Impulse);
+                    PlayerRigidBody.AddForce(Vector3.left * _velocityStrafeStopper, ForceMode.Impulse);
                     //сила в бок
                     float impulse = _axisX * _velocityStrafe;
-                    playerRigidBody.AddForce(impulse * -transform.right, ForceMode.Impulse);
+                    PlayerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
 
                     PrintText(_strafeSpeedText, impulse);
                 }
                 else
                 {
-                    playerRigidBody.velocity = Vector3.zero;
+                    PlayerRigidBody.velocity = Vector3.zero;
                 }
             }
         }
 
         private void EarnMoneyForSpeed()
         {
-            if (playerRigidBody.velocity.magnitude > _magnitudeSpeedToEarnMoney)
+            if (PlayerRigidBody.velocity.magnitude > _magnitudeSpeedToEarnMoney)
             {
                 _timeInHighSpeed += Time.deltaTime;
                 if (_timeInHighSpeed > 1f)
@@ -809,12 +822,12 @@ namespace Assets.Scripts.Player
 
         public void EarnMoneyForRisk()
         {
-            if (IsLose || playerRigidBody.velocity.magnitude < _magnitudeSpeedForRisk)
+            if (IsLose || PlayerRigidBody.velocity.magnitude < _magnitudeSpeedForRisk)
             {
                 return;
             }
 
-            int riskScore = (int)playerRigidBody.velocity.magnitude / _magnitudeSpeedDividerForRisk;
+            int riskScore = (int)PlayerRigidBody.velocity.magnitude / _magnitudeSpeedDividerForRisk;
             _moneyForRisk += riskScore;
 
             string greetText = _riskTexts.ElementAt(UnityEngine.Random.Range(0, _riskTexts.Length - 1));
@@ -839,8 +852,8 @@ namespace Assets.Scripts.Player
             for (int i = 0; i < ragdollRigidbody.Length; i++)
             {
                 ragdollRigidbody[i].isKinematic = false;
-                ragdollRigidbody[i].velocity = playerRigidBody.velocity;
-                ragdollRigidbody[i].angularVelocity = playerRigidBody.angularVelocity;
+                ragdollRigidbody[i].velocity = PlayerRigidBody.velocity;
+                ragdollRigidbody[i].angularVelocity = PlayerRigidBody.angularVelocity;
                 ragdollRigidbody[i].mass = bonesDefaultMass[i];
             }
         }
@@ -880,7 +893,9 @@ namespace Assets.Scripts.Player
 
             SetSkiToFeet();
 
-            playerRigidBody.constraints = RigidbodyConstraints.None;
+            _followingCamera.SetObjectToFollow(ObjectForDeathCameraFollowing);
+
+            PlayerRigidBody.constraints = RigidbodyConstraints.None;
             if (cause == LoseCause.fallX)
             {
                 StartCoroutine(Fall(-transform.right));
@@ -900,7 +915,7 @@ namespace Assets.Scripts.Player
                 LoseSki();
 
                 RagdollOn();
-                playerRigidBody.angularDrag = 0.06f;
+                PlayerRigidBody.angularDrag = 0.06f;
                 OnBarrierCollision?.Invoke();
             }
 
@@ -973,16 +988,18 @@ namespace Assets.Scripts.Player
             _timeInHighSpeed = 0;
 
             //joystick.gameObject.SetActive(true);
-            playerRigidBody.velocity = Vector3.zero;
-            playerRigidBody.angularVelocity = Vector3.zero;
+            PlayerRigidBody.velocity = Vector3.zero;
+            PlayerRigidBody.angularVelocity = Vector3.zero;
             transform.SetPositionAndRotation(_restartPlayerTransformPosition, _restartPlayerTransformRotation);
-            playerRigidBody.angularDrag = 18;
-            playerRigidBody.constraints = RigidbodyConstraints.FreezeRotationZ;
+            PlayerRigidBody.angularDrag = 18;
+            PlayerRigidBody.constraints = RigidbodyConstraints.FreezeRotationZ;
             IsLose = false;
 
             RagdollOff();
 
             ReturnSkiToDefaultPosition();
+
+            _followingCamera.SetObjectToFollow(_objectForCameraFollowing);
         }
 
         /// <summary>
@@ -996,8 +1013,8 @@ namespace Assets.Scripts.Player
             _rightSkiCollider.transform.SetParent(_rightFoot.transform);
             _rightSkiModel.transform.SetParent(_rightSkiCollider.transform);
 
-            _leftSkiCollider.GetComponent<CapsuleCollider>().material = ragdollRigidbody[0].GetComponent<BoxCollider>().material;
-            _rightSkiCollider.GetComponent<CapsuleCollider>().material = ragdollRigidbody[0].GetComponent<BoxCollider>().material;
+            _leftSkiCollider.GetComponent<CapsuleCollider>().material = _bodyMaterial;
+            _rightSkiCollider.GetComponent<CapsuleCollider>().material = _bodyMaterial;
         }
 
         /// <summary>
@@ -1027,7 +1044,7 @@ namespace Assets.Scripts.Player
 
         private IEnumerator Fall(Vector3 direction)
         {
-            playerRigidBody.angularDrag = 0.06f;
+            PlayerRigidBody.angularDrag = 0.06f;
             RagdollOn();
             for (int i = 0; i < 6; i++)
             {
