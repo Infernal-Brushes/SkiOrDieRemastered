@@ -355,7 +355,7 @@ namespace Assets.Scripts.Player
         [SerializeField]
         private GameObject _leftFoot;
 
-        [SerializeField] 
+        [SerializeField]
         private GameObject _rightFoot;
 
         private Vector3 _leftSkiColliderDefaultTransformPosition;
@@ -425,7 +425,7 @@ namespace Assets.Scripts.Player
         public event OnTurningDelegate OnTurningOff;
 
         public delegate void OnLoseDelegate();
-        
+
         /// <summary>
         /// Событие проигрыша игрока
         /// </summary>
@@ -436,7 +436,7 @@ namespace Assets.Scripts.Player
         /// <summary>
         /// Событие столкновений с препятсвий
         /// </summary>
-        public event OnBarrierCollisionDelegate OnBarrierCollision; 
+        public event OnBarrierCollisionDelegate OnBarrierCollision;
         public delegate void OnRestartedDelegate();
 
         /// <summary>
@@ -612,7 +612,7 @@ namespace Assets.Scripts.Player
         /// </summary>
         private void RideForward()
         {
-            if (!isGrounded || isInStrafe || IsLose )
+            if (!isGrounded || isInStrafe || IsLose)
             {
                 return;
             }
@@ -732,7 +732,7 @@ namespace Assets.Scripts.Player
                     playerRigidBody.AddTorque(_axisX * speedOfStrafeRotationY * transform.up, ForceMode.VelocityChange);
                 }
 
-                if (VelocityForward > _strafeSpeedLimit)
+                if (playerRigidBody.velocity.magnitude > _strafeSpeedLimit)
                 {
                     //сила назад
                     playerRigidBody.AddForce(Vector3.left * _velocityStrafeStopper, ForceMode.Impulse);
@@ -773,7 +773,7 @@ namespace Assets.Scripts.Player
                     playerRigidBody.AddTorque(_axisX * speedOfStrafeRotationY * transform.up, ForceMode.VelocityChange);
                 }
 
-                if (VelocityForward > _strafeSpeedLimit)
+                if (playerRigidBody.velocity.magnitude > _strafeSpeedLimit)
                 {
                     //сила назад
                     playerRigidBody.AddForce(Vector3.left * _velocityStrafeStopper, ForceMode.Impulse);
