@@ -1462,13 +1462,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7a8a5592a03112498937854e00f67fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <CharacterModel>k__BackingField:
-    mode: 1
+  _characterModel:
+    mode: 0
     unityReference: {fileID: 0}
     rawReference:
-      rid: 9158778601057026049
-  _leftSkiMeshRenderer: {fileID: 0}
-  _rightSkiMeshRenderer: {fileID: 0}
+      rid: -2
+  _leftSkiMeshRenderer: {fileID: 4204497183668441426}
+  _rightSkiMeshRenderer: {fileID: 4204497184371674357}
+  <PlayerRigidBody>k__BackingField: {fileID: 5006710662610347950}
+  _followingCamera: {fileID: 0}
+  _bodyMaterial: {fileID: 13400000, guid: 16273d7efab707948aa9dbcc8cdbefd5, type: 2}
   _inGameMenu: {fileID: 0}
   _mapController: {fileID: 0}
   _fadeTextController: {fileID: 0}
@@ -1514,7 +1517,7 @@ MonoBehaviour:
   _velocitySidewise: 0.45
   _velocityStrafeCoefficient: 0
   _strafeStopperCoefficient: 0.03
-  _strafeSpeedLimit: 1
+  _strafeSpeedLimit: 0.1
   _centrifugalForceCoefficient: 0.011
   _deathSpeedX: 90
   _deathSpeedZ: 72
@@ -1530,7 +1533,6 @@ MonoBehaviour:
   speedOfStrafeRotationY: 4.5
   angleOfTurn: 50
   angleOfStrafe: 68
-  playerRigidBody: {fileID: 0}
   ragdollRigidbody:
   - {fileID: 8620982100558545757}
   - {fileID: 3248494196935668136}
@@ -1556,7 +1558,8 @@ MonoBehaviour:
   - {fileID: 4664016045863703115}
   - {fileID: 2763570899656871078}
   - {fileID: 8015819797896058709}
-  <ObjectForCameraFollowing>k__BackingField: {fileID: 8620982100558545759}
+  _objectForCameraFollowing: {fileID: 0}
+  <ObjectForDeathCameraFollowing>k__BackingField: {fileID: 0}
   defaultBonesPositions:
   - {x: 2.8992238, y: 1.2188208, z: -71.30412}
   - {x: 2.949691, y: 1.3264624, z: -71.303276}
@@ -1637,8 +1640,8 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 9158778601057026049
-      type: {class: YoungManModel, ns: Assets.Scripts.Models.Characters, asm: Assembly-CSharp}
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!54 &5006710662610347950
 Rigidbody:
   m_ObjectHideFlags: 0

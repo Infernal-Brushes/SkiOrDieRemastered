@@ -752,7 +752,7 @@ namespace Assets.Scripts.Player
                     //сила назад
                     PlayerRigidBody.AddForce(Vector3.left * _velocityStrafeStopper, ForceMode.Impulse);
                     //сила в бок
-                    float impulse = _axisX * _velocityStrafe;
+                    float impulse = -_axisX * _velocityStrafe;
                     PlayerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
 
                     PrintText(_strafeSpeedText, impulse);
@@ -793,7 +793,7 @@ namespace Assets.Scripts.Player
                     //сила назад
                     PlayerRigidBody.AddForce(Vector3.left * _velocityStrafeStopper, ForceMode.Impulse);
                     //сила в бок
-                    float impulse = _axisX * _velocityStrafe;
+                    float impulse = -_axisX * _velocityStrafe;
                     PlayerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
 
                     PrintText(_strafeSpeedText, impulse);
