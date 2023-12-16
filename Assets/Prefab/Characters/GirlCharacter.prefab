@@ -1006,11 +1006,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7a8a5592a03112498937854e00f67fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <CharacterModel>k__BackingField:
-    mode: 1
+  _characterModel:
+    mode: 0
     unityReference: {fileID: 0}
     rawReference:
-      rid: 9158778601057026050
+      rid: -2
+  _leftSkiMeshRenderer: {fileID: 5491992108059917466}
+  _rightSkiMeshRenderer: {fileID: 7429579398813326350}
+  <PlayerRigidBody>k__BackingField: {fileID: 3529645813397966888}
+  _followingCamera: {fileID: 0}
+  _bodyMaterial: {fileID: 0}
   _inGameMenu: {fileID: 0}
   _mapController: {fileID: 0}
   _fadeTextController: {fileID: 0}
@@ -1056,7 +1061,7 @@ MonoBehaviour:
   _velocitySidewise: 0.45
   _velocityStrafeCoefficient: 0
   _strafeStopperCoefficient: 0.03
-  _strafeSpeedLimit: 1
+  _strafeSpeedLimit: 0.1
   _centrifugalForceCoefficient: 0.011
   _deathSpeedX: 90
   _deathSpeedZ: 72
@@ -1072,7 +1077,6 @@ MonoBehaviour:
   speedOfStrafeRotationY: 4.5
   angleOfTurn: 50
   angleOfStrafe: 68
-  playerRigidBody: {fileID: 0}
   ragdollRigidbody:
   - {fileID: 5825439945641097786}
   - {fileID: 751827418393692358}
@@ -1098,7 +1102,8 @@ MonoBehaviour:
   - {fileID: 7476563270164835113}
   - {fileID: 81577544257795524}
   - {fileID: 4113213633571005915}
-  <ObjectForCameraFollowing>k__BackingField: {fileID: 5825439945641097789}
+  _objectForCameraFollowing: {fileID: 5825439945641097789}
+  <ObjectForDeathCameraFollowing>k__BackingField: {fileID: 5825439945641097789}
   defaultBonesPositions:
   - {x: 2.8992238, y: 1.2188208, z: -71.30412}
   - {x: 2.949691, y: 1.3264624, z: -71.303276}
@@ -1179,8 +1184,8 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 9158778601057026050
-      type: {class: GirlModel, ns: Assets.Scripts.Models.Characters, asm: Assembly-CSharp}
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!54 &3529645813397966888
 Rigidbody:
   m_ObjectHideFlags: 0
