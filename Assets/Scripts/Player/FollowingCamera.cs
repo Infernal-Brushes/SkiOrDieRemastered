@@ -27,7 +27,7 @@ public class FollowingCamera : MonoBehaviour
         var playerController = _objectToFollow.GetComponentInParent<PlayerController>();
 
         Vector3 targetPosition = _objectToFollow.transform.TransformPoint(_relative) + _offsetPlayerToCamera;
-        _velocity = playerController.playerRigidBody.velocity;
+        _velocity = playerController.PlayerRigidBody.velocity;
         transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref _velocity, 0.0002f);
     }
 

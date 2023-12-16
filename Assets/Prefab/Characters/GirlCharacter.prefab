@@ -1006,11 +1006,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7a8a5592a03112498937854e00f67fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <CharacterModel>k__BackingField:
-    mode: 1
+  _characterModel:
+    mode: 0
     unityReference: {fileID: 0}
     rawReference:
-      rid: 9158778601057026050
+      rid: -2
+  _leftSkiMeshRenderer: {fileID: 0}
+  _rightSkiMeshRenderer: {fileID: 0}
   _inGameMenu: {fileID: 0}
   _mapController: {fileID: 0}
   _fadeTextController: {fileID: 0}
@@ -1056,7 +1058,7 @@ MonoBehaviour:
   _velocitySidewise: 0.45
   _velocityStrafeCoefficient: 0
   _strafeStopperCoefficient: 0.03
-  _strafeSpeedLimit: 1
+  _strafeSpeedLimit: 0.1
   _centrifugalForceCoefficient: 0.011
   _deathSpeedX: 90
   _deathSpeedZ: 72
@@ -1066,13 +1068,12 @@ MonoBehaviour:
   _speedOfTiltSidewise: 0.2
   _gravityBoost: 106
   _magnitudeSpeedToEarnMoney: 60
-  _magnitudeSpeedForRisk: 30
+  _magnitudeSpeedForRisk: 38
   _magnitudeSpeedDividerForRisk: 10
   speedOfNormalRotationY: 0.68
   speedOfStrafeRotationY: 4.5
   angleOfTurn: 50
   angleOfStrafe: 68
-  playerRigidBody: {fileID: 0}
   ragdollRigidbody:
   - {fileID: 5825439945641097786}
   - {fileID: 751827418393692358}
@@ -1179,8 +1180,8 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 9158778601057026050
-      type: {class: GirlModel, ns: Assets.Scripts.Models.Characters, asm: Assembly-CSharp}
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!54 &3529645813397966888
 Rigidbody:
   m_ObjectHideFlags: 0
