@@ -1059,7 +1059,7 @@ MonoBehaviour:
   _velocityStrafeCoefficient: 0
   _strafeStopperCoefficient: 0.03
   _strafeSpeedLimit: 0.1
-  _centrifugalForceCoefficient: 0.011
+  _centrifugalForceCoefficient: 0.5
   _deathSpeedX: 90
   _deathSpeedZ: 72
   _deathAlertSpeedX: 75

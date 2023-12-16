@@ -733,7 +733,7 @@ namespace Assets.Scripts.Player
 
                     // центробежная скорость
                     float impulse = VelocityMagnitude * _centrifugalForceCoefficient;
-                    PlayerRigidBody.AddForce(impulse * -transform.right, ForceMode.Impulse);
+                    PlayerRigidBody.AddForce(impulse * -transform.right, ForceMode.Force);
                     return;
                 }
 
@@ -774,7 +774,7 @@ namespace Assets.Scripts.Player
 
                     // центробежная скорость
                     float impulse = VelocityMagnitude * _centrifugalForceCoefficient;
-                    PlayerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
+                    PlayerRigidBody.AddForce(impulse * transform.right, ForceMode.Force);
                     return;
                 }
 
