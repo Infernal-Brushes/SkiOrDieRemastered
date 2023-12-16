@@ -4116,10 +4116,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8345372393428507842}
     - target: {fileID: 5006710662610347949, guid: 33648f42c1e2606469ba8094c77d9c3e, type: 3}
-      propertyPath: _magnitudeSpeedForRisk
-      value: 38
-      objectReference: {fileID: 0}
-    - target: {fileID: 5006710662610347949, guid: 33648f42c1e2606469ba8094c77d9c3e, type: 3}
       propertyPath: _velocityMagnitudeText
       value: 
       objectReference: {fileID: 7081721883737435948}
@@ -6299,10 +6295,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8345372393428507842}
     - target: {fileID: 3529645813397966889, guid: 0d62b5c0cb349c04baeed80cb57417b5, type: 3}
-      propertyPath: _magnitudeSpeedForRisk
-      value: 38
-      objectReference: {fileID: 0}
-    - target: {fileID: 3529645813397966889, guid: 0d62b5c0cb349c04baeed80cb57417b5, type: 3}
       propertyPath: _velocityMagnitudeText
       value: 
       objectReference: {fileID: 7081721883737435948}
@@ -6586,10 +6578,6 @@ PrefabInstance:
       propertyPath: _velocitySidewiseText
       value: 
       objectReference: {fileID: 8345372393428507842}
-    - target: {fileID: 71337086890703823, guid: c6c79098801dcbf419de3c41c8c30d2c, type: 3}
-      propertyPath: _magnitudeSpeedForRisk
-      value: 38
-      objectReference: {fileID: 0}
     - target: {fileID: 71337086890703823, guid: c6c79098801dcbf419de3c41c8c30d2c, type: 3}
       propertyPath: _velocityMagnitudeText
       value: 

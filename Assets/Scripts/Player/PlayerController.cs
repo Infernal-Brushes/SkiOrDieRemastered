@@ -625,6 +625,7 @@ namespace Assets.Scripts.Player
             // Катить по направлению лыж
             float impulse = _angleCoeficientReversed * _velocityFreeRide;
             PlayerRigidBody.AddForce(impulse * _skiesDirection, ForceMode.Impulse);
+
             if (VelocityForward > _deathAlertSpeedX)
             {
                 _animator.SetBool("isGoingFast", true);
@@ -642,7 +643,7 @@ namespace Assets.Scripts.Player
         /// </summary>
         private void MoveSidewise()
         {
-            if (isInStrafe)
+            if (!isGrounded || isInStrafe || IsLose)
             {
                 return;
             }
@@ -654,43 +655,32 @@ namespace Assets.Scripts.Player
         }
 
         /// <summary>
-        /// Поворот лыж
+        /// Обработчик поворота корпуса
         /// </summary>
         private void RotateBody()
         {
-            float angleY = transform.rotation.eulerAngles.y;
-
             // Если повороты по воздуху
             if (!isGrounded)
             {
-                RotatePlayerInAir(angleY);
+                RotatePlayerInAir();
                 return;
             }
 
             if (_axisX == 0)
             {
-                ReturningToMainRotation();
+                ReturnToEdgeTurnRotation();
                 return;
             }
+
             _animator.ResetTrigger("toDefault");
 
             RotatePlayerOnGround();
         }
 
-        private void RotatePlayerInAir(float angleY)
-        {
-            // повороты в воздухе
-            if (_axisX < 0 && angleY > 90 - angleOfStrafe)
-            {
-                PlayerRigidBody.AddTorque(transform.up * speedOfStrafeRotationY * 0.33f * _axisX, ForceMode.VelocityChange);
-            }
-            else if (_axisX > 0 && angleY < 90 + angleOfStrafe)
-            {
-                PlayerRigidBody.AddTorque(transform.up * speedOfStrafeRotationY * 0.33f * _axisX, ForceMode.VelocityChange);
-            }
-        }
-
-        private void ReturningToMainRotation()
+        /// <summary>
+        /// Повернуть персонажа до крайнего возможного поворота перед зоной стрейфа
+        /// </summary>
+        private void ReturnToEdgeTurnRotation()
         {
             StrafeTurnOff();
             TurningTurnOff();
@@ -699,12 +689,29 @@ namespace Assets.Scripts.Player
             //восстанавливаем положение лыж
             if (AngleOfCurrentTurning > angleOfTurn)
             {
-                PlayerRigidBody.AddTorque(transform.up * -speedOfStrafeRotationY, ForceMode.VelocityChange);
+                RotateBodySidewise(-1);
             }
             else if (AngleOfCurrentTurning < -angleOfTurn)
             {
-                PlayerRigidBody.AddTorque(transform.up * speedOfStrafeRotationY, ForceMode.VelocityChange);
+                RotateBodySidewise(1);
             }
+        }
+
+        /// <summary>
+        /// Повернуть корпуск персонажа в бок
+        /// </summary>
+        /// <param name="rotationSpeedModifier">Модификатор скорости поворота. Меньше 0 - поворот влево, больше 0 - поворот вправо</param>
+        private void RotateBodySidewise(float rotationSpeedModifier)
+        {
+            PlayerRigidBody.AddTorque(rotationSpeedModifier * speedOfNormalRotationY * transform.up, ForceMode.VelocityChange);
+        }
+
+        /// <summary>
+        /// Поворот корпуса персонажа в воздухе
+        /// </summary>
+        private void RotatePlayerInAir()
+        {
+            RotateBodySidewise(_axisX * 0.33f);
         }
 
         /// <summary>
@@ -720,8 +727,9 @@ namespace Assets.Scripts.Player
                 {
                     StrafeTurnOff();
                     TurningTurnOn(Sides.Left);
+
                     // поворот
-                    PlayerRigidBody.AddTorque(_axisX * speedOfNormalRotationY * transform.up, ForceMode.VelocityChange);
+                    RotateBodySidewise(_axisX);
 
                     // центробежная скорость
                     float impulse = VelocityMagnitude * _centrifugalForceCoefficient;
@@ -734,7 +742,7 @@ namespace Assets.Scripts.Player
                 TurningTurnOff();
                 if (AngleOfCurrentTurning > -angleOfStrafe)
                 {
-                    PlayerRigidBody.AddTorque(_axisX * speedOfStrafeRotationY * transform.up, ForceMode.VelocityChange);
+                    RotateBodySidewise(_axisX);
                 }
 
                 if (VelocityMagnitude > _strafeSpeedLimit)
@@ -760,8 +768,9 @@ namespace Assets.Scripts.Player
                 {
                     StrafeTurnOff();
                     TurningTurnOn(Sides.Right);
+
                     // поворот
-                    PlayerRigidBody.AddTorque(_axisX * speedOfNormalRotationY * transform.up, ForceMode.VelocityChange);
+                    RotateBodySidewise(_axisX);
 
                     // центробежная скорость
                     float impulse = VelocityMagnitude * _centrifugalForceCoefficient;
@@ -775,7 +784,7 @@ namespace Assets.Scripts.Player
                 TurningTurnOff();
                 if (AngleOfCurrentTurning < angleOfStrafe)
                 {
-                    PlayerRigidBody.AddTorque(_axisX * speedOfStrafeRotationY * transform.up, ForceMode.VelocityChange);
+                    RotateBodySidewise(_axisX);
                 }
 
                 if (VelocityMagnitude > _strafeSpeedLimit)
