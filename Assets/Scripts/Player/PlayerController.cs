@@ -748,7 +748,7 @@ namespace Assets.Scripts.Player
                 if (VelocityMagnitude > _strafeSpeedLimit)
                 {
                     //сила назад
-                    PlayerRigidBody.AddForce(Vector3.left * _velocityStrafeStopper, ForceMode.Impulse);
+                    PlayerRigidBody.AddForce(Vector3.left * _velocityStrafeStopper, ForceMode.Force);
                     //сила в бок
                     float impulse = _axisX * _velocityStrafe;
                     PlayerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
@@ -790,7 +790,7 @@ namespace Assets.Scripts.Player
                 if (VelocityMagnitude > _strafeSpeedLimit)
                 {
                     //сила назад
-                    PlayerRigidBody.AddForce(Vector3.left * _velocityStrafeStopper, ForceMode.Impulse);
+                    PlayerRigidBody.AddForce(Vector3.left * _velocityStrafeStopper, ForceMode.Force);
                     //сила в бок
                     float impulse = _axisX * _velocityStrafe;
                     PlayerRigidBody.AddForce(impulse * -transform.right, ForceMode.Impulse);

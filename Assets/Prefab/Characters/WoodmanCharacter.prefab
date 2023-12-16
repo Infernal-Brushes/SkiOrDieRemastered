@@ -105,7 +105,7 @@ MonoBehaviour:
   _velocityFreeRide: 0.24
   _velocitySidewise: 0.45
   _velocityStrafeCoefficient: 0
-  _strafeStopperCoefficient: 0.03
+  _strafeStopperCoefficient: 1.8
   _strafeSpeedLimit: 0.1
   _centrifugalForceCoefficient: 0.5
   _deathSpeedX: 90
