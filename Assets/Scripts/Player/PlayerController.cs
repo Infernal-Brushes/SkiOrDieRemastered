@@ -624,7 +624,7 @@ namespace Assets.Scripts.Player
 
             // Катить по направлению лыж
             float impulse = _angleCoeficientReversed * _velocityFreeRide;
-            PlayerRigidBody.AddForce(impulse * _skiesDirection, ForceMode.Impulse);
+            PlayerRigidBody.AddForce(impulse * _skiesDirection, ForceMode.Force);
 
             if (VelocityForward > _deathAlertSpeedX)
             {
@@ -649,7 +649,7 @@ namespace Assets.Scripts.Player
             }
 
             float impulse = _angleCoeficient * _velocitySidewise;
-            PlayerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
+            PlayerRigidBody.AddForce(impulse * transform.right, ForceMode.Force);
 
             PrintText(_sidewiseSpeedText, impulse);
         }

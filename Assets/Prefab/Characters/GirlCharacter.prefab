@@ -1054,8 +1054,8 @@ MonoBehaviour:
   _groundCheckForwardLength: 0.3
   _groundCheckSidewiseLength: 0.14
   _moneyPerSecondOnHighSpeed: 4
-  _velocityFreeRide: 0.24
-  _velocitySidewise: 0.45
+  _velocityFreeRide: 12
+  _velocitySidewise: 28
   _velocityStrafeCoefficient: 0
   _strafeStopperCoefficient: 1.8
   _strafeSpeedLimit: 0.1
