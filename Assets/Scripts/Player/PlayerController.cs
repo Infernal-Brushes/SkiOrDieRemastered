@@ -1,5 +1,6 @@
 ﻿using Assets.Enums;
 using Assets.Extensions;
+using Assets.Helpers;
 using Assets.Scripts.Maps;
 using System;
 using System.Collections;
@@ -545,11 +546,9 @@ namespace Assets.Scripts.Player
         private void FlatToGroundByForward()
         {
             Ray rayForward = new(_groundForwardPoint.transform.position, -transform.up);
-            Debug.DrawRay(_groundForwardPoint.transform.position, -transform.up * _groundCheckForwardLength, Color.red);
             bool needToFlatForward = !Physics.Raycast(rayForward, out RaycastHit hitForward, _groundCheckForwardLength, LayerMask.GetMask(GroundLayerMaskName));
 
             Ray rayBackward = new(_groundBackwardPoint.transform.position, -transform.up);
-            Debug.DrawRay(_groundBackwardPoint.transform.position, -transform.up * _groundCheckForwardLength, Color.red);
             bool needToFlatBackward = !Physics.Raycast(rayBackward, out RaycastHit hitBackward, _groundCheckForwardLength, LayerMask.GetMask(GroundLayerMaskName));
 
             // Если оба бока в небе, не надо поворачиваться
@@ -575,6 +574,15 @@ namespace Assets.Scripts.Player
             Vector3 normal = needToFlatForward ? hitForward.normal : hitBackward.normal;
             int turningCoefficient = needToFlatForward ? 1 : -1;
             PlayerRigidBody.AddTorque(_speedOfTiltForward * turningCoefficient * Vector3.Cross(transform.forward, normal), ForceMode.Force);
+
+            if (needToFlatForward)
+            {
+                Debug.DrawRay(_groundForwardPoint.transform.position, -transform.up * _groundCheckForwardLength, Color.red);
+            }
+            if (needToFlatBackward)
+            {
+                Debug.DrawRay(_groundBackwardPoint.transform.position, -transform.up * _groundCheckForwardLength, Color.red);
+            }
         }
 
         /// <summary>
@@ -583,11 +591,9 @@ namespace Assets.Scripts.Player
         private void FlatToGroundBySidewise()
         {
             Ray rayLeft = new(_groundLeftPoint.transform.position, -transform.up);
-            Debug.DrawRay(_groundLeftPoint.transform.position, -transform.up * _groundCheckForwardLength, Color.blue);
             bool needToFlatLeft = !Physics.Raycast(rayLeft, out RaycastHit hitLeft, _groundCheckSidewiseLength, LayerMask.GetMask(GroundLayerMaskName));
 
             Ray rayRight = new(_groundRightPoint.transform.position, -transform.up);
-            Debug.DrawRay(_groundRightPoint.transform.position, -transform.up * _groundCheckForwardLength, Color.blue);
             bool needToFlatRight = !Physics.Raycast(rayRight, out RaycastHit hitRight, _groundCheckSidewiseLength, LayerMask.GetMask(GroundLayerMaskName));
 
             // Если оба бока в небе, не надо поворачиваться
@@ -599,12 +605,22 @@ namespace Assets.Scripts.Player
             Vector3 normal = needToFlatRight ? hitRight.normal : hitLeft.normal;
             int turningCoefficient = needToFlatRight ? 1 : -1;
             PlayerRigidBody.AddTorque(_speedOfTiltSidewise * turningCoefficient * Vector3.Cross(transform.right, normal), ForceMode.Force);
+
+            if (needToFlatLeft)
+            {
+                Debug.DrawRay(_groundLeftPoint.transform.position, -transform.up * _groundCheckForwardLength, Color.blue);
+            }
+            if (needToFlatRight)
+            {
+                Debug.DrawRay(_groundRightPoint.transform.position, -transform.up * _groundCheckForwardLength, Color.blue);
+            }
         }
 
         private void AddGravityForce()
         {
             // для улучшения гравитациии
             PlayerRigidBody.AddForce(Vector3.down * _gravityBoost, ForceMode.Force);
+            Debug.DrawRay(transform.position, Vector3.down * _gravityBoost, ColorHelper.FromHex("#db67e6"));
         }
 
         /// <summary>
@@ -620,6 +636,7 @@ namespace Assets.Scripts.Player
             // Катить по направлению лыж
             float impulse = _angleCoeficientReversed * _velocityFreeRide;
             PlayerRigidBody.AddForce(impulse * _skiesDirection, ForceMode.Force);
+            Debug.DrawRay(transform.position, impulse * _skiesDirection, Color.red);
 
             if (VelocityForward > _deathAlertSpeedX)
             {
@@ -645,6 +662,7 @@ namespace Assets.Scripts.Player
 
             float impulse = _angleCoeficient * _velocitySidewise;
             PlayerRigidBody.AddForce(impulse * transform.right, ForceMode.Force);
+            Debug.DrawRay(transform.position, impulse * transform.right, Color.blue);
 
             PrintText(_sidewiseSpeedText, impulse);
         }
@@ -729,6 +747,7 @@ namespace Assets.Scripts.Player
                     // центробежная скорость
                     float impulse = VelocityMagnitude * _centrifugalForceCoefficient;
                     PlayerRigidBody.AddForce(impulse * -transform.right, ForceMode.Force);
+                    Debug.DrawRay(transform.position, impulse * -transform.right, Color.green);
                     return;
                 }
 
@@ -744,9 +763,11 @@ namespace Assets.Scripts.Player
                 {
                     //сила назад
                     PlayerRigidBody.AddForce(Vector3.left * _velocityStrafeStopper, ForceMode.Force);
+                    Debug.DrawRay(transform.position, Vector3.left * _velocityStrafeStopper, Color.black);
                     //сила в бок
                     float impulse = _axisX * _velocityStrafe;
                     PlayerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
+                    Debug.DrawRay(transform.position, impulse * transform.right, Color.red);
 
                     PrintText(_strafeSpeedText, impulse);
                 }
@@ -770,6 +791,7 @@ namespace Assets.Scripts.Player
                     // центробежная скорость
                     float impulse = VelocityMagnitude * _centrifugalForceCoefficient;
                     PlayerRigidBody.AddForce(impulse * transform.right, ForceMode.Force);
+                    Debug.DrawRay(transform.position, impulse * transform.right, Color.green);
                     return;
                 }
 
@@ -786,9 +808,11 @@ namespace Assets.Scripts.Player
                 {
                     //сила назад
                     PlayerRigidBody.AddForce(Vector3.left * _velocityStrafeStopper, ForceMode.Force);
+                    Debug.DrawRay(transform.position, Vector3.left * _velocityStrafeStopper, Color.black);
                     //сила в бок
                     float impulse = _axisX * _velocityStrafe;
                     PlayerRigidBody.AddForce(impulse * -transform.right, ForceMode.Impulse);
+                    Debug.DrawRay(transform.position, impulse * transform.right, Color.red);
 
                     PrintText(_strafeSpeedText, impulse);
                 }
