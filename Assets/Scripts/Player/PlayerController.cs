@@ -64,9 +64,13 @@ namespace Assets.Scripts.Player
         [SerializeField]
         private Animator _animator;
 
-        [Tooltip("Объект проверки контакта с землёй для выравнивания прямо")]
+        [Tooltip("Объект проверки контакта с землёй для выравнивания вперёд")]
         [SerializeField]
         private GameObject _groundForwardPoint;
+
+        [Tooltip("Объект проверки контакта с землёй для выравнивания назад")]
+        [SerializeField]
+        private GameObject _groundBackwardPoint;
 
         [Tooltip("Объект проверки контакта с землёй для выравнивания влево")]
         [SerializeField]
@@ -76,7 +80,7 @@ namespace Assets.Scripts.Player
         [SerializeField]
         private GameObject _groundRightPoint;
 
-        [Tooltip("Длина луча для проверки контакта с землёй по выравниванию прямо")]
+        [Tooltip("Длина луча для проверки контакта с землёй по выравниванию вперёд/назад")]
         [SerializeField]
         private float _groundCheckForwardLength = 0.3f;
 
@@ -164,14 +168,6 @@ namespace Assets.Scripts.Player
         [SerializeField]
         private float _velocityToLoseSki = 27;
 
-        [Tooltip("Скорость наклона вперёд назад")]
-        [SerializeField]
-        private float _speedOfTiltForward = 0.3f;
-
-        [Tooltip("Скорость наклона по бокам")]
-        [SerializeField]
-        private float _speedOfTiltSidewise = 0.3f;
-
         [Tooltip("Сила гравитации в полёте")]
         [SerializeField]
         private float _gravityBoost = 1f;
@@ -190,32 +186,28 @@ namespace Assets.Scripts.Player
 
         [Header("Повороты")]
 
-        /// <summary>
-        /// Скорость поворота
-        /// </summary>
         [Tooltip("Скорость поворота")]
         [SerializeField]
         private float speedOfNormalRotationY = 0.74f;
 
-        /// <summary>
-        /// Скорость поворота в стрейфе
-        /// </summary>
         [Tooltip("Скорость поворота в стрейфе")]
         [SerializeField]
         private float speedOfStrafeRotationY = 4.5f;
 
+        [Tooltip("Скорость наклона вперёд назад")]
+        [SerializeField]
+        private float _speedOfTiltForward = 0.4f;
+
+        [Tooltip("Скорость наклона по бокам")]
+        [SerializeField]
+        private float _speedOfTiltSidewise = 0.2f;
+
         [Header("Углы поворотов")]
 
-        /// <summary>
-        /// Крайний угол поворота
-        /// </summary>
         [Tooltip("Крайний угол поворота")]
         [SerializeField]
         private float angleOfTurn = 50f;
 
-        /// <summary>
-        /// Крайний угол стрейфа
-        /// </summary>
         [Tooltip("Крайний угол стрейфа")]
         [SerializeField]
         private float angleOfStrafe = 68f;
@@ -552,36 +544,37 @@ namespace Assets.Scripts.Player
         /// </summary>
         private void FlatToGroundByForward()
         {
-            Ray ray = new(_groundForwardPoint.transform.position, -transform.up);
+            Ray rayForward = new(_groundForwardPoint.transform.position, -transform.up);
+            Debug.DrawRay(_groundForwardPoint.transform.position, -transform.up * _groundCheckForwardLength, Color.red);
+            bool needToFlatForward = !Physics.Raycast(rayForward, out RaycastHit hitForward, _groundCheckForwardLength, LayerMask.GetMask(GroundLayerMaskName));
 
-            // если игрок касается земли
-            if (Physics.Raycast(ray, out RaycastHit hit, _groundCheckForwardLength, LayerMask.GetMask(GroundLayerMaskName)))
+            Ray rayBackward = new(_groundBackwardPoint.transform.position, -transform.up);
+            Debug.DrawRay(_groundBackwardPoint.transform.position, -transform.up * _groundCheckForwardLength, Color.red);
+            bool needToFlatBackward = !Physics.Raycast(rayBackward, out RaycastHit hitBackward, _groundCheckForwardLength, LayerMask.GetMask(GroundLayerMaskName));
+
+            // Если оба бока в небе, не надо поворачиваться
+            if (needToFlatForward && needToFlatBackward)
             {
-                if (!isGrounded)
+                if (isGrounded)
                 {
-                    isGrounded = true;
-                    OnGroundOn?.Invoke();
-
-                    // направление наклона. 1 - накланять вперёд, -1 - наклонять назад
-                    int turningCoefficient = 1;
-                    // если игрок заваливается назад то надо его вперёд наклонять а не назад
-                    if (Vector3.Angle(transform.up, hit.normal) <= 90)
-                    {
-                        turningCoefficient = -1;
-                    }
-                    // задаём крутящий момент по ортогонали между нормальню и вектором Y у игрока (вокруг оси X вращение)
-                    PlayerRigidBody.AddTorque(_speedOfTiltForward * turningCoefficient * Vector3.Cross(transform.forward, hit.normal), ForceMode.Force);
+                    isGrounded = false;
+                    OnGroundOff?.Invoke();
                 }
+
+                AddGravityForce();
                 return;
             }
 
-            if (isGrounded)
+            // Если хотя бы один на земле, значит приземлились
+            if (!isGrounded)
             {
-                isGrounded = false;
-                OnGroundOff?.Invoke();
+                isGrounded = true;
+                OnGroundOn?.Invoke();
             }
 
-            AddGravityForce();
+            Vector3 normal = needToFlatForward ? hitForward.normal : hitBackward.normal;
+            int turningCoefficient = needToFlatForward ? 1 : -1;
+            PlayerRigidBody.AddTorque(_speedOfTiltForward * turningCoefficient * Vector3.Cross(transform.forward, normal), ForceMode.Force);
         }
 
         /// <summary>
@@ -590,9 +583,11 @@ namespace Assets.Scripts.Player
         private void FlatToGroundBySidewise()
         {
             Ray rayLeft = new(_groundLeftPoint.transform.position, -transform.up);
+            Debug.DrawRay(_groundLeftPoint.transform.position, -transform.up * _groundCheckForwardLength, Color.blue);
             bool needToFlatLeft = !Physics.Raycast(rayLeft, out RaycastHit hitLeft, _groundCheckSidewiseLength, LayerMask.GetMask(GroundLayerMaskName));
 
             Ray rayRight = new(_groundRightPoint.transform.position, -transform.up);
+            Debug.DrawRay(_groundRightPoint.transform.position, -transform.up * _groundCheckForwardLength, Color.blue);
             bool needToFlatRight = !Physics.Raycast(rayRight, out RaycastHit hitRight, _groundCheckSidewiseLength, LayerMask.GetMask(GroundLayerMaskName));
 
             // Если оба бока в небе, не надо поворачиваться
@@ -601,8 +596,8 @@ namespace Assets.Scripts.Player
                 return;
             }
 
-            Vector3 normal = needToFlatLeft ? hitLeft.normal : hitRight.normal;
-            int turningCoefficient = needToFlatLeft ? -1 : 1;
+            Vector3 normal = needToFlatRight ? hitRight.normal : hitLeft.normal;
+            int turningCoefficient = needToFlatRight ? 1 : -1;
             PlayerRigidBody.AddTorque(_speedOfTiltSidewise * turningCoefficient * Vector3.Cross(transform.right, normal), ForceMode.Force);
         }
 
