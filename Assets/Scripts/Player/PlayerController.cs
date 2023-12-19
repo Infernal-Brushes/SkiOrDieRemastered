@@ -857,14 +857,6 @@ namespace Assets.Scripts.Player
             OnRisk?.Invoke();
         }
 
-        private void OnCollisionEnter(Collision collision)
-        {
-            if (collision.collider.gameObject.TryGetComponent(out Barrier barrier) && !IsLose)
-            {
-                Lose(LoseCause.barrier);
-            }
-        }
-
         private void RagdollOn()
         {
             _animator.enabled = false;
