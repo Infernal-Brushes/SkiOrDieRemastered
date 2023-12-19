@@ -500,7 +500,7 @@ namespace Assets.Scripts.Player
             //_axisX = _joystick.Horizontal;
             //if (Input.GetAxis("Horizontal") != 0)
             //{
-                _axisX = Input.GetAxis("Horizontal");
+            _axisX = Input.GetAxis("Horizontal");
             //}
 
             AngleOfCurrentTurning = -(90f - Vector3.Angle(_skiesDirection, Vector3.forward));
