@@ -1,5 +1,6 @@
 ﻿using Assets.Enums;
 using Assets.Extensions;
+using Assets.Helpers;
 using Assets.Scripts.Maps;
 using System;
 using System.Collections;
@@ -64,9 +65,13 @@ namespace Assets.Scripts.Player
         [SerializeField]
         private Animator _animator;
 
-        [Tooltip("Объект проверки контакта с землёй для выравнивания прямо")]
+        [Tooltip("Объект проверки контакта с землёй для выравнивания вперёд")]
         [SerializeField]
         private GameObject _groundForwardPoint;
+
+        [Tooltip("Объект проверки контакта с землёй для выравнивания назад")]
+        [SerializeField]
+        private GameObject _groundBackwardPoint;
 
         [Tooltip("Объект проверки контакта с землёй для выравнивания влево")]
         [SerializeField]
@@ -76,7 +81,7 @@ namespace Assets.Scripts.Player
         [SerializeField]
         private GameObject _groundRightPoint;
 
-        [Tooltip("Длина луча для проверки контакта с землёй по выравниванию прямо")]
+        [Tooltip("Длина луча для проверки контакта с землёй по выравниванию вперёд/назад")]
         [SerializeField]
         private float _groundCheckForwardLength = 0.3f;
 
@@ -164,14 +169,6 @@ namespace Assets.Scripts.Player
         [SerializeField]
         private float _velocityToLoseSki = 27;
 
-        [Tooltip("Скорость наклона вперёд назад")]
-        [SerializeField]
-        private float _speedOfTiltForward = 0.3f;
-
-        [Tooltip("Скорость наклона по бокам")]
-        [SerializeField]
-        private float _speedOfTiltSidewise = 0.3f;
-
         [Tooltip("Сила гравитации в полёте")]
         [SerializeField]
         private float _gravityBoost = 1f;
@@ -190,32 +187,28 @@ namespace Assets.Scripts.Player
 
         [Header("Повороты")]
 
-        /// <summary>
-        /// Скорость поворота
-        /// </summary>
         [Tooltip("Скорость поворота")]
         [SerializeField]
         private float speedOfNormalRotationY = 0.74f;
 
-        /// <summary>
-        /// Скорость поворота в стрейфе
-        /// </summary>
         [Tooltip("Скорость поворота в стрейфе")]
         [SerializeField]
         private float speedOfStrafeRotationY = 4.5f;
 
+        [Tooltip("Скорость наклона вперёд назад")]
+        [SerializeField]
+        private float _speedOfTiltForward = 0.4f;
+
+        [Tooltip("Скорость наклона по бокам")]
+        [SerializeField]
+        private float _speedOfTiltSidewise = 0.2f;
+
         [Header("Углы поворотов")]
 
-        /// <summary>
-        /// Крайний угол поворота
-        /// </summary>
         [Tooltip("Крайний угол поворота")]
         [SerializeField]
         private float angleOfTurn = 50f;
 
-        /// <summary>
-        /// Крайний угол стрейфа
-        /// </summary>
         [Tooltip("Крайний угол стрейфа")]
         [SerializeField]
         private float angleOfStrafe = 68f;
@@ -295,12 +288,12 @@ namespace Assets.Scripts.Player
         /// <summary>
         /// Скорость стрейфа вбок
         /// </summary>
-        private float _velocityStrafe => VelocityForward * _velocityStrafeCoefficient;
+        private float _velocityStrafe => VelocityMagnitude * _velocityStrafeCoefficient;
 
         /// <summary>
         /// Скорость стрейфа торможения (назад)
         /// </summary>
-        private float _velocityStrafeStopper => VelocityForward * _strafeStopperCoefficient;
+        private float _velocityStrafeStopper => VelocityMagnitude * _strafeStopperCoefficient;
 
         /// <summary>
         /// Направление лыж
@@ -308,17 +301,22 @@ namespace Assets.Scripts.Player
         Vector3 _skiesDirection => Vector3.ProjectOnPlane(transform.forward, Vector2.zero).normalized;
 
         [HideInInspector]
-        public Rigidbody playerRigidBody;
+        public Rigidbody PlayerRigidBody { get; private set; }
 
         /// <summary>
         /// Скорость прямо по склонку
         /// </summary>
-        public float VelocityForward => playerRigidBody.velocity.x;
+        public float VelocityForward => PlayerRigidBody.velocity.x;
 
         /// <summary>
         /// Скорость боковая
         /// </summary>
-        public float VelocitySidewise => -playerRigidBody.velocity.z;
+        public float VelocitySidewise => -PlayerRigidBody.velocity.z;
+
+        /// <summary>
+        /// Общая скорость
+        /// </summary>
+        public float VelocityMagnitude => PlayerRigidBody.velocity.magnitude;
 
         public Rigidbody[] ragdollRigidbody;
         public Transform[] bonesTransforms;
@@ -454,7 +452,7 @@ namespace Assets.Scripts.Player
         private void Awake()
         {
             OnAwake();
-            playerRigidBody = GetComponent<Rigidbody>();
+            PlayerRigidBody = GetComponent<Rigidbody>();
 
             bonesDefaultMass = new float[bonesTransforms.Length];
             for (int i = 0; i < ragdollRigidbody.Length; i++)
@@ -508,8 +506,8 @@ namespace Assets.Scripts.Player
 
             PrintText(_velocityForwardText, VelocityForward);
             PrintText(_velocitySidewiseText, VelocitySidewise);
+            PrintText(_velocityMagnitudeText, VelocityMagnitude);
             PrintText(_metersText, $"{_currentMeters} м");
-            PrintText(_velocityMagnitudeText, playerRigidBody.velocity.magnitude);
             if (!isInStrafe)
             {
                 PrintText(_strafeSpeedText, "0");
@@ -547,36 +545,44 @@ namespace Assets.Scripts.Player
         /// </summary>
         private void FlatToGroundByForward()
         {
-            Ray ray = new(_groundForwardPoint.transform.position, -transform.up);
+            Ray rayForward = new(_groundForwardPoint.transform.position, -transform.up);
+            bool needToFlatForward = !Physics.Raycast(rayForward, out RaycastHit hitForward, _groundCheckForwardLength, LayerMask.GetMask(GroundLayerMaskName));
 
-            // если игрок касается земли
-            if (Physics.Raycast(ray, out RaycastHit hit, _groundCheckForwardLength, LayerMask.GetMask(GroundLayerMaskName)))
+            Ray rayBackward = new(_groundBackwardPoint.transform.position, -transform.up);
+            bool needToFlatBackward = !Physics.Raycast(rayBackward, out RaycastHit hitBackward, _groundCheckForwardLength, LayerMask.GetMask(GroundLayerMaskName));
+
+            // Если оба бока в небе, не надо поворачиваться
+            if (needToFlatForward && needToFlatBackward)
             {
-                if (!isGrounded)
+                if (isGrounded)
                 {
-                    isGrounded = true;
-                    OnGroundOn?.Invoke();
-
-                    // направление наклона. 1 - накланять вперёд, -1 - наклонять назад
-                    int turningCoefficient = 1;
-                    // если игрок заваливается назад то надо его вперёд наклонять а не назад
-                    if (Vector3.Angle(transform.up, hit.normal) <= 90)
-                    {
-                        turningCoefficient = -1;
-                    }
-                    // задаём крутящий момент по ортогонали между нормальню и вектором Y у игрока (вокруг оси X вращение)
-                    playerRigidBody.AddTorque(_speedOfTiltForward * turningCoefficient * Vector3.Cross(transform.forward, hit.normal), ForceMode.Force);
+                    isGrounded = false;
+                    OnGroundOff?.Invoke();
                 }
+
+                AddGravityForce();
                 return;
             }
 
-            if (isGrounded)
+            // Если хотя бы один на земле, значит приземлились
+            if (!isGrounded)
             {
-                isGrounded = false;
-                OnGroundOff?.Invoke();
+                isGrounded = true;
+                OnGroundOn?.Invoke();
             }
 
-            AddGravityForce();
+            Vector3 normal = needToFlatForward ? hitForward.normal : hitBackward.normal;
+            int turningCoefficient = needToFlatForward ? 1 : -1;
+            PlayerRigidBody.AddTorque(_speedOfTiltForward * turningCoefficient * Vector3.Cross(transform.forward, normal), ForceMode.Force);
+
+            if (needToFlatForward)
+            {
+                Debug.DrawRay(_groundForwardPoint.transform.position, -transform.up * _groundCheckForwardLength, Color.red);
+            }
+            if (needToFlatBackward)
+            {
+                Debug.DrawRay(_groundBackwardPoint.transform.position, -transform.up * _groundCheckForwardLength, Color.red);
+            }
         }
 
         /// <summary>
@@ -596,15 +602,25 @@ namespace Assets.Scripts.Player
                 return;
             }
 
-            Vector3 normal = needToFlatLeft ? hitLeft.normal : hitRight.normal;
-            int turningCoefficient = needToFlatLeft ? -1 : 1;
-            playerRigidBody.AddTorque(_speedOfTiltSidewise * turningCoefficient * Vector3.Cross(transform.right, normal), ForceMode.Force);
+            Vector3 normal = needToFlatRight ? hitRight.normal : hitLeft.normal;
+            int turningCoefficient = needToFlatRight ? 1 : -1;
+            PlayerRigidBody.AddTorque(_speedOfTiltSidewise * turningCoefficient * Vector3.Cross(transform.right, normal), ForceMode.Force);
+
+            if (needToFlatLeft)
+            {
+                Debug.DrawRay(_groundLeftPoint.transform.position, -transform.up * _groundCheckForwardLength, Color.blue);
+            }
+            if (needToFlatRight)
+            {
+                Debug.DrawRay(_groundRightPoint.transform.position, -transform.up * _groundCheckForwardLength, Color.blue);
+            }
         }
 
         private void AddGravityForce()
         {
             // для улучшения гравитациии
-            playerRigidBody.AddForce(Vector3.down * _gravityBoost, ForceMode.Force);
+            PlayerRigidBody.AddForce(Vector3.down * _gravityBoost, ForceMode.Force);
+            Debug.DrawRay(transform.position, Vector3.down * _gravityBoost, ColorHelper.FromHex("#db67e6"));
         }
 
         /// <summary>
@@ -619,7 +635,9 @@ namespace Assets.Scripts.Player
 
             // Катить по направлению лыж
             float impulse = _angleCoeficientReversed * _velocityFreeRide;
-            playerRigidBody.AddForce(impulse * _skiesDirection, ForceMode.Impulse);
+            PlayerRigidBody.AddForce(impulse * _skiesDirection, ForceMode.Force);
+            Debug.DrawRay(transform.position, impulse * _skiesDirection, Color.red);
+
             if (VelocityForward > _deathAlertSpeedX)
             {
                 _animator.SetBool("isGoingFast", true);
@@ -637,55 +655,45 @@ namespace Assets.Scripts.Player
         /// </summary>
         private void MoveSidewise()
         {
-            if (isInStrafe)
+            if (!isGrounded || isInStrafe || IsLose)
             {
                 return;
             }
 
             float impulse = _angleCoeficient * _velocitySidewise;
-            playerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
+            PlayerRigidBody.AddForce(impulse * transform.right, ForceMode.Force);
+            Debug.DrawRay(transform.position, impulse * transform.right, Color.blue);
 
             PrintText(_sidewiseSpeedText, impulse);
         }
 
         /// <summary>
-        /// Поворот лыж
+        /// Обработчик поворота корпуса
         /// </summary>
         private void RotateBody()
         {
-            float angleY = transform.rotation.eulerAngles.y;
-
             // Если повороты по воздуху
             if (!isGrounded)
             {
-                RotatePlayerInAir(angleY);
+                RotatePlayerInAir();
                 return;
             }
 
             if (_axisX == 0)
             {
-                ReturningToMainRotation();
+                ReturnToEdgeTurnRotation();
                 return;
             }
+
             _animator.ResetTrigger("toDefault");
 
             RotatePlayerOnGround();
         }
 
-        private void RotatePlayerInAir(float angleY)
-        {
-            // повороты в воздухе
-            if (_axisX < 0 && angleY > 90 - angleOfStrafe)
-            {
-                playerRigidBody.AddTorque(transform.up * speedOfStrafeRotationY * 0.33f * _axisX, ForceMode.VelocityChange);
-            }
-            else if (_axisX > 0 && angleY < 90 + angleOfStrafe)
-            {
-                playerRigidBody.AddTorque(transform.up * speedOfStrafeRotationY * 0.33f * _axisX, ForceMode.VelocityChange);
-            }
-        }
-
-        private void ReturningToMainRotation()
+        /// <summary>
+        /// Повернуть персонажа до крайнего возможного поворота перед зоной стрейфа
+        /// </summary>
+        private void ReturnToEdgeTurnRotation()
         {
             StrafeTurnOff();
             TurningTurnOff();
@@ -694,12 +702,29 @@ namespace Assets.Scripts.Player
             //восстанавливаем положение лыж
             if (AngleOfCurrentTurning > angleOfTurn)
             {
-                playerRigidBody.AddTorque(transform.up * -speedOfStrafeRotationY, ForceMode.VelocityChange);
+                RotateBodySidewise(-1);
             }
             else if (AngleOfCurrentTurning < -angleOfTurn)
             {
-                playerRigidBody.AddTorque(transform.up * speedOfStrafeRotationY, ForceMode.VelocityChange);
+                RotateBodySidewise(1);
             }
+        }
+
+        /// <summary>
+        /// Повернуть корпуск персонажа в бок
+        /// </summary>
+        /// <param name="rotationSpeedModifier">Модификатор скорости поворота. Меньше 0 - поворот влево, больше 0 - поворот вправо</param>
+        private void RotateBodySidewise(float rotationSpeedModifier)
+        {
+            PlayerRigidBody.AddTorque(rotationSpeedModifier * speedOfNormalRotationY * transform.up, ForceMode.VelocityChange);
+        }
+
+        /// <summary>
+        /// Поворот корпуса персонажа в воздухе
+        /// </summary>
+        private void RotatePlayerInAir()
+        {
+            RotateBodySidewise(_axisX * 0.33f);
         }
 
         /// <summary>
@@ -715,12 +740,14 @@ namespace Assets.Scripts.Player
                 {
                     StrafeTurnOff();
                     TurningTurnOn(Sides.Left);
+
                     // поворот
-                    playerRigidBody.AddTorque(_axisX * speedOfNormalRotationY * transform.up, ForceMode.VelocityChange);
+                    RotateBodySidewise(_axisX);
 
                     // центробежная скорость
-                    float impulse = VelocityForward * _centrifugalForceCoefficient;
-                    playerRigidBody.AddForce(impulse * -transform.right, ForceMode.Impulse);
+                    float impulse = VelocityMagnitude * _centrifugalForceCoefficient;
+                    PlayerRigidBody.AddForce(impulse * -transform.right, ForceMode.Force);
+                    Debug.DrawRay(transform.position, impulse * -transform.right, Color.green);
                     return;
                 }
 
@@ -729,22 +756,24 @@ namespace Assets.Scripts.Player
                 TurningTurnOff();
                 if (AngleOfCurrentTurning > -angleOfStrafe)
                 {
-                    playerRigidBody.AddTorque(_axisX * speedOfStrafeRotationY * transform.up, ForceMode.VelocityChange);
+                    RotateBodySidewise(_axisX);
                 }
 
-                if (VelocityForward > _strafeSpeedLimit)
+                if (VelocityMagnitude > _strafeSpeedLimit)
                 {
                     //сила назад
-                    playerRigidBody.AddForce(Vector3.left * _velocityStrafeStopper, ForceMode.Impulse);
+                    PlayerRigidBody.AddForce(Vector3.left * _velocityStrafeStopper, ForceMode.Force);
+                    Debug.DrawRay(transform.position, Vector3.left * _velocityStrafeStopper, Color.black);
                     //сила в бок
                     float impulse = _axisX * _velocityStrafe;
-                    playerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
+                    PlayerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
+                    Debug.DrawRay(transform.position, impulse * transform.right, Color.red);
 
                     PrintText(_strafeSpeedText, impulse);
                 }
                 else
                 {
-                    playerRigidBody.velocity = Vector3.zero;
+                    PlayerRigidBody.velocity = Vector3.zero;
                 }
             }
             //направо повернуть корпус
@@ -755,12 +784,14 @@ namespace Assets.Scripts.Player
                 {
                     StrafeTurnOff();
                     TurningTurnOn(Sides.Right);
+
                     // поворот
-                    playerRigidBody.AddTorque(_axisX * speedOfNormalRotationY * transform.up, ForceMode.VelocityChange);
+                    RotateBodySidewise(_axisX);
 
                     // центробежная скорость
-                    float impulse = VelocityForward * _centrifugalForceCoefficient;
-                    playerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
+                    float impulse = VelocityMagnitude * _centrifugalForceCoefficient;
+                    PlayerRigidBody.AddForce(impulse * transform.right, ForceMode.Force);
+                    Debug.DrawRay(transform.position, impulse * transform.right, Color.green);
                     return;
                 }
 
@@ -770,29 +801,31 @@ namespace Assets.Scripts.Player
                 TurningTurnOff();
                 if (AngleOfCurrentTurning < angleOfStrafe)
                 {
-                    playerRigidBody.AddTorque(_axisX * speedOfStrafeRotationY * transform.up, ForceMode.VelocityChange);
+                    RotateBodySidewise(_axisX);
                 }
 
-                if (VelocityForward > _strafeSpeedLimit)
+                if (VelocityMagnitude > _strafeSpeedLimit)
                 {
                     //сила назад
-                    playerRigidBody.AddForce(Vector3.left * _velocityStrafeStopper, ForceMode.Impulse);
+                    PlayerRigidBody.AddForce(Vector3.left * _velocityStrafeStopper, ForceMode.Force);
+                    Debug.DrawRay(transform.position, Vector3.left * _velocityStrafeStopper, Color.black);
                     //сила в бок
                     float impulse = _axisX * _velocityStrafe;
-                    playerRigidBody.AddForce(impulse * -transform.right, ForceMode.Impulse);
+                    PlayerRigidBody.AddForce(impulse * -transform.right, ForceMode.Impulse);
+                    Debug.DrawRay(transform.position, impulse * transform.right, Color.red);
 
                     PrintText(_strafeSpeedText, impulse);
                 }
                 else
                 {
-                    playerRigidBody.velocity = Vector3.zero;
+                    PlayerRigidBody.velocity = Vector3.zero;
                 }
             }
         }
 
         private void EarnMoneyForSpeed()
         {
-            if (playerRigidBody.velocity.magnitude > _magnitudeSpeedToEarnMoney)
+            if (PlayerRigidBody.velocity.magnitude > _magnitudeSpeedToEarnMoney)
             {
                 _timeInHighSpeed += Time.deltaTime;
                 if (_timeInHighSpeed > 1f)
@@ -809,12 +842,12 @@ namespace Assets.Scripts.Player
 
         public void EarnMoneyForRisk()
         {
-            if (IsLose || playerRigidBody.velocity.magnitude < _magnitudeSpeedForRisk)
+            if (IsLose || PlayerRigidBody.velocity.magnitude < _magnitudeSpeedForRisk)
             {
                 return;
             }
 
-            int riskScore = (int)playerRigidBody.velocity.magnitude / _magnitudeSpeedDividerForRisk;
+            int riskScore = (int)PlayerRigidBody.velocity.magnitude / _magnitudeSpeedDividerForRisk;
             _moneyForRisk += riskScore;
 
             string greetText = _riskTexts.ElementAt(UnityEngine.Random.Range(0, _riskTexts.Length - 1));
@@ -824,14 +857,6 @@ namespace Assets.Scripts.Player
             OnRisk?.Invoke();
         }
 
-        private void OnCollisionEnter(Collision collision)
-        {
-            if (collision.collider.gameObject.TryGetComponent(out Barrier barrier) && !IsLose)
-            {
-                Lose(LoseCause.barrier);
-            }
-        }
-
         private void RagdollOn()
         {
             _animator.enabled = false;
@@ -839,8 +864,8 @@ namespace Assets.Scripts.Player
             for (int i = 0; i < ragdollRigidbody.Length; i++)
             {
                 ragdollRigidbody[i].isKinematic = false;
-                ragdollRigidbody[i].velocity = playerRigidBody.velocity;
-                ragdollRigidbody[i].angularVelocity = playerRigidBody.angularVelocity;
+                ragdollRigidbody[i].velocity = PlayerRigidBody.velocity;
+                ragdollRigidbody[i].angularVelocity = PlayerRigidBody.angularVelocity;
                 ragdollRigidbody[i].mass = bonesDefaultMass[i];
             }
         }
@@ -880,7 +905,7 @@ namespace Assets.Scripts.Player
 
             SetSkiToFeet();
 
-            playerRigidBody.constraints = RigidbodyConstraints.None;
+            PlayerRigidBody.constraints = RigidbodyConstraints.None;
             if (cause == LoseCause.fallX)
             {
                 StartCoroutine(Fall(-transform.right));
@@ -900,7 +925,7 @@ namespace Assets.Scripts.Player
                 LoseSki();
 
                 RagdollOn();
-                playerRigidBody.angularDrag = 0.06f;
+                PlayerRigidBody.angularDrag = 0.06f;
                 OnBarrierCollision?.Invoke();
             }
 
@@ -912,7 +937,7 @@ namespace Assets.Scripts.Player
         {
             bool isLeftSkiOff = false;
             bool isRightSkiOff = false;
-            if (VelocityForward >= _velocityToLoseSki)
+            if (VelocityMagnitude >= _velocityToLoseSki)
             {
                 int result = UnityEngine.Random.Range(0, 9);
 
@@ -973,11 +998,11 @@ namespace Assets.Scripts.Player
             _timeInHighSpeed = 0;
 
             //joystick.gameObject.SetActive(true);
-            playerRigidBody.velocity = Vector3.zero;
-            playerRigidBody.angularVelocity = Vector3.zero;
+            PlayerRigidBody.velocity = Vector3.zero;
+            PlayerRigidBody.angularVelocity = Vector3.zero;
             transform.SetPositionAndRotation(_restartPlayerTransformPosition, _restartPlayerTransformRotation);
-            playerRigidBody.angularDrag = 18;
-            playerRigidBody.constraints = RigidbodyConstraints.FreezeRotationZ;
+            PlayerRigidBody.angularDrag = 18;
+            PlayerRigidBody.constraints = RigidbodyConstraints.FreezeRotationZ;
             IsLose = false;
 
             RagdollOff();
@@ -1027,7 +1052,7 @@ namespace Assets.Scripts.Player
 
         private IEnumerator Fall(Vector3 direction)
         {
-            playerRigidBody.angularDrag = 0.06f;
+            PlayerRigidBody.angularDrag = 0.06f;
             RagdollOn();
             for (int i = 0; i < 6; i++)
             {

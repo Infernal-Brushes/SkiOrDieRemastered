@@ -566,6 +566,41 @@ Transform:
   m_Father: {fileID: 6306228195325791858}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1922134090307967375
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 276508075700200324}
+  m_Layer: 0
+  m_Name: GroundCheckPoints
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &276508075700200324
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1922134090307967375}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8015819797896058709}
+  - {fileID: 192588444741185859}
+  - {fileID: 5200657539342921682}
+  - {fileID: 5200657538254514790}
+  m_Father: {fileID: 5006710662610347948}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2117458058830226940
 GameObject:
   m_ObjectHideFlags: 0
@@ -1443,9 +1478,7 @@ Transform:
   - {fileID: 5536349482760148769}
   - {fileID: 5006710662076796433}
   - {fileID: 5006710663215787532}
-  - {fileID: 8015819797896058709}
-  - {fileID: 5200657539342921682}
-  - {fileID: 5200657538254514790}
+  - {fileID: 276508075700200324}
   - {fileID: 8605672584454692108}
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -1462,11 +1495,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7a8a5592a03112498937854e00f67fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <CharacterModel>k__BackingField:
-    mode: 1
+  _characterModel:
+    mode: 0
     unityReference: {fileID: 0}
     rawReference:
-      rid: 9158778601057026049
+      rid: -2
   _leftSkiMeshRenderer: {fileID: 0}
   _rightSkiMeshRenderer: {fileID: 0}
   _inGameMenu: {fileID: 0}
@@ -1505,32 +1538,32 @@ MonoBehaviour:
   _velocityMagnitudeText: {fileID: 0}
   _animator: {fileID: 2417677955061811062}
   _groundForwardPoint: {fileID: 8015819797896058706}
+  _groundBackwardPoint: {fileID: 6213000742283431384}
   _groundLeftPoint: {fileID: 5200657539342921681}
   _groundRightPoint: {fileID: 5200657538254514789}
-  _groundCheckForwardLength: 0.3
+  _groundCheckForwardLength: 0.18
   _groundCheckSidewiseLength: 0.14
   _moneyPerSecondOnHighSpeed: 4
-  _velocityFreeRide: 0.24
-  _velocitySidewise: 0.45
+  _velocityFreeRide: 14
+  _velocitySidewise: 28
   _velocityStrafeCoefficient: 0
-  _strafeStopperCoefficient: 0.03
-  _strafeSpeedLimit: 1
-  _centrifugalForceCoefficient: 0.011
+  _strafeStopperCoefficient: 1.8
+  _strafeSpeedLimit: 0.1
+  _centrifugalForceCoefficient: 0.5
   _deathSpeedX: 90
   _deathSpeedZ: 72
   _deathAlertSpeedX: 75
   _velocityToLoseSki: 32
-  _speedOfTiltForward: 0.1
-  _speedOfTiltSidewise: 0.2
   _gravityBoost: 106
   _magnitudeSpeedToEarnMoney: 60
-  _magnitudeSpeedForRisk: 30
+  _magnitudeSpeedForRisk: 38
   _magnitudeSpeedDividerForRisk: 10
   speedOfNormalRotationY: 0.68
   speedOfStrafeRotationY: 4.5
+  _speedOfTiltForward: 0.4
+  _speedOfTiltSidewise: 0.2
   angleOfTurn: 50
   angleOfStrafe: 68
-  playerRigidBody: {fileID: 0}
   ragdollRigidbody:
   - {fileID: 8620982100558545757}
   - {fileID: 3248494196935668136}
@@ -1637,8 +1670,8 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
-    - rid: 9158778601057026049
-      type: {class: YoungManModel, ns: Assets.Scripts.Models.Characters, asm: Assembly-CSharp}
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!54 &5006710662610347950
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1861,13 +1894,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5200657538254514789}
-  m_LocalRotation: {x: -0.00015174598, y: 0.014220029, z: -0.008210473, w: -0.99986523}
-  m_LocalPosition: {x: 0.36, y: 0.02, z: 0.25}
+  m_LocalRotation: {x: -0.00015175343, y: 0.014220089, z: -0.008210465, w: -0.99986523}
+  m_LocalPosition: {x: 0.36, y: 0.038, z: 0.24}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 5006710662610347948}
-  m_RootOrder: 6
+  m_Father: {fileID: 276508075700200324}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5200657539342921681
 GameObject:
@@ -1892,13 +1925,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5200657539342921681}
-  m_LocalRotation: {x: -0.00015174598, y: 0.014220029, z: -0.008210473, w: -0.99986523}
-  m_LocalPosition: {x: -0.36, y: 0.02, z: 0.25}
+  m_LocalRotation: {x: -0.00015175343, y: 0.014220089, z: -0.008210465, w: -0.99986523}
+  m_LocalPosition: {x: -0.35999277, y: 0.0380001, z: 0.24000022}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 5006710662610347948}
-  m_RootOrder: 5
+  m_Father: {fileID: 276508075700200324}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5324562388403991211
 GameObject:
@@ -2107,6 +2140,37 @@ Transform:
   - {fileID: 297215127617563809}
   m_Father: {fileID: 2606182592021117403}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6213000742283431384
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 192588444741185859}
+  m_Layer: 0
+  m_Name: BackwardGroundCheck
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &192588444741185859
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6213000742283431384}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.049, y: 0.048, z: -0.632}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 276508075700200324}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6978011367628482758
 GameObject:
@@ -2403,7 +2467,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8015819797896058709}
   m_Layer: 0
-  m_Name: GroundForward
+  m_Name: ForwardGroundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2416,13 +2480,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8015819797896058706}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.006, y: 0.045, z: 0.229}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.003, y: -0.001, z: 1.698}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 5006710662610347948}
-  m_RootOrder: 4
+  m_Father: {fileID: 276508075700200324}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8314206620317372710
 GameObject:
@@ -2553,7 +2617,7 @@ Transform:
   - {fileID: 855025098918628754}
   - {fileID: 7028445393805519418}
   m_Father: {fileID: 5006710662610347948}
-  m_RootOrder: 7
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &2417677955061811062
 Animator:
