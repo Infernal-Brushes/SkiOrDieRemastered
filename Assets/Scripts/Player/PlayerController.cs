@@ -715,6 +715,7 @@ namespace Assets.Scripts.Player
         /// Повернуть корпуск персонажа в бок
         /// </summary>
         /// <param name="rotationSpeedModifier">Модификатор скорости поворота. Меньше 0 - поворот влево, больше 0 - поворот вправо</param>
+        /// <param name="speed">Базовая скорость поворота</param>
         private void RotateBodySidewise(float rotationSpeedModifier, float speed)
         {
             PlayerRigidBody.AddTorque(rotationSpeedModifier * speed * transform.up, ForceMode.VelocityChange);
