@@ -7,6 +7,7 @@ using System.Collections;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Assets.Scripts.Player
 {
@@ -14,7 +15,7 @@ namespace Assets.Scripts.Player
     {
         const string GroundLayerMaskName = "Ground";
 
-        //public Joystick joystick;
+        //private Joystick _joystick;
 
         /// <summary>
         /// Позиция рестарта игрока
@@ -496,10 +497,10 @@ namespace Assets.Scripts.Player
                 _debugPanel.SetActive(!_debugPanel.activeSelf);
             }
 
-            //_axisX = joystick.Horizontal;
+            //_axisX = _joystick.Horizontal;
             //if (Input.GetAxis("Horizontal") != 0)
             //{
-            _axisX = Input.GetAxis("Horizontal");
+                _axisX = Input.GetAxis("Horizontal");
             //}
 
             AngleOfCurrentTurning = -(90f - Vector3.Angle(_skiesDirection, Vector3.forward));
@@ -702,11 +703,11 @@ namespace Assets.Scripts.Player
             //восстанавливаем положение лыж
             if (AngleOfCurrentTurning > angleOfTurn)
             {
-                RotateBodySidewise(-1);
+                RotateBodySidewise(-1, speedOfStrafeRotationY);
             }
             else if (AngleOfCurrentTurning < -angleOfTurn)
             {
-                RotateBodySidewise(1);
+                RotateBodySidewise(1, speedOfStrafeRotationY);
             }
         }
 
@@ -714,9 +715,9 @@ namespace Assets.Scripts.Player
         /// Повернуть корпуск персонажа в бок
         /// </summary>
         /// <param name="rotationSpeedModifier">Модификатор скорости поворота. Меньше 0 - поворот влево, больше 0 - поворот вправо</param>
-        private void RotateBodySidewise(float rotationSpeedModifier)
+        private void RotateBodySidewise(float rotationSpeedModifier, float speed)
         {
-            PlayerRigidBody.AddTorque(rotationSpeedModifier * speedOfNormalRotationY * transform.up, ForceMode.VelocityChange);
+            PlayerRigidBody.AddTorque(rotationSpeedModifier * speed * transform.up, ForceMode.VelocityChange);
         }
 
         /// <summary>
@@ -724,7 +725,7 @@ namespace Assets.Scripts.Player
         /// </summary>
         private void RotatePlayerInAir()
         {
-            RotateBodySidewise(_axisX * 0.33f);
+            RotateBodySidewise(_axisX * 0.33f, speedOfNormalRotationY);
         }
 
         /// <summary>
@@ -742,7 +743,7 @@ namespace Assets.Scripts.Player
                     TurningTurnOn(Sides.Left);
 
                     // поворот
-                    RotateBodySidewise(_axisX);
+                    RotateBodySidewise(_axisX, speedOfNormalRotationY);
 
                     // центробежная скорость
                     float impulse = VelocityMagnitude * _centrifugalForceCoefficient;
@@ -756,7 +757,7 @@ namespace Assets.Scripts.Player
                 TurningTurnOff();
                 if (AngleOfCurrentTurning > -angleOfStrafe)
                 {
-                    RotateBodySidewise(_axisX);
+                    RotateBodySidewise(_axisX, speedOfStrafeRotationY);
                 }
 
                 if (VelocityMagnitude > _strafeSpeedLimit)
@@ -786,7 +787,7 @@ namespace Assets.Scripts.Player
                     TurningTurnOn(Sides.Right);
 
                     // поворот
-                    RotateBodySidewise(_axisX);
+                    RotateBodySidewise(_axisX, speedOfNormalRotationY);
 
                     // центробежная скорость
                     float impulse = VelocityMagnitude * _centrifugalForceCoefficient;
@@ -801,7 +802,7 @@ namespace Assets.Scripts.Player
                 TurningTurnOff();
                 if (AngleOfCurrentTurning < angleOfStrafe)
                 {
-                    RotateBodySidewise(_axisX);
+                    RotateBodySidewise(_axisX, speedOfStrafeRotationY);
                 }
 
                 if (VelocityMagnitude > _strafeSpeedLimit)
@@ -898,8 +899,8 @@ namespace Assets.Scripts.Player
             _rightSkiCollider.layer = 7;
             _leftSkiCollider.layer = 7;
 
-            //joystick.OnPointerUp(new PointerEventData(null));
-            //joystick.gameObject.SetActive(false);
+            //_joystick.OnPointerUp(new PointerEventData(null));
+            //_joystick.gameObject.SetActive(false);
 
             _inGameMenu.pauseButton.SetActive(false);
 
@@ -997,7 +998,7 @@ namespace Assets.Scripts.Player
             _moneyForRisk = 0;
             _timeInHighSpeed = 0;
 
-            //joystick.gameObject.SetActive(true);
+            //_joystick.gameObject.SetActive(true);
             PlayerRigidBody.velocity = Vector3.zero;
             PlayerRigidBody.angularVelocity = Vector3.zero;
             transform.SetPositionAndRotation(_restartPlayerTransformPosition, _restartPlayerTransformRotation);
