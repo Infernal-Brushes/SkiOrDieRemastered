@@ -766,7 +766,7 @@ namespace Assets.Scripts.Player
                     Debug.DrawRay(transform.position, Vector3.left * _velocityStrafeStopper, Color.black);
                     //сила в бок
                     float impulse = _axisX * _velocityStrafe;
-                    PlayerRigidBody.AddForce(impulse * transform.right, ForceMode.Impulse);
+                    PlayerRigidBody.AddForce(impulse * -transform.right, ForceMode.Impulse);
                     Debug.DrawRay(transform.position, impulse * transform.right, Color.red);
 
                     PrintText(_strafeSpeedText, impulse);

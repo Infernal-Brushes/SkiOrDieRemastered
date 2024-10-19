@@ -6659,6 +6659,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8345372391943381821}
     - target: {fileID: 3529645813397966889, guid: 0d62b5c0cb349c04baeed80cb57417b5, type: 3}
+      propertyPath: angleOfTurn
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 3529645813397966889, guid: 0d62b5c0cb349c04baeed80cb57417b5, type: 3}
       propertyPath: forRightSki
       value: 
       objectReference: {fileID: 520360787}
@@ -6706,6 +6710,10 @@ PrefabInstance:
       propertyPath: _velocityMagnitudeText
       value: 
       objectReference: {fileID: 7081721883737435948}
+    - target: {fileID: 3529645813397966889, guid: 0d62b5c0cb349c04baeed80cb57417b5, type: 3}
+      propertyPath: _velocityStrafeCoefficient
+      value: 0.027
+      objectReference: {fileID: 0}
     - target: {fileID: 3529645813397966889, guid: 0d62b5c0cb349c04baeed80cb57417b5, type: 3}
       propertyPath: _characterModel.rawReference
       value: 490411006985764877
